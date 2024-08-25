@@ -22,8 +22,7 @@ const TicketSchema: Schema<Ticket> = new Schema(
     },
     pricePaid: {
       type: Number,
-      required: false,
-      default: 0,
+      required: true,
     },
     isCredit: {
       type: Boolean,
