@@ -31,7 +31,7 @@ const TicketSchema: Schema<Ticket> = new Schema(
     },
     clientId: {
       type: Schema.Types.ObjectId,
-      required: false,
+      required: true,
     },
     createdBy: {
       type: Schema.Types.ObjectId,
