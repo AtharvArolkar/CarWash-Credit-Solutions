@@ -7,7 +7,8 @@ export interface Ticket extends Document {
   price: number;
   pricePaid: number;
   isCredit: boolean;
-  clientId: Types.ObjectId;
+  clientId?: Types.ObjectId;
+  createdBy: Types.ObjectId;
 }
 
 export enum WashType {
