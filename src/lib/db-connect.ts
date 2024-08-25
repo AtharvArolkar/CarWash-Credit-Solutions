@@ -6,7 +6,7 @@ type ConnectionObject = {
 
 const connection: ConnectionObject = {};
 
-export const dbConnect = async (): Promise<void> => {
+const dbConnect = async (): Promise<void> => {
   if (connection.isConnected) {
     //TODO: Remove while deploying
     console.log("DB Already connected");
@@ -24,3 +24,5 @@ export const dbConnect = async (): Promise<void> => {
     throw new Error("Error occured while connecting to DB");
   }
 };
+
+export default dbConnect;
