@@ -3,6 +3,8 @@ import credentials from "next-auth/providers/credentials";
 import dbConnect from "./lib/db-connect";
 import UserModel from "./models/user.model";
 import bcrypt from "bcryptjs";
+import axios from "axios";
+import { GetAccessRefreshResponse } from "./types/user";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -64,7 +66,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
+      if (account && user) {
+        try {
+          //TODO : Add routes in route file
+          const response = await axios.get<GetAccessRefreshResponse>(
+            "/api/generateAccessRefreshTokens"
+          );
+          const { accessToken, refreshToken } = response.data;
+          return { ...token, accessToken, refreshToken, user };
+        } catch (error) {
+          return {
+            ...token,
+            error: "RefreshTokenError",
+          };
+        }
+      }
+
+      // if access token expired
+      // request new access token with refresh token as bearer
+      // if response is refresh token expired , logout the user and show login page
+      // if recieved new access token, forward the token
+
       return token;
     },
 
