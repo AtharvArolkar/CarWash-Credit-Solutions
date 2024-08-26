@@ -40,7 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             throw new CredentialsSignin(
               "Generate a password for your account",
               {
-                status: STATUS_CODES.FORBIDDEN,
+                status: STATUS_CODES.UNAUTHORIZED,
               }
             );
           }
