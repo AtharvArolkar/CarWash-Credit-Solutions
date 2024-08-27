@@ -16,6 +16,10 @@ export enum UserRole {
 }
 
 export interface GetAccessRefreshResponse {
+  accessToken?: string;
+  refreshToken?: string;
+  error?: string;
+}
+export interface GetAccessResponse {
   accessToken: string;
-  refreshToken: string;
 }

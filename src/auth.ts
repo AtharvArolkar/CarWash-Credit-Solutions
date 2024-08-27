@@ -3,8 +3,47 @@ import credentials from "next-auth/providers/credentials";
 import dbConnect from "./lib/db-connect";
 import UserModel from "./models/user.model";
 import bcrypt from "bcryptjs";
-import axios from "axios";
-import { GetAccessRefreshResponse } from "./types/user";
+import axios, { AxiosError } from "axios";
+import { GetAccessRefreshResponse, GetAccessResponse } from "./types/user";
+import jwt from "jsonwebtoken";
+import { headers } from "next/headers";
+import { JWT } from "next-auth/jwt";
+
+async function getRefreshAndAccessToken(): Promise<GetAccessRefreshResponse> {
+  try {
+    //TODO : Add routes in route file
+    const response = await axios.get<GetAccessRefreshResponse>(
+      "/api/generateAccessRefreshTokens"
+    );
+    const { accessToken, refreshToken } = response.data;
+    return { accessToken, refreshToken };
+  } catch (error) {
+    return {
+      error: "AccessTokenError",
+    };
+  }
+}
+async function refreshAccessToken(
+  token: JWT
+): Promise<GetAccessRefreshResponse> {
+  try {
+    //TODO : Add routes in route file
+    const response = await axios.get<GetAccessRefreshResponse>(
+      "/api/refreshAccessToken",
+      { headers: { Authorization: `Bearer ${token.refreshToken}` } }
+    );
+    const { accessToken } = response.data;
+    return { accessToken };
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    return {
+      error:
+        axiosError.response?.status === STATUS_CODES.UNAUTHORIZED
+          ? "RefreshTokenExpired"
+          : "AccessTokenError",
+    };
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -23,6 +62,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
         }
 
+        console.log(credentials);
         await dbConnect();
 
         try {
@@ -68,31 +108,44 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user, account }) {
       if (account && user) {
-        try {
-          //TODO : Add routes in route file
-          const response = await axios.get<GetAccessRefreshResponse>(
-            "/api/generateAccessRefreshTokens"
-          );
-          const { accessToken, refreshToken } = response.data;
-          return { ...token, accessToken, refreshToken, user };
-        } catch (error) {
-          return {
-            ...token,
-            error: "RefreshTokenError",
-          };
-        }
+        const { accessToken, refreshToken, error } =
+          await getRefreshAndAccessToken();
+        // token.user.role = user.role!;
+        console.log(accessToken, refreshToken);
+        return {
+          ...token,
+          accessToken,
+          refreshToken,
+          error,
+        };
       }
-
-      // if access token expired
-      // request new access token with refresh token as bearer
-      // if response is refresh token expired , logout the user and show login page
-      // if recieved new access token, forward the token
-
-      return token;
+      try {
+        jwt.verify(token.accessToken ?? "", process.env.ACCESS_TOKEN_SECRET!);
+        return token;
+      } catch (error) {
+        const {
+          accessToken,
+          refreshToken,
+          error: tokenError,
+        } = await refreshAccessToken(token);
+        if (tokenError === "RefreshTokenExpired") {
+          await signOut();
+        }
+        return { ...token, accessToken, refreshToken, error: tokenError };
+      }
     },
 
-    async session({ session, token, user }) {
+    async session({ session, token }) {
+      if (token) {
+        session.user = token.user;
+        session.accessToken = token.accessToken;
+        session.refreshToken = token.refreshToken;
+      }
       return session;
     },
   },
+  pages: {
+    signIn: "/login",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 });
