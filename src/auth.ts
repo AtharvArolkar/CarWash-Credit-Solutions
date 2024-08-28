@@ -18,7 +18,6 @@ async function getRefreshAndAccessToken(): Promise<GetAccessRefreshResponse> {
     const { accessToken, refreshToken } = response.data;
     return { accessToken, refreshToken };
   } catch (error) {
-    console.log("Errrorrrrrr", error);
     return {
       error: "AccessTokenError",
     };
@@ -36,7 +35,6 @@ async function refreshAccessToken(
     const { accessToken } = response.data;
     return { accessToken };
   } catch (error) {
-    console.log(error);
     const axiosError = error as AxiosError;
     return {
       error:
@@ -79,7 +77,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
 
           if (!user.isVerified) {
-            console.log("Not Verified");
             throw new CredentialsSignin(
               "Generate a password for your account",
               {
@@ -107,26 +104,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user, account }) {
-      console.log(
-        token.refreshToken,
-        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-      );
       if (account && user) {
-        console.log("jwtttttttttttttttttttttttttttttttttttttttttt");
         const { accessToken, refreshToken, error } =
           await getRefreshAndAccessToken();
-        // token.user.role = user.role!;
-        console.log(accessToken, refreshToken), "Token";
+        token.user.role = user.role!;
         token.accessToken = accessToken;
         token.refreshToken = refreshToken;
 
         return token;
       }
       try {
-        console.log(
-          token.refreshToken,
-          "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB1"
-        );
         jwt.verify(token.accessToken ?? "", process.env.ACCESS_TOKEN_SECRET!);
         return token;
       } catch (error) {
@@ -145,11 +132,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     async session({ session, token }) {
-      console.log(
-        token.accessToken,
-        token.refreshToken,
-        "ININININININININININININIn"
-      );
       if (token) {
         session.user = token.user;
         session.accessToken = token.accessToken;
@@ -161,5 +143,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/login",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+  },
+  // jwt: true,
+
+  // secret: process.env.NEXTAUTH_SECRET,
 });

@@ -28,15 +28,12 @@ export async function login(prevState: any, formData: FormData) {
   }
 
   try {
-    console.log("Sign in call");
     const result = await signIn("credentials", {
       identifier: identifier?.toString(),
       password: password?.toString(),
       redirect: false,
     });
-    console.log(result, "ssssssssssssss");
   } catch (error) {
-    console.log((error as CredentialsSignin).message, error);
     return {
       errors: {
         email: "",

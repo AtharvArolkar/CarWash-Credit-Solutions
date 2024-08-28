@@ -9,7 +9,6 @@ import { createApiResponse } from "@/lib/api-response";
 
 export async function GET(req: Request) {
   try {
-    console.log("generateAccessRefreshTokens");
     const accessToken = generateAccessToken();
     const refreshToken = generateRefreshToken();
     return createApiResponse(true, 201, "New session", {
