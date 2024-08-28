@@ -12,7 +12,6 @@ import { STATUS_CODES } from "./lib/constants";
 
 async function getRefreshAndAccessToken(): Promise<GetAccessRefreshResponse> {
   try {
-    //TODO : Add routes in route file
     const response = await axios.get<GetAccessRefreshResponse>(
       apiRoutes.generateAccessRefreshTokens
     );
@@ -28,7 +27,6 @@ async function refreshAccessToken(
   token: JWT
 ): Promise<GetAccessRefreshResponse> {
   try {
-    //TODO : Add routes in route file
     const response = await axios.get<GetAccessRefreshResponse>(
       apiRoutes.refreshAccessToken,
       { headers: { Authorization: `Bearer ${token.refreshToken}` } }
