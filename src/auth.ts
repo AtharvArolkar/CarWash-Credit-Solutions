@@ -66,7 +66,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         await dbConnect();
         try {
           const user = await UserModel.findOne({
-            $or: [{ email: identifier }, { phoneNumber: Number(identifier) }],
+            $or: [
+              { email: identifier },
+              {
+                phoneNumber: !identifier.includes("@")
+                  ? Number(identifier)
+                  : "",
+              },
+            ],
           });
 
           if (!user) {

@@ -1,6 +1,7 @@
 const BASE_URL = process.env.HOSTED_URL;
 
 export const paths = {
+  home: "/",
   login: "/login",
   changePassword: "/change-password",
 };

@@ -2,10 +2,7 @@ import { ReactElement } from "react";
 
 export default function Loading(): ReactElement {
   return (
-    <div
-      //   wire:loading
-      className="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-white-700 opacity-75 flex flex-col items-center justify-center"
-    >
+    <div className="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-white-700 opacity-75 flex flex-col items-center justify-center">
       <div role="status">
         <svg
           aria-hidden="true"
