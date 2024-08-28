@@ -1,20 +1,20 @@
 import NextAuth, { CredentialsSignin } from "next-auth";
-import credentials from "next-auth/providers/credentials";
 import dbConnect from "./lib/db-connect";
 import UserModel from "./models/user.model";
 import bcrypt from "bcryptjs";
 import axios, { AxiosError } from "axios";
 import { GetAccessRefreshResponse } from "./types/user";
-import jwt from "jsonwebtoken";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import * as jose from "jose";
+import { apiRoutes, paths } from "./lib/routes";
+import { STATUS_CODES } from "./lib/constants";
 
 async function getRefreshAndAccessToken(): Promise<GetAccessRefreshResponse> {
   try {
     //TODO : Add routes in route file
     const response = await axios.get<GetAccessRefreshResponse>(
-      "http://localhost:3000/api/generateAccessRefreshTokens"
+      apiRoutes.generateAccessRefreshTokens
     );
     const { accessToken, refreshToken } = response.data;
     return { accessToken, refreshToken };
@@ -30,7 +30,7 @@ async function refreshAccessToken(
   try {
     //TODO : Add routes in route file
     const response = await axios.get<GetAccessRefreshResponse>(
-      "http://localhost:3000/api/refreshAccessToken",
+      apiRoutes.refreshAccessToken,
       { headers: { Authorization: `Bearer ${token.refreshToken}` } }
     );
     const { accessToken } = response.data;
@@ -39,7 +39,7 @@ async function refreshAccessToken(
     const axiosError = error as AxiosError;
     return {
       error:
-        axiosError.response?.status === 401
+        axiosError.response?.status === STATUS_CODES.UNAUTHORIZED
           ? "RefreshTokenExpired"
           : "AccessTokenError",
     };
@@ -73,7 +73,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (!user) {
             throw new CredentialsSignin("User not found", {
-              status: 404,
+              status: STATUS_CODES.NOT_FOUND,
             });
           }
 
@@ -81,7 +81,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             throw new CredentialsSignin(
               "Generate a new password for your account",
               {
-                status: 401,
+                status: STATUS_CODES.UNAUTHORIZED,
               }
             );
           }
@@ -92,7 +92,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (!isPasswordCorrect) {
             throw new CredentialsSignin("Incorrect credentials", {
-              status: 401,
+              status: STATUS_CODES.UNAUTHORIZED,
             });
           }
 
@@ -141,7 +141,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   pages: {
-    signIn: "/login",
+    signIn: paths.login,
   },
   session: {
     strategy: "jwt",

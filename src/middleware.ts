@@ -1,14 +1,13 @@
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
+import { paths } from "./lib/routes";
 
 export default auth((req) => {
-  if (req.nextUrl.pathname === "/change-password") {
+  if (req.nextUrl.pathname === paths.changePassword) {
     return NextResponse.next();
   }
-  if (!req.auth && !req.nextUrl.pathname.includes("/login")) {
-    return NextResponse.redirect(
-      new URL(`http://localhost:3000/login`, req.url)
-    );
+  if (!req.auth && !req.nextUrl.pathname.includes(paths.login)) {
+    return NextResponse.redirect(new URL(paths.login, req.url));
   }
   return NextResponse.next();
 });

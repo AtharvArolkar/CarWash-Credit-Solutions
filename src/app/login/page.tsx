@@ -8,6 +8,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { login } from "../../actions/login";
 import Link from "next/link";
 import { ReactElement } from "react";
+import { paths } from "@/lib/routes";
 
 function FormSubmitButton(): ReactElement {
   const { pending } = useFormStatus();
@@ -62,7 +63,7 @@ export default function Login(): ReactElement {
                 {state?.errors.loginError ===
                   "Generate a new password for your account" && (
                   <Link
-                    href="/change-password"
+                    href={paths.changePassword}
                     className="pl-1 text-blue-500 underline"
                   >
                     here

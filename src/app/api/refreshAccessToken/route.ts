@@ -1,10 +1,10 @@
 import { NextApiRequest } from "next";
 
-import jwt from "jsonwebtoken";
 import { generateAccessToken } from "@/lib/generateTokens";
 import { createApiResponse } from "@/lib/api-response";
 import { headers } from "next/headers";
 import * as jose from "jose";
+import { STATUS_CODES } from "@/lib/constants";
 
 export async function GET(req: NextApiRequest) {
   try {
@@ -17,10 +17,19 @@ export async function GET(req: NextApiRequest) {
     );
 
     const newAccessToken = generateAccessToken();
-    return createApiResponse(true, 200, "Generated new access token.", {
-      accessToken: newAccessToken,
-    });
+    return createApiResponse(
+      true,
+      STATUS_CODES.OK,
+      "Generated new access token.",
+      {
+        accessToken: newAccessToken,
+      }
+    );
   } catch (error) {
-    return createApiResponse(false, 401, "Please login again for access.");
+    return createApiResponse(
+      false,
+      STATUS_CODES.UNAUTHORIZED,
+      "Please login again for access."
+    );
   }
 }
