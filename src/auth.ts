@@ -4,20 +4,21 @@ import dbConnect from "./lib/db-connect";
 import UserModel from "./models/user.model";
 import bcrypt from "bcryptjs";
 import axios, { AxiosError } from "axios";
-import { GetAccessRefreshResponse, GetAccessResponse } from "./types/user";
+import { GetAccessRefreshResponse } from "./types/user";
 import jwt from "jsonwebtoken";
-import { headers } from "next/headers";
 import { JWT } from "next-auth/jwt";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 async function getRefreshAndAccessToken(): Promise<GetAccessRefreshResponse> {
   try {
     //TODO : Add routes in route file
     const response = await axios.get<GetAccessRefreshResponse>(
-      "/api/generateAccessRefreshTokens"
+      "http://localhost:3000/api/generateAccessRefreshTokens"
     );
     const { accessToken, refreshToken } = response.data;
     return { accessToken, refreshToken };
   } catch (error) {
+    console.log("Errrorrrrrr", error);
     return {
       error: "AccessTokenError",
     };
@@ -29,16 +30,17 @@ async function refreshAccessToken(
   try {
     //TODO : Add routes in route file
     const response = await axios.get<GetAccessRefreshResponse>(
-      "/api/refreshAccessToken",
+      "http://localhost:3000/api/refreshAccessToken",
       { headers: { Authorization: `Bearer ${token.refreshToken}` } }
     );
     const { accessToken } = response.data;
     return { accessToken };
   } catch (error) {
+    console.log(error);
     const axiosError = error as AxiosError;
     return {
       error:
-        axiosError.response?.status === STATUS_CODES.UNAUTHORIZED
+        axiosError.response?.status === 401
           ? "RefreshTokenExpired"
           : "AccessTokenError",
     };
@@ -47,10 +49,12 @@ async function refreshAccessToken(
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    credentials({
+    CredentialsProvider({
+      id: "credentials",
+      name: "Credentials",
       credentials: {
-        identifier: { label: "Identifier" },
-        password: { label: "Password", type: "password" },
+        identifier: {},
+        password: {},
       },
       async authorize(credential: any) {
         const { identifier, password } = credential;
@@ -62,9 +66,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
         }
 
-        console.log(credentials);
         await dbConnect();
-
         try {
           const user = await UserModel.findOne({
             $or: [{ email: identifier }, { phoneNumber: Number(identifier) }],
@@ -72,15 +74,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (!user) {
             throw new CredentialsSignin("User not found", {
-              status: STATUS_CODES.NOT_FOUND,
+              status: 404,
             });
           }
 
           if (!user.isVerified) {
+            console.log("Not Verified");
             throw new CredentialsSignin(
               "Generate a password for your account",
               {
-                status: STATUS_CODES.UNAUTHORIZED,
+                status: 401,
               }
             );
           }
@@ -91,35 +94,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (!isPasswordCorrect) {
             throw new CredentialsSignin("Incorrect credentials", {
-              status: STATUS_CODES.UNAUTHORIZED,
+              status: 401,
             });
           }
 
           return user;
         } catch (error) {
-          console.error("Error while authenticating the user", error);
-          throw new CredentialsSignin("Something went wrong", {
-            status: STATUS_CODES.INTERNAL_SERVER_ERROR,
-          });
+          throw error;
         }
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user, account }) {
+      console.log(
+        token.refreshToken,
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      );
       if (account && user) {
+        console.log("jwtttttttttttttttttttttttttttttttttttttttttt");
         const { accessToken, refreshToken, error } =
           await getRefreshAndAccessToken();
         // token.user.role = user.role!;
-        console.log(accessToken, refreshToken);
-        return {
-          ...token,
-          accessToken,
-          refreshToken,
-          error,
-        };
+        console.log(accessToken, refreshToken), "Token";
+        token.accessToken = accessToken;
+        token.refreshToken = refreshToken;
+
+        return token;
       }
       try {
+        console.log(
+          token.refreshToken,
+          "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB1"
+        );
         jwt.verify(token.accessToken ?? "", process.env.ACCESS_TOKEN_SECRET!);
         return token;
       } catch (error) {
@@ -131,11 +138,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (tokenError === "RefreshTokenExpired") {
           await signOut();
         }
-        return { ...token, accessToken, refreshToken, error: tokenError };
+        token.accessToken = accessToken;
+        token.refreshToken = refreshToken;
+        return token;
       }
     },
 
     async session({ session, token }) {
+      console.log(
+        token.accessToken,
+        token.refreshToken,
+        "ININININININININININININIn"
+      );
       if (token) {
         session.user = token.user;
         session.accessToken = token.accessToken;
