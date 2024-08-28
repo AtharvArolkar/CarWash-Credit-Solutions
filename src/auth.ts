@@ -79,7 +79,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (!user.isVerified) {
             throw new CredentialsSignin(
-              "Generate a password for your account",
+              "Generate a new password for your account",
               {
                 status: 401,
               }

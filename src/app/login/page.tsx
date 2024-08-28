@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-
+import { TriangleAlert } from "lucide-react";
 import loginBg from "/public/login-bg.jpg";
 import { useFormState, useFormStatus } from "react-dom";
 import { login } from "../../actions/login";
@@ -48,17 +48,21 @@ export default function Login(): ReactElement {
         <p className="text-xs text-destructive italic pt-1">
           {state?.errors?.password}
         </p>
-        <p className="py-2 flex justify-end text-sm">Forgot password?</p>
+        {/* TODO: Confirm forgot password logic */}
+        {/* <p className="py-2 flex justify-end text-sm">
+          Forgot password?
+        </p> */}
         <FormSubmitButton />
         <div className="h-16 mt-5">
           {state?.errors.loginError && (
-            <div className="bg-red-200 h-full p-2 flex content-center justify-center rounded-sm">
+            <div className="bg-red-200 h-full p-2 flex justify-center items-center rounded-sm pl-4">
+              <TriangleAlert className="text-red-600 mr-3 text-sm" />
               <div className="text-red-600">
                 {state?.errors.loginError}
                 {state?.errors.loginError ===
-                  "Generate a password for your account" && (
+                  "Generate a new password for your account" && (
                   <Link
-                    href="/changePassword"
+                    href="/change-password"
                     className="pl-1 text-blue-500 underline"
                   >
                     here

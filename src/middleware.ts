@@ -1,8 +1,10 @@
 import { auth } from "@/auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export default auth((req) => {
-  const reqUrl = new URL(req.url);
+  if (req.nextUrl.pathname === "/change-password") {
+    return NextResponse.next();
+  }
   if (!req.auth && !req.nextUrl.pathname.includes("/login")) {
     return NextResponse.redirect(
       new URL(`http://localhost:3000/login`, req.url)
