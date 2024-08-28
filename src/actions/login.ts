@@ -1,14 +1,14 @@
 "use server";
-import { ReactElement } from "react";
 
 import { signIn } from "@/auth";
 import { LoginFormError } from "@/types/common";
-import { log } from "console";
 import { CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
-// import { signIn } from "next-auth/react";
 
-export async function login(prevState: any, formData: FormData) {
+export async function login(
+  _: any,
+  formData: FormData
+): Promise<LoginFormError> {
   const identifier = formData.get("identifier");
   const password = formData.get("password");
   const errorObject: LoginFormError = {
@@ -28,7 +28,7 @@ export async function login(prevState: any, formData: FormData) {
   }
 
   try {
-    const result = await signIn("credentials", {
+    await signIn("credentials", {
       identifier: identifier?.toString(),
       password: password?.toString(),
       redirect: false,
@@ -42,5 +42,5 @@ export async function login(prevState: any, formData: FormData) {
       },
     };
   }
-  // redirect("/");
+  redirect("/");
 }

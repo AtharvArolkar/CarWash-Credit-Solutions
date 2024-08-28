@@ -8,6 +8,7 @@ import { GetAccessRefreshResponse } from "./types/user";
 import jwt from "jsonwebtoken";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
+import * as jose from "jose";
 
 async function getRefreshAndAccessToken(): Promise<GetAccessRefreshResponse> {
   try {
@@ -105,28 +106,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user, account }) {
       if (account && user) {
-        const { accessToken, refreshToken, error } =
-          await getRefreshAndAccessToken();
-        token.user.role = user.role!;
+        const { accessToken, refreshToken } = await getRefreshAndAccessToken();
+        token.user = user;
         token.accessToken = accessToken;
         token.refreshToken = refreshToken;
-
         return token;
       }
       try {
-        jwt.verify(token.accessToken ?? "", process.env.ACCESS_TOKEN_SECRET!);
+        await jose.jwtVerify(
+          token.accessToken ?? "",
+          new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET),
+          {}
+        );
         return token;
       } catch (error) {
-        const {
-          accessToken,
-          refreshToken,
-          error: tokenError,
-        } = await refreshAccessToken(token);
+        const { accessToken, error: tokenError } = await refreshAccessToken(
+          token
+        );
         if (tokenError === "RefreshTokenExpired") {
           await signOut();
         }
         token.accessToken = accessToken;
-        token.refreshToken = refreshToken;
         return token;
       }
     },
@@ -146,7 +146,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
   },
-  // jwt: true,
-
-  // secret: process.env.NEXTAUTH_SECRET,
 });

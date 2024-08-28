@@ -4,12 +4,17 @@ import jwt from "jsonwebtoken";
 import { generateAccessToken } from "@/lib/generateTokens";
 import { createApiResponse } from "@/lib/api-response";
 import { headers } from "next/headers";
+import * as jose from "jose";
 
 export async function GET(req: NextApiRequest) {
   try {
     const headersList = headers();
     const token = headersList.get("authorization")?.split(" ")[1] ?? "";
-    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET!);
+    await jose.jwtVerify(
+      token ?? "",
+      new TextEncoder().encode(process.env.REFRESH_TOKEN_SECRET),
+      {}
+    );
 
     const newAccessToken = generateAccessToken();
     return createApiResponse(true, 200, "Generated new access token.", {
