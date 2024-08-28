@@ -1,4 +1,4 @@
-const createApiResponse = (
+export const createApiResponse = (
   success: boolean,
   statusCode: number,
   message?: string,

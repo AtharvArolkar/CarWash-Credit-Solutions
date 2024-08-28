@@ -14,3 +14,12 @@ export enum UserRole {
   employee = "EMPLOYEE",
   client = "CLIENT",
 }
+
+export interface GetAccessRefreshResponse {
+  accessToken?: string;
+  refreshToken?: string;
+  error?: string;
+}
+export interface GetAccessResponse {
+  accessToken: string;
+}
