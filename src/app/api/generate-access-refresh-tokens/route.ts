@@ -8,17 +8,29 @@ import { STATUS_CODES } from "@/lib/constants";
 export async function POST(req: Request) {
   try {
     const { identifier } = await req.json();
+    if (!identifier) {
+      return createApiResponse({
+        success: false,
+        statusCode: STATUS_CODES.BAD_REQUEST,
+        message: "Incorrect payload",
+      });
+    }
     const accessToken = generateAccessToken(identifier);
     const refreshToken = generateRefreshToken();
-    return createApiResponse(true, STATUS_CODES.CREATED, "New session", {
-      accessToken,
-      refreshToken,
+    return createApiResponse({
+      success: true,
+      statusCode: STATUS_CODES.CREATED,
+      message: "New session",
+      body: {
+        accessToken,
+        refreshToken,
+      },
     });
   } catch (error) {
-    return createApiResponse(
-      false,
-      STATUS_CODES.INTERNAL_SERVER_ERROR,
-      "Something went wrong. Please try again."
-    );
+    return createApiResponse({
+      success: false,
+      statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+      message: "Something went wrong. Please try again.",
+    });
   }
 }

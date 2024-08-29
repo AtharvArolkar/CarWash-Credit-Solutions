@@ -8,26 +8,32 @@ import { verifyJWT } from "@/helpers/jwt-verify";
 
 export async function POST(req: Request) {
   try {
-    const { identifier } = await req.json();
+    const payload = await req.json();
+    if (!payload.identifier) {
+      return createApiResponse({
+        success: false,
+        statusCode: STATUS_CODES.BAD_REQUEST,
+        message: "Incorrect payload",
+      });
+    }
     const headersPayload = headers();
     const token = headersPayload.get("authorization")?.split(" ")[1] ?? "";
-
     await verifyJWT(token, process.env.REFRESH_TOKEN_SECRET ?? "");
 
-    const newAccessToken = generateAccessToken(identifier);
-    return createApiResponse(
-      true,
-      STATUS_CODES.OK,
-      "Generated new access token.",
-      {
+    const newAccessToken = generateAccessToken("identifier");
+    return createApiResponse({
+      success: true,
+      statusCode: STATUS_CODES.OK,
+      message: "Generated new access token.",
+      body: {
         accessToken: newAccessToken,
-      }
-    );
+      },
+    });
   } catch (error) {
-    return createApiResponse(
-      false,
-      STATUS_CODES.UNAUTHORIZED,
-      "Please login again for access."
-    );
+    return createApiResponse({
+      success: false,
+      statusCode: STATUS_CODES.UNAUTHORIZED,
+      message: "Please login again for access.",
+    });
   }
 }

@@ -1,12 +1,15 @@
-import { GetAccessRefreshPayload } from "./../types/user";
+import {
+  ChangePasswordPayload,
+  GetAccessRefreshPayload,
+} from "./../types/user";
 import axios, { AxiosResponse } from "axios";
 import { ApiMethod } from "@/types/common";
 
-export const callApi = async (
+export const callApi = async <Type>(
   url: string,
   method: ApiMethod,
   token?: string,
-  payload?: GetAccessRefreshPayload | string
+  payload?: GetAccessRefreshPayload | ChangePasswordPayload | string
 ): Promise<AxiosResponse> => {
   const callOption = {
     headers: { Authorization: `Bearer ${token}` },

@@ -12,7 +12,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { apiRoutes, paths } from "./lib/routes";
 import { STATUS_CODES } from "./lib/constants";
 import { callApi } from "./helpers/api-service";
-import { ApiMethod } from "./types/common";
+import { ApiMethod, ApiResponse } from "./types/common";
 import { verifyJWT } from "./helpers/jwt-verify";
 import { isFinite } from "lodash";
 
@@ -23,14 +23,13 @@ async function getRefreshAndAccessToken(
     const payload: GetAccessRefreshPayload = {
       identifier,
     };
-    const response = await callApi(
+    const result = await callApi<ApiResponse>(
       apiRoutes.generateAccessRefreshTokens,
       ApiMethod.POST,
       undefined,
       payload
     );
-
-    const { accessToken, refreshToken } = response.data;
+    const { accessToken, refreshToken } = result.data;
     return { accessToken, refreshToken };
   } catch (error) {
     return {
@@ -47,7 +46,7 @@ async function refreshAccessToken(
       identifier,
     };
 
-    const response = await callApi(
+    const response = await callApi<ApiResponse>(
       apiRoutes.refreshAccessToken,
       ApiMethod.POST,
       token.refreshToken,
