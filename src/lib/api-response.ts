@@ -1,8 +1,10 @@
-export const createApiResponse = (
-  success: boolean,
-  statusCode: number,
-  message?: string,
-  body?: any
-): Response => {
+import { ApiResponse } from "@/types/common";
+
+export const createApiResponse = ({
+  success,
+  statusCode,
+  message,
+  body,
+}: ApiResponse): Response => {
   return Response.json({ success, message, ...body }, { status: statusCode });
 };

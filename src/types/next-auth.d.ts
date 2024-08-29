@@ -26,4 +26,5 @@ declare module "next-auth/jwt" {
       role: UserRole;
     } & DefaultSession["user"];
   }
+  interface User extends MongoUser {}
 }

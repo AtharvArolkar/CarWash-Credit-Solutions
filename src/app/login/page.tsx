@@ -27,7 +27,7 @@ export default function Login(): ReactElement {
   return (
     <div className="w-full h-screen relative">
       <Image src={loginBg} alt="bg" className="-z-5 w-full h-150" />
-      <form className="bottom-20 px-5 absolute w-screen" action={loginAction}>
+      <form className="bottom-5 px-5 absolute w-screen" action={loginAction}>
         <p className="text-2xl font-bold flex justify-center mb-10">
           Welcome! to Car Wash
         </p>

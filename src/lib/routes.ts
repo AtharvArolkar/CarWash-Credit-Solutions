@@ -7,6 +7,7 @@ export const paths = {
 };
 
 export const apiRoutes = {
-  generateAccessRefreshTokens: `${BASE_URL}/api/generateAccessRefreshTokens`,
-  refreshAccessToken: `${BASE_URL}/api/refreshAccessToken`,
+  generateAccessRefreshTokens: `${BASE_URL}/api/generate-access-refresh-tokens`,
+  refreshAccessToken: `${BASE_URL}/api/refresh-access-token`,
+  changePassword: `${BASE_URL}/api/change-password `,
 } as const;
