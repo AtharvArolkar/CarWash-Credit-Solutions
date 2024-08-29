@@ -20,8 +20,13 @@ export interface GetAccessRefreshResponse {
   refreshToken?: string;
   error?: string;
 }
+
 export interface GetAccessResponse {
   accessToken: string;
+}
+
+export interface GetAccessRefreshPayload {
+  identifier: string;
 }
 
 export interface ChangePasswordPayload {

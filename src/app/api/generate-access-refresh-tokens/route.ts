@@ -5,9 +5,10 @@ import {
 import { createApiResponse } from "@/lib/api-response";
 import { STATUS_CODES } from "@/lib/constants";
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   try {
-    const accessToken = generateAccessToken();
+    const { identifier } = await req.json();
+    const accessToken = generateAccessToken(identifier);
     const refreshToken = generateRefreshToken();
     return createApiResponse(true, STATUS_CODES.CREATED, "New session", {
       accessToken,

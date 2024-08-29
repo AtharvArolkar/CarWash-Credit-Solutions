@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
+import { Types } from "mongoose";
 
-export function generateAccessToken(phoneNumber: Number): string {
-  return jwt.sign({ phoneNumber }, process.env.ACCESS_TOKEN_SECRET!, {
+export function generateAccessToken(identifier: string): string {
+  return jwt.sign({ identifier }, process.env.ACCESS_TOKEN_SECRET!, {
     expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
   });
 }
