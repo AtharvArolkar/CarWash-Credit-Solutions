@@ -7,7 +7,9 @@ import { isFinite } from "lodash";
 import { STATUS_CODES } from "@/lib/constants";
 import { headers } from "next/headers";
 import { verifyJWT } from "@/helpers/jwt-verify";
+import dbConnect from "@/lib/db-connect";
 export async function POST(req: Request) {
+  await dbConnect();
   const { identifier, oldPassword, newPassword } = await req.json();
 
   if (!identifier || !newPassword) {
@@ -33,7 +35,7 @@ export async function POST(req: Request) {
     });
   }
 
-  // if already existing user, enter this flow
+  // if user is not login in first time, enter this flow
   if (user.isVerified) {
     const headersPayload = headers();
     const token = headersPayload.get("authorization")?.split(" ")[1] ?? "";
@@ -70,12 +72,12 @@ export async function POST(req: Request) {
       return createApiResponse({
         success: false,
         statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-        message: "Something went wrong while change the password.",
+        message: "Something went wrong while changing the password.",
       });
     }
   }
 
-  // if both already existing user + new user
+  // All users flow
   try {
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedNewPassword;
