@@ -8,20 +8,7 @@ import { STATUS_CODES } from "@/lib/constants";
 import { headers } from "next/headers";
 import { verifyJWT } from "@/helpers/jwt-verify";
 export async function POST(req: Request) {
-  //check if all new password and identifier field is present
-  //fetch the user details
-  // check isverified is false
-  // if isverified=true.
-  //         check if token is present and valid return error if not valid
-  //         check if old password is present in the payload, if no resturn error response
-  //         check if old password matches the one in db, if no return error response
-  //         if matches, hash and save the new password, return success response
-  // if isverified in false.
-  //         hash the password.
-  //         save the new password and make isVerified to true
-  //         return success response
   const { identifier, oldPassword, newPassword } = await req.json();
-  // isFinite
 
   if (!identifier || !newPassword) {
     return createApiResponse(
