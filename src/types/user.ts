@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export interface User extends Document {
   email: string;
@@ -22,4 +22,10 @@ export interface GetAccessRefreshResponse {
 }
 export interface GetAccessResponse {
   accessToken: string;
+}
+
+export interface ChangePasswordPayload {
+  identifier?: string;
+  oldPassword?: string;
+  newPassword: string;
 }
