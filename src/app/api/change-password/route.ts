@@ -11,11 +11,11 @@ export async function POST(req: Request) {
   const { identifier, oldPassword, newPassword } = await req.json();
 
   if (!identifier || !newPassword) {
-    return createApiResponse(
-      false,
-      STATUS_CODES.BAD_REQUEST,
-      "Please provide all the required credentials"
-    );
+    return createApiResponse({
+      success: false,
+      statusCode: STATUS_CODES.BAD_REQUEST,
+      message: "Please provide all the required credentials",
+    });
   }
 
   const user = await UserModel.findOne({
@@ -26,28 +26,32 @@ export async function POST(req: Request) {
   });
 
   if (!user) {
-    return createApiResponse(false, STATUS_CODES.NOT_FOUND, "User not found");
+    return createApiResponse({
+      success: false,
+      statusCode: STATUS_CODES.NOT_FOUND,
+      message: "User not found",
+    });
   }
 
   // if already existing user, enter this flow
   if (user.isVerified) {
-    if (!oldPassword) {
-      return createApiResponse(
-        false,
-        STATUS_CODES.BAD_REQUEST,
-        "Please provide all the required credentials"
-      );
-    }
     const headersPayload = headers();
     const token = headersPayload.get("authorization")?.split(" ")[1] ?? "";
     try {
       await verifyJWT(token, process.env.ACCESS_TOKEN_SECRET ?? "");
     } catch (error) {
-      return createApiResponse(
-        false,
-        STATUS_CODES.UNAUTHORIZED,
-        "You are not allowed to perform this action. Please login."
-      );
+      return createApiResponse({
+        success: false,
+        statusCode: STATUS_CODES.UNAUTHORIZED,
+        message: "You are not allowed to perform this action. Please login.",
+      });
+    }
+    if (!oldPassword) {
+      return createApiResponse({
+        success: false,
+        statusCode: STATUS_CODES.BAD_REQUEST,
+        message: "Please provide all the required credentials",
+      });
     }
     try {
       const isOldPasswordcorrect = await bcrypt.compare(
@@ -56,18 +60,18 @@ export async function POST(req: Request) {
       );
 
       if (!isOldPasswordcorrect) {
-        return createApiResponse(
-          false,
-          STATUS_CODES.BAD_REQUEST,
-          "Please enter valid old password"
-        );
+        return createApiResponse({
+          success: false,
+          statusCode: STATUS_CODES.BAD_REQUEST,
+          message: "Please enter valid old password",
+        });
       }
     } catch (error) {
-      return createApiResponse(
-        false,
-        STATUS_CODES.INTERNAL_SERVER_ERROR,
-        "Something went wrong while change the password."
-      );
+      return createApiResponse({
+        success: false,
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+        message: "Something went wrong while change the password.",
+      });
     }
   }
 
@@ -77,16 +81,16 @@ export async function POST(req: Request) {
     user.password = hashedNewPassword;
     user.isVerified = true;
     await user.save();
-    return createApiResponse(
-      true,
-      STATUS_CODES.OK,
-      "Successfully changed the password."
-    );
+    return createApiResponse({
+      success: true,
+      statusCode: STATUS_CODES.OK,
+      message: "Successfully changed the password.",
+    });
   } catch (error) {
-    return createApiResponse(
-      false,
-      STATUS_CODES.INTERNAL_SERVER_ERROR,
-      "Something went wrong while change the password."
-    );
+    return createApiResponse({
+      success: false,
+      statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+      message: "Something went wrong while change the password.",
+    });
   }
 }
