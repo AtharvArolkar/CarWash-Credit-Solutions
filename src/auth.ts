@@ -23,13 +23,13 @@ async function getRefreshAndAccessToken(
     const payload: GetAccessRefreshPayload = {
       identifier,
     };
-    const result = await callApi<ApiResponse>(
+    const response = await callApi<ApiResponse>(
       apiRoutes.generateAccessRefreshTokens,
       ApiMethod.POST,
       undefined,
       payload
     );
-    const { accessToken, refreshToken } = result.data;
+    const { accessToken, refreshToken } = response.data;
     return { accessToken, refreshToken };
   } catch (error) {
     return {
