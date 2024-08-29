@@ -7,3 +7,9 @@ export interface LoginFormError {
     loginError: string | ReactElement;
   };
 }
+
+export enum ApiMethod {
+  "GET",
+  "POST",
+  "DELETE",
+}

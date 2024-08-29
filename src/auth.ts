@@ -2,18 +2,22 @@ import NextAuth, { CredentialsSignin } from "next-auth";
 import dbConnect from "./lib/db-connect";
 import UserModel from "./models/user.model";
 import bcrypt from "bcryptjs";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { GetAccessRefreshResponse } from "./types/user";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
-import * as jose from "jose";
 import { apiRoutes, paths } from "./lib/routes";
 import { STATUS_CODES } from "./lib/constants";
+import { callApi } from "./helpers/api-service";
+import { ApiMethod } from "./types/common";
+import { verifyJWT } from "./helpers/jwt-verify";
+import { isFinite } from "lodash";
 
 async function getRefreshAndAccessToken(): Promise<GetAccessRefreshResponse> {
   try {
-    const response = await axios.get<GetAccessRefreshResponse>(
-      apiRoutes.generateAccessRefreshTokens
+    const response = await callApi(
+      apiRoutes.generateAccessRefreshTokens,
+      ApiMethod.GET
     );
     const { accessToken, refreshToken } = response.data;
     return { accessToken, refreshToken };
@@ -27,9 +31,10 @@ async function refreshAccessToken(
   token: JWT
 ): Promise<GetAccessRefreshResponse> {
   try {
-    const response = await axios.get<GetAccessRefreshResponse>(
+    const response = await callApi(
       apiRoutes.refreshAccessToken,
-      { headers: { Authorization: `Bearer ${token.refreshToken}` } }
+      ApiMethod.GET,
+      token.refreshToken
     );
     const { accessToken } = response.data;
     return { accessToken };
@@ -69,7 +74,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             $or: [
               { email: identifier },
               {
-                phoneNumber: !identifier.includes("@")
+                phoneNumber: isFinite(Number(identifier))
                   ? Number(identifier)
                   : "",
               },
@@ -110,6 +115,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user, account }) {
+      console.log(token.accessToken);
       if (account && user) {
         const { accessToken, refreshToken } = await getRefreshAndAccessToken();
         token.user = user;
@@ -118,11 +124,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return token;
       }
       try {
-        await jose.jwtVerify(
+        await verifyJWT(
           token.accessToken ?? "",
-          new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET),
-          {}
+          process.env.ACCESS_TOKEN_SECRET ?? ""
         );
+
         return token;
       } catch (error) {
         const { accessToken, error: tokenError } = await refreshAccessToken(
