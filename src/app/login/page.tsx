@@ -74,7 +74,7 @@ export default function Login(): ReactElement {
                 {state?.errors.loginError ===
                   "Generate a new password for your account" && (
                   <Link
-                    href={paths.changePassword}
+                    href={paths.setPassword}
                     className="pl-1 text-blue-500 underline"
                   >
                     here

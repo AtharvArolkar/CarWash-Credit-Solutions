@@ -22,7 +22,7 @@ function FormSubmitButton(): ReactElement {
     </Button>
   );
 }
-export default function ChangePassword(): ReactElement {
+export default function ModifyPassword(): ReactElement {
   const [state, changePasswordAction] = useFormState(changePassword, null);
   const authUser = useSession();
 

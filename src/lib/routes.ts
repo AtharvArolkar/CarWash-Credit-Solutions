@@ -4,6 +4,7 @@ export const paths = {
   home: "/",
   login: "/login",
   changePassword: "/change-password",
+  setPassword: "/set-password",
 };
 
 export const apiRoutes = {
