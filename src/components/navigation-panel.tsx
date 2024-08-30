@@ -31,13 +31,13 @@ function ListItem({
 }: ListItemProps): ReactElement {
   return (
     <li
-      className={` flex items-center text-white ${
+      className={` flex items-center text-white hover:bg-blue-500 hover:p-2 hover:rounded-sm hover:mr-2 transition-all ${
         navigationOpen ? "w-full" : ""
       }`}
     >
       {path ? (
         <Link
-          className={`flex items-center hover:bg-blue-500 text-white hover:py-2 hover:rounded-sm ${
+          className={`flex items-center text-white ${
             navigationOpen ? "w-full" : ""
           }`}
           href={path}
@@ -56,24 +56,30 @@ export default function NavigationPanel({
   handleMenuClick,
 }: NavigationPanelProps): ReactElement {
   const authUser = useSession();
-  const [showProfileDetails, setShowProfileDetails] = useState<boolean>(true);
+  const [showProfileDetails, setShowProfileDetails] = useState<boolean>(false);
   const handleLogout = async (): Promise<void> => {
     await logOut();
   };
   return (
     <nav
-      className={`h-screen bg-gradient-to-r from-[#3458D6] to-blue-400 rounded-lg m-1 flex flex-col justify-between text-sm transition-all duration-1000
-                ease-out ${navigationOpen ? "absolute w-2/3 z-50" : ""}`}
+      className={`h-screen bg-gradient-to-r from-[#3458D6] to-blue-400 rounded-lg flex flex-col justify-between text-sm transition-all duration-300
+                ease-out ${
+                  navigationOpen ? "absolute w-2/3 sm:w-1/5 z-50 sm:pl-4" : ""
+                }`}
     >
       <div>
-        <ul className="h-full rounded-lg flex p-1 flex-col items-center gap-5">
-          <ListItem navigationOpen={navigationOpen}>
+        <ul className="h-full rounded-lg flex p-1 flex-col items-center gap-5 sm:gap-10 mt-3">
+          <li
+            className={` flex items-center text-white ${
+              navigationOpen ? "w-full" : ""
+            }`}
+          >
             <Menu
               className="h-8 w-8 text-white"
               strokeWidth={1}
               onClick={handleMenuClick}
             />
-          </ListItem>
+          </li>
           <li className={`flex text-white ${navigationOpen ? "w-full" : ""}`}>
             <div>
               <User className="h-8 w-8" fill="white" strokeWidth={1} />
@@ -88,7 +94,7 @@ export default function NavigationPanel({
                   >
                     <div
                       className={`${
-                        showProfileDetails ? "text-2xl font-bold" : "text-sm"
+                        showProfileDetails ? "text-2xl font-bold" : "text-2xl"
                       }`}
                     >
                       {authUser.data?.user.name}
@@ -135,7 +141,7 @@ export default function NavigationPanel({
         </ul>
       </div>
       <div>
-        <ul className=" h-full flex p-1 flex-col items-center gap-5 mb-2">
+        <ul className=" h-full flex p-1 flex-col items-center gap-5 sm:gap-10  mb-2">
           <ListItem navigationOpen={navigationOpen}>
             <>
               <UserRoundPen className="h-8 w-8" strokeWidth={1} />

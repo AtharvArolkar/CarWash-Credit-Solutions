@@ -26,16 +26,16 @@ export default function MainLayout({
     setNavigationOpen((prev) => !prev);
   };
   const session = useSession();
-  console.log(session);
+
   return (
-    <div className="grid grid-cols-7">
+    <div className="grid grid-cols-7 sm:grid-cols-12 m-1 gap-2">
       <aside className="col-span-1" ref={navRef}>
         <NavigationPanel
           navigationOpen={navigationOpen}
           handleMenuClick={handleMenuClick}
         />
       </aside>
-      <section className="col-span-6">{children}</section>
+      <section className="col-span-6 sm:col-span-11">{children}</section>
     </div>
   );
 }
