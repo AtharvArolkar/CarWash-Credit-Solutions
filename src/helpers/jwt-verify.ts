@@ -11,7 +11,6 @@ export const verifyJWT = async (
       {}
     );
   } catch (error) {
-    console.log(error, "ERRORRR");
     throw error;
   }
 };

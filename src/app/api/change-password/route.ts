@@ -1,13 +1,11 @@
 import bcrypt from "bcryptjs";
-import { ChangePasswordPayload } from "./../../../types/user";
 import { createApiResponse } from "@/lib/api-response";
 import UserModel from "@/models/user.model";
-import { NextApiRequest } from "next";
-import { isFinite } from "lodash";
 import { STATUS_CODES } from "@/lib/constants";
 import { headers } from "next/headers";
 import { verifyJWT } from "@/helpers/jwt-verify";
 import dbConnect from "@/lib/db-connect";
+import mongoose, { Types } from "mongoose";
 export async function POST(req: Request) {
   await dbConnect();
   const { identifier, oldPassword, newPassword } = await req.json();
@@ -19,11 +17,19 @@ export async function POST(req: Request) {
       message: "Please provide all the required credentials",
     });
   }
+  const userId = Types.ObjectId.isValid(identifier)
+    ? new Types.ObjectId(identifier)
+    : null;
 
   const user = await UserModel.findOne({
     $or: [
+      { _id: userId },
       { email: identifier },
-      { phoneNumber: isFinite(Number(identifier)) ? Number(identifier) : "" },
+      {
+        phoneNumber: Number.isFinite(Number(identifier))
+          ? Number(identifier)
+          : "",
+      },
     ],
   });
 
