@@ -62,7 +62,7 @@ export default function NavigationPanel({
   };
   return (
     <nav
-      className={`h-screen bg-gradient-to-r from-[#3458D6] to-blue-400 rounded-lg flex flex-col justify-between text-sm transition-all duration-300
+      className={`h-screen bg-gradient-to-r from-[#3458D6] to-blue-400 rounded-lg flex flex-col justify-between text-sm
                 ease-out ${
                   navigationOpen ? "absolute w-2/3 sm:w-1/5 z-50 sm:pl-4" : ""
                 }`}
@@ -100,10 +100,10 @@ export default function NavigationPanel({
                       {authUser.data?.user.name}
                     </div>
                     {showProfileDetails && (
-                      <>
-                        <div>{authUser.data?.user.phoneNumber ?? "--:--"}</div>
-                        <div>{authUser.data?.user.email ?? "--:--"}</div>
-                      </>
+                      <div className="ease-linear transition-all ">
+                        <div>{authUser.data?.user?.phoneNumber ?? "--:--"}</div>
+                        <div>{authUser.data?.user?.email ?? "--:--"}</div>
+                      </div>
                     )}
                   </div>
                 </div>

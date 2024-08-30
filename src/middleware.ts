@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { paths } from "./lib/routes";
 
 export default auth((req) => {
-  if (req.nextUrl.pathname === paths.changePassword) {
+  if (req.nextUrl.pathname === paths.setPassword) {
     return NextResponse.next();
   }
   if (!req.auth && !req.nextUrl.pathname.includes(paths.login)) {
@@ -18,5 +18,7 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/((?!api|_next|.*\\..*).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
 };
