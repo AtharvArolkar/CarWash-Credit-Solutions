@@ -1,5 +1,6 @@
 "use client";
 import { logOut } from "@/helpers/auth ";
+import { paths } from "@/lib/routes";
 import { Menu } from "lucide-react";
 import { LayoutDashboard } from "lucide-react";
 import { User } from "lucide-react";
@@ -9,6 +10,7 @@ import { Minimize2 } from "lucide-react";
 import { BadgeCent } from "lucide-react";
 import { UserRoundPen } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { MouseEventHandler, ReactElement, useState } from "react";
 
 interface NavigationPanelProps {
@@ -18,17 +20,33 @@ interface NavigationPanelProps {
 
 interface ListItemProps {
   navigationOpen: boolean;
+  path?: string;
   children: ReactElement;
 }
 
-function ListItem({ navigationOpen, children }: ListItemProps): ReactElement {
+function ListItem({
+  navigationOpen,
+  path,
+  children,
+}: ListItemProps): ReactElement {
   return (
     <li
-      className={`flex items-center text-white ${
+      className={` flex items-center text-white ${
         navigationOpen ? "w-full" : ""
       }`}
     >
-      {children}
+      {path ? (
+        <Link
+          className={`flex items-center hover:bg-blue-500 text-white hover:py-2 hover:rounded-sm ${
+            navigationOpen ? "w-full" : ""
+          }`}
+          href={path}
+        >
+          {children}
+        </Link>
+      ) : (
+        <>{children}</>
+      )}
     </li>
   );
 }
@@ -44,11 +62,11 @@ export default function NavigationPanel({
   };
   return (
     <nav
-      className={`h-screen bg-[#3458D6] rounded-lg ml-1 flex flex-col justify-between text-sm transition-all duration-1000
-                ease-out ${navigationOpen ? "absolute w-2/3" : ""}`}
+      className={`h-screen bg-gradient-to-r from-[#3458D6] to-blue-400 rounded-lg m-1 flex flex-col justify-between text-sm transition-all duration-1000
+                ease-out ${navigationOpen ? "absolute w-2/3 z-50" : ""}`}
     >
       <div>
-        <ul className="h-full  bg-[#3458D6] rounded-lg flex p-1 flex-col items-center gap-5">
+        <ul className="h-full rounded-lg flex p-1 flex-col items-center gap-5">
           <ListItem navigationOpen={navigationOpen}>
             <Menu
               className="h-8 w-8 text-white"
@@ -96,33 +114,43 @@ export default function NavigationPanel({
               </div>
             )}
           </li>
-          <ListItem navigationOpen={navigationOpen}>
-            <LayoutDashboard className="h-8 w-8" strokeWidth={1} />
-            {navigationOpen && <p className="ml-2">Dashboard</p>}
+          <ListItem navigationOpen={navigationOpen} path={paths.home}>
+            <>
+              <LayoutDashboard className="h-8 w-8" strokeWidth={1} />
+              {navigationOpen && <p className="ml-2">Dashboard</p>}
+            </>
           </ListItem>
           <ListItem navigationOpen={navigationOpen}>
-            <SquareKanban className="h-8 w-8" strokeWidth={1} />
-            {navigationOpen && <p className="ml-2">Records</p>}
+            <>
+              <SquareKanban className="h-8 w-8" strokeWidth={1} />
+              {navigationOpen && <p className="ml-2">Records</p>}
+            </>
           </ListItem>
           <ListItem navigationOpen={navigationOpen}>
-            <BadgeCent className="h-8 w-8" strokeWidth={1} />
-            {navigationOpen && <p className="ml-2">Credits</p>}
+            <>
+              <BadgeCent className="h-8 w-8" strokeWidth={1} />
+              {navigationOpen && <p className="ml-2">Credits</p>}
+            </>
           </ListItem>
         </ul>
       </div>
       <div>
         <ul className=" h-full flex p-1 flex-col items-center gap-5 mb-2">
           <ListItem navigationOpen={navigationOpen}>
-            <UserRoundPen className="h-8 w-8" strokeWidth={1} />
-            {navigationOpen && <p className="ml-2">Edit Profile</p>}
+            <>
+              <UserRoundPen className="h-8 w-8" strokeWidth={1} />
+              {navigationOpen && <p className="ml-2">Edit Profile</p>}
+            </>
           </ListItem>
           <ListItem navigationOpen={navigationOpen}>
-            <LogOut
-              className="h-8 w-8"
-              strokeWidth={1}
-              onClick={handleLogout}
-            />
-            {navigationOpen && <p className="ml-2">Logout</p>}
+            <>
+              <LogOut
+                className="h-8 w-8"
+                strokeWidth={1}
+                onClick={handleLogout}
+              />
+              {navigationOpen && <p className="ml-2">Logout</p>}
+            </>
           </ListItem>
         </ul>
       </div>
