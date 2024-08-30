@@ -34,3 +34,11 @@ export interface ChangePasswordPayload {
   oldPassword?: string;
   newPassword: string;
 }
+
+export interface GetUserPayload {
+  identifier: string;
+}
+
+export interface GetUserResponse {
+  user: User;
+}

@@ -1,11 +1,10 @@
 import NextAuth, { CredentialsSignin } from "next-auth";
-import dbConnect from "./lib/db-connect";
-import UserModel from "./models/user.model";
 import bcrypt from "bcryptjs";
 import { AxiosError } from "axios";
 import {
   GetAccessRefreshPayload,
   GetAccessRefreshResponse,
+  GetUserPayload,
 } from "./types/user";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -14,7 +13,6 @@ import { STATUS_CODES } from "./lib/constants";
 import { callApi } from "./helpers/api-service";
 import { ApiMethod, ApiResponse } from "./types/common";
 import { verifyJWT } from "./helpers/jwt-verify";
-import { isFinite } from "lodash";
 
 async function getRefreshAndAccessToken(
   identifier: string
@@ -84,18 +82,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
         }
 
-        await dbConnect();
         try {
-          const user = await UserModel.findOne({
-            $or: [
-              { email: identifier },
-              {
-                phoneNumber: isFinite(Number(identifier))
-                  ? Number(identifier)
-                  : "",
-              },
-            ],
-          });
+          const payload: GetUserPayload = { identifier };
+          const response = await callApi<ApiResponse>(
+            apiRoutes.getUser,
+            ApiMethod.POST,
+            undefined,
+            payload
+          );
+          const { user } = await response.data;
 
           if (!user) {
             throw new CredentialsSignin("User not found", {

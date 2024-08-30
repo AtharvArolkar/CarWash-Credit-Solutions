@@ -15,7 +15,7 @@ function FormSubmitButton(): ReactElement {
   return (
     <Button
       type="submit"
-      className="w-full h-[60px] mt-5 text-md"
+      className="w-full h-[50px] mt-3 text-sm"
       disabled={pending}
     >
       {pending ? "Loading..." : "Log in"}
@@ -27,7 +27,7 @@ export default function Login(): ReactElement {
   return (
     <div className="w-full h-screen relative">
       <Image src={loginBg} alt="bg" className="-z-5 w-full h-150" />
-      <form className="bottom-5 px-5 absolute w-screen" action={loginAction}>
+      <form className="bottom-0 px-3 absolute w-screen" action={loginAction}>
         <p className="text-2xl font-bold flex justify-center mb-10">
           Welcome! to Car Wash
         </p>
@@ -35,16 +35,16 @@ export default function Login(): ReactElement {
           type="text"
           name="identifier"
           placeholder="Email or phone number"
-          className="h-[60px] text-md bg-slate-50"
+          className="h-[50px] text-sm bg-slate-50"
         />
-        <p className="mb-5 text-xs text-destructive italic pt-1">
+        <p className="mb-3 text-xs text-destructive italic pt-1">
           {state?.errors?.email}
         </p>
         <Input
           type="password"
           name="password"
           placeholder="Password"
-          className="h-[60px] text-md bg-slate-50"
+          className="h-[50px] text-sm bg-slate-50"
         />
         <p className="text-xs text-destructive italic pt-1">
           {state?.errors?.password}
@@ -54,7 +54,7 @@ export default function Login(): ReactElement {
           Forgot password?
         </p> */}
         <FormSubmitButton />
-        <div className="h-16 mt-5">
+        <div className="h-16 mt-3">
           {state?.errors.loginError && (
             <div className="bg-red-200 h-full p-2 flex justify-center items-center rounded-sm pl-4">
               <TriangleAlert className="text-red-600 mr-3 text-sm" />

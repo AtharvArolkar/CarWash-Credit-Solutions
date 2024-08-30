@@ -73,7 +73,6 @@ export async function changePassword(
   }
 
   try {
-    console.log(payload);
     await callApi<ApiResponse>(
       apiRoutes.changePassword,
       ApiMethod.POST,

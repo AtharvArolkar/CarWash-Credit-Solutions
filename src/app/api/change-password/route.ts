@@ -1,9 +1,6 @@
 import bcrypt from "bcryptjs";
-import { ChangePasswordPayload } from "./../../../types/user";
 import { createApiResponse } from "@/lib/api-response";
 import UserModel from "@/models/user.model";
-import { NextApiRequest } from "next";
-import { isFinite } from "lodash";
 import { STATUS_CODES } from "@/lib/constants";
 import { headers } from "next/headers";
 import { verifyJWT } from "@/helpers/jwt-verify";
@@ -23,7 +20,11 @@ export async function POST(req: Request) {
   const user = await UserModel.findOne({
     $or: [
       { email: identifier },
-      { phoneNumber: isFinite(Number(identifier)) ? Number(identifier) : "" },
+      {
+        phoneNumber: Number.isFinite(Number(identifier))
+          ? Number(identifier)
+          : "",
+      },
     ],
   });
 

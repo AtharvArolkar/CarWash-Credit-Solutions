@@ -15,7 +15,7 @@ function FormSubmitButton(): ReactElement {
   return (
     <Button
       type="submit"
-      className="w-full h-[60px] mt-5 text-md"
+      className="w-full h-[50px] mt-5 text-sm"
       disabled={pending}
     >
       {pending ? "Loading..." : "Change Password"}
@@ -33,7 +33,7 @@ export default function ChangePassword(): ReactElement {
     <div className="w-full h-screen relative">
       <Image src={loginBg} alt="bg" className="-z-5 w-full h-150" />
       <form
-        className="bottom-5 px-5 absolute w-screen"
+        className="bottom-0 px-3 absolute w-screen"
         action={changePasswordAction}
       >
         <div className="flex justify-center text-6xl font-bold mb-10">Logo</div>
@@ -47,31 +47,31 @@ export default function ChangePassword(): ReactElement {
               ? "Email or phone number"
               : "Old Password"
           }
-          className="h-[60px] text-md bg-slate-50"
+          className="h-[50px] text-sm bg-slate-50"
         />
-        <p className="mb-5 text-xs text-destructive italic pt-1">
+        <p className="mb-3 text-xs text-destructive italic pt-1">
           {state?.errors?.email || state?.errors.oldPassword}
         </p>
         <Input
           type="password"
           name="newPassword"
           placeholder="New Password"
-          className="h-[60px] text-md bg-slate-50"
+          className="h-[50px] text-sm bg-slate-50"
         />
-        <p className="mb-5 text-xs text-destructive italic pt-1">
+        <p className="mb-3 text-xs text-destructive italic pt-1">
           {state?.errors?.newPassword}
         </p>
         <Input
           type="password"
           name="confirmNewPassword"
           placeholder="Confirm New Password"
-          className="h-[60px] text-md bg-slate-50"
+          className="h-[50px] text-sm bg-slate-50"
         />
         <p className="text-xs text-destructive italic pt-1">
           {state?.errors?.confirmNewPassword}
         </p>
         <FormSubmitButton />
-        <div className="h-16 mt-5">
+        <div className="h-16 mt-3">
           {state?.errors.apiError && (
             <div className="bg-red-200 h-full p-2 flex justify-center items-center rounded-sm pl-4">
               <TriangleAlert className="text-red-600 mr-3 text-sm" />
