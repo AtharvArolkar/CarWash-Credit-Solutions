@@ -25,17 +25,24 @@ function FormSubmitButton(): ReactElement {
 export default function Login(): ReactElement {
   const [state, loginAction] = useFormState(login, null);
   return (
-    <div className="w-full h-screen relative">
-      <Image src={loginBg} alt="bg" className="-z-5 w-full h-150" />
-      <form className="bottom-0 px-3 absolute w-screen" action={loginAction}>
-        <p className="text-2xl font-bold flex justify-center mb-10">
+    <div className="w-full h-screen relative flex justify-center sm:items-center">
+      <Image
+        src={loginBg}
+        alt="bg"
+        className="-z-5 w-screen h-screen object-fill sm:hidden"
+      />
+      <form
+        className="bottom-0 px-3 absolute w-full sm:w-96 sm:relative sm:border-[1px] sm:rounded-sm sm:py-10 sm:flex sm:justify-center sm:items-center sm:px-5 sm:flex-col"
+        action={loginAction}
+      >
+        <p className="text-2xl w-full font-bold flex justify-center mb-10">
           Welcome! to Car Wash
         </p>
         <Input
           type="text"
           name="identifier"
           placeholder="Email or phone number"
-          className="h-[50px] text-sm bg-slate-50"
+          className="h-[50px] w-full text-sm bg-slate-50"
         />
         <p className="mb-3 text-xs text-destructive italic pt-1">
           {state?.errors?.email}
@@ -44,7 +51,7 @@ export default function Login(): ReactElement {
           type="password"
           name="password"
           placeholder="Password"
-          className="h-[50px] text-sm bg-slate-50"
+          className="h-[50px] w-full text-sm bg-slate-50"
         />
         <p className="text-xs text-destructive italic pt-1">
           {state?.errors?.password}
@@ -54,7 +61,11 @@ export default function Login(): ReactElement {
           Forgot password?
         </p> */}
         <FormSubmitButton />
-        <div className="h-16 mt-3 mb-5">
+        <div
+          className={`h-16 mt-3 mb-5 w-full sm:${
+            !state?.errors.loginError ? "hidden" : ""
+          } sm:mb-0`}
+        >
           {state?.errors.loginError && (
             <div className="bg-red-200 h-full p-2 flex items-center rounded-sm pl-4 text-sm">
               <TriangleAlert className="text-red-600 mr-1 w-5 h-8" />

@@ -30,10 +30,14 @@ export default function ChangePassword(): ReactElement {
     return <Loading />;
   }
   return (
-    <div className="w-full h-screen relative">
-      <Image src={loginBg} alt="bg" className="-z-5 w-full h-150" />
+    <div className="w-full h-screen relative flex justify-center sm:items-center">
+      <Image
+        src={loginBg}
+        alt="bg"
+        className="-z-5 w-screen h-screen sm:hidden"
+      />
       <form
-        className="bottom-0 px-3 absolute w-screen"
+        className="bottom-0 px-3 absolute w-full sm:w-96  sm:relative sm:border-[1px] sm:rounded-sm sm:py-10 sm:flex sm:justify-center sm:px-5 sm:items-center sm:flex-col"
         action={changePasswordAction}
       >
         <div className="flex justify-center text-6xl font-bold mb-10">Logo</div>
@@ -71,7 +75,11 @@ export default function ChangePassword(): ReactElement {
           {state?.errors?.confirmNewPassword}
         </p>
         <FormSubmitButton />
-        <div className="h-16 mt-3 mb-5">
+        <div
+          className={`h-16 mt-3 mb-5 w-full sm:${
+            !state?.errors.apiError ? "hidden" : ""
+          } sm:mb-0`}
+        >
           {state?.errors.apiError && (
             <div className="bg-red-200 h-full p-2 flex items-center rounded-sm pl-4 text-sm">
               <TriangleAlert className="text-red-600 mr-1 w-5 h-8" />
