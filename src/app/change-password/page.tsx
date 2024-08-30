@@ -71,10 +71,10 @@ export default function ChangePassword(): ReactElement {
           {state?.errors?.confirmNewPassword}
         </p>
         <FormSubmitButton />
-        <div className="h-16 mt-3">
+        <div className="h-16 mt-3 mb-5">
           {state?.errors.apiError && (
-            <div className="bg-red-200 h-full p-2 flex justify-center items-center rounded-sm pl-4">
-              <TriangleAlert className="text-red-600 mr-3 text-sm" />
+            <div className="bg-red-200 h-full p-2 flex items-center rounded-sm pl-4 text-sm">
+              <TriangleAlert className="text-red-600 mr-1 w-5 h-8" />
               <div className="text-red-600">{state?.errors.apiError}</div>
             </div>
           )}

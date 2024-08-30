@@ -66,7 +66,7 @@ export async function changePassword(
   };
 
   if (authUser) {
-    payload.identifier = authUser.user.phoneNumber;
+    payload.identifier = authUser.user._id.toString();
     payload.oldPassword = oldPassword?.toString();
   } else {
     payload.identifier = identifier?.toString();
