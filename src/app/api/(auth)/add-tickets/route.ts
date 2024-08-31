@@ -7,12 +7,13 @@ import { createApiResponse } from "@/lib/api-response";
 import { STATUS_CODES } from "@/lib/constants";
 import dbConnect from "@/lib/db-connect";
 import TicketModel from "@/models/ticket.model";
+import TransactionModel from "@/models/transaction.model";
 import UserModel from "@/models/user.model";
 import { ApiResponse } from "@/types/common";
 import { JWTPayloadObject, UserRole } from "@/types/user";
 
 export async function POST(req: Request): Promise<Response> {
-  await dbConnect();
+  const mongoSession = await dbConnect();
   const headerPayload = headers();
   const token = headerPayload.get("authorization")?.split(" ")[1] ?? "";
 
@@ -28,6 +29,10 @@ export async function POST(req: Request): Promise<Response> {
   }
   const { payload } = jwtPayload;
   const userId = new Types.ObjectId(payload?.identifier);
+
+  const session = (await mongoSession?.startSession()) ?? null;
+  session?.startTransaction();
+
   try {
     const user = await UserModel.findById({ _id: userId });
     if (!user) {
@@ -36,30 +41,32 @@ export async function POST(req: Request): Promise<Response> {
     if (user.role === UserRole.client) {
       throw new Error("You are not allowed to acces this resource.");
     }
-
     const requestPayload = await req.json();
     const {
       carNumber,
       carModel,
       washType,
-      price,
+      price: totalTicketAmout,
       pricePaid,
+      paymentMethod,
       clientId,
       createdBy,
     } = requestPayload;
+
     if (
       !carNumber ||
       !carModel ||
       !washType ||
-      !price ||
-      !pricePaid ||
-      !createdBy
+      !totalTicketAmout ||
+      pricePaid === undefined ||
+      !createdBy ||
+      (pricePaid !== 0 && !paymentMethod)
     ) {
       throw new Error("Invalid request paramters.");
     }
 
     let isCredit = false;
-    if (pricePaid < price) {
+    if (pricePaid < totalTicketAmout) {
       if (!clientId) throw new Error("Invalid request paramters.");
       const clientUser = UserModel.findById({
         _id: new Types.ObjectId(clientId),
@@ -76,14 +83,25 @@ export async function POST(req: Request): Promise<Response> {
       carNumber,
       carModel,
       washType,
-      price,
+      price: totalTicketAmout,
       pricePaid,
       isCredit,
       clientId,
       createdBy,
     });
 
-    const ticket = await newTicket.save();
+    const ticket = await newTicket.save({ session });
+    if (pricePaid !== 0) {
+      const newTransaction = new TransactionModel({
+        clientId,
+        amount: pricePaid,
+        paymentMethod,
+        ticketTransacted: [{ ticketId: ticket._id, amount: pricePaid }],
+      });
+      await newTransaction.save({ session });
+    }
+    await session?.commitTransaction();
+    await session?.endSession();
 
     return createApiResponse({
       success: true,
@@ -93,6 +111,8 @@ export async function POST(req: Request): Promise<Response> {
     });
   } catch (error) {
     const errorMessage = (error as Error).message;
+    await session?.abortTransaction();
+    await session?.endSession();
     const errorResponse: ApiResponse = {
       success: false,
       statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,

@@ -15,5 +15,4 @@ export interface TransactedTicket {
 export enum PaymentMethod {
   cash = "CASH",
   gpay = "GPAY",
-  credit = "CREDIT",
 }
