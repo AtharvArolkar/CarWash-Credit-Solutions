@@ -53,7 +53,7 @@ export async function POST(req: Request): Promise<Response> {
       !washType ||
       !price ||
       !pricePaid ||
-      createdBy
+      !createdBy
     ) {
       throw new Error("Invalid request paramters.");
     }
@@ -83,12 +83,13 @@ export async function POST(req: Request): Promise<Response> {
       createdBy,
     });
 
-    await newTicket.save();
+    const ticket = await newTicket.save();
 
     return createApiResponse({
       success: true,
       statusCode: STATUS_CODES.CREATED,
       message: "Created a ticket.",
+      body: { id: ticket._id },
     });
   } catch (error) {
     const errorMessage = (error as Error).message;
