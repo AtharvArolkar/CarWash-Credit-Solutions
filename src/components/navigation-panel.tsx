@@ -73,6 +73,7 @@ export default function NavigationPanel({
   useEffect(() => {
     (async function () {
       const session = await getSession();
+      console.log(session);
       setAuthUser(session);
     })();
   }, []);

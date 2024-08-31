@@ -1,3 +1,4 @@
+import { JWTPayload } from "jose";
 import { Document } from "mongoose";
 
 export interface User extends Document {
@@ -41,4 +42,10 @@ export interface GetUserPayload {
 
 export interface GetUserResponse {
   user: User;
+}
+
+export interface JWTPayloadObject extends JWTPayload {
+  identifier: string;
+  exp?: number;
+  iat?: number;
 }

@@ -6,7 +6,7 @@ export interface Ticket extends Document {
   washType: WashType;
   price: number;
   pricePaid: number;
-  isCredit: boolean;
+  isCredit?: boolean;
   clientId?: Types.ObjectId;
   createdBy: Types.ObjectId;
 }

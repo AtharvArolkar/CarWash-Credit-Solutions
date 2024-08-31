@@ -5,7 +5,7 @@ import { createApiResponse } from "@/lib/api-response";
 import { STATUS_CODES } from "@/lib/constants";
 import { generateAccessToken } from "@/lib/generateTokens";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   try {
     const payload = await req.json();
     if (!payload.identifier) {
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const token = headersPayload.get("authorization")?.split(" ")[1] ?? "";
     await verifyJWT(token, process.env.REFRESH_TOKEN_SECRET ?? "");
 
-    const newAccessToken = generateAccessToken("identifier");
+    const newAccessToken = generateAccessToken(payload.identifier);
     return createApiResponse({
       success: true,
       statusCode: STATUS_CODES.OK,
