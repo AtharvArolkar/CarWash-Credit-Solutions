@@ -1,9 +1,10 @@
+import mongoose, { Schema } from "mongoose";
+
 import {
   PaymentMethod,
   TransactedTicket,
   Transaction,
 } from "@/types/transaction";
-import mongoose, { Schema } from "mongoose";
 
 const TransactedTicketSchema: Schema<TransactedTicket> = new Schema({
   ticketId: {

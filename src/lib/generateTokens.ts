@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { Types } from "mongoose";
 
 export function generateAccessToken(identifier: string): string {
   return jwt.sign({ identifier }, process.env.ACCESS_TOKEN_SECRET!, {

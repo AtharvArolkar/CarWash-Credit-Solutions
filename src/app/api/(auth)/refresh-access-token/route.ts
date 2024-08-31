@@ -1,10 +1,9 @@
-import { NextApiRequest } from "next";
-
-import { generateAccessToken } from "@/lib/generateTokens";
-import { createApiResponse } from "@/lib/api-response";
 import { headers } from "next/headers";
-import { STATUS_CODES } from "@/lib/constants";
+
 import { verifyJWT } from "@/helpers/jwt-verify";
+import { createApiResponse } from "@/lib/api-response";
+import { STATUS_CODES } from "@/lib/constants";
+import { generateAccessToken } from "@/lib/generateTokens";
 
 export async function POST(req: Request) {
   try {

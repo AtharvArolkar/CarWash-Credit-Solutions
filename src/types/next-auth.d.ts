@@ -1,7 +1,8 @@
 import { JWT } from "next-auth/jwt";
-import { UserRole } from "./user";
 
 import { User as MongoUser } from "@/types/user";
+
+import { UserRole } from "./user";
 
 declare module "next-auth" {
   interface Session {

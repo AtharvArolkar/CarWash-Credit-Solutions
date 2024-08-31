@@ -1,9 +1,9 @@
 "use client";
-import NavigationPanel from "@/components/navigation-panel";
-import { ReactElement, ReactNode, useState } from "react";
-import { useRef } from "react";
-
+import { ReactElement, ReactNode, useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
+
+import NavigationPanel from "@/components/navigation-panel";
+
 interface MainLayoutProps {
   children: ReactNode;
 }

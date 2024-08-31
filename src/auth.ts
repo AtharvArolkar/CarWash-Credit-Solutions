@@ -1,18 +1,19 @@
-import NextAuth, { CredentialsSignin } from "next-auth";
-import bcrypt from "bcryptjs";
 import { AxiosError } from "axios";
+import bcrypt from "bcryptjs";
+import NextAuth, { CredentialsSignin } from "next-auth";
+import { JWT } from "next-auth/jwt";
+import CredentialsProvider from "next-auth/providers/credentials";
+
+import { callApi } from "./helpers/api-service";
+import { verifyJWT } from "./helpers/jwt-verify";
+import { STATUS_CODES } from "./lib/constants";
+import { apiRoutes, paths } from "./lib/routes";
+import { ApiMethod, ApiResponse } from "./types/common";
 import {
   GetAccessRefreshPayload,
   GetAccessRefreshResponse,
   GetUserPayload,
 } from "./types/user";
-import { JWT } from "next-auth/jwt";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { apiRoutes, paths } from "./lib/routes";
-import { STATUS_CODES } from "./lib/constants";
-import { callApi } from "./helpers/api-service";
-import { ApiMethod, ApiResponse } from "./types/common";
-import { verifyJWT } from "./helpers/jwt-verify";
 
 async function getRefreshAndAccessToken(
   identifier: string

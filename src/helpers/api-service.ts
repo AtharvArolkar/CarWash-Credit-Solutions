@@ -1,10 +1,12 @@
+import axios, { AxiosResponse } from "axios";
+
+import { ApiMethod } from "@/types/common";
+
 import {
   ChangePasswordPayload,
   GetAccessRefreshPayload,
   GetUserPayload,
-} from "./../types/user";
-import axios, { AxiosResponse } from "axios";
-import { ApiMethod } from "@/types/common";
+} from "../types/user";
 
 export const callApi = async <Type>(
   url: string,

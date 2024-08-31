@@ -1,5 +1,6 @@
-import { Ticket, WashType } from "@/types/ticket";
 import mongoose, { Schema } from "mongoose";
+
+import { Ticket, WashType } from "@/types/ticket";
 
 const TicketSchema: Schema<Ticket> = new Schema(
   {

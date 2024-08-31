@@ -1,15 +1,16 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import { TriangleAlert } from "lucide-react";
 import loginBg from "/public/login-bg.jpg";
-import { useFormState, useFormStatus } from "react-dom";
-import { ReactElement } from "react";
+import { TriangleAlert } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Loading from "../loading";
+import Image from "next/image";
+import { ReactElement } from "react";
+import { useFormState } from "react-dom";
+
 import { changePassword } from "@/actions/changePassword";
 import FormSubmitButton from "@/components/form-button";
+import { Input } from "@/components/ui/input";
+
+import Loading from "../loading";
 
 export default function ModifyPassword(): ReactElement {
   const [state, changePasswordAction] = useFormState(changePassword, null);

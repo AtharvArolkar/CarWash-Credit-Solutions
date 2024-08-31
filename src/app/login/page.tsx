@@ -1,14 +1,16 @@
 "use client";
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import { TriangleAlert } from "lucide-react";
 import loginBg from "/public/login-bg.jpg";
-import { useFormState } from "react-dom";
-import { login } from "../../actions/login";
+import { TriangleAlert } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { ReactElement } from "react";
-import { paths } from "@/lib/routes";
+import { useFormState } from "react-dom";
+
 import FormSubmitButton from "@/components/form-button";
+import { Input } from "@/components/ui/input";
+import { paths } from "@/lib/routes";
+
+import { login } from "../../actions/login";
 
 export default function Login(): ReactElement {
   const [state, loginAction] = useFormState(login, null);
