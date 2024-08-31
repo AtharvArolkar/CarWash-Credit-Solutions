@@ -1,20 +1,24 @@
 "use client";
+import {
+  BadgeCent,
+  Contact,
+  LayoutDashboard,
+  LogOut,
+  Maximize2,
+  Menu,
+  Minimize2,
+  SquareKanban,
+  User,
+  UserRoundPen,
+} from "lucide-react";
+import { Session } from "next-auth";
+import { getSession } from "next-auth/react";
+import Link from "next/link";
+import { MouseEventHandler, ReactElement, useEffect, useState } from "react";
+
 import { logOut } from "@/helpers/auth ";
 import { paths } from "@/lib/routes";
 import { UserRole } from "@/types/user";
-import { Menu } from "lucide-react";
-import { LayoutDashboard } from "lucide-react";
-import { User } from "lucide-react";
-import { SquareKanban } from "lucide-react";
-import { LogOut } from "lucide-react";
-import { Maximize2 } from "lucide-react";
-import { Minimize2 } from "lucide-react";
-import { BadgeCent } from "lucide-react";
-import { Contact } from "lucide-react";
-import { UserRoundPen } from "lucide-react";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { MouseEventHandler, ReactElement, useState } from "react";
 
 interface NavigationPanelProps {
   navigationOpen: boolean;
@@ -24,17 +28,19 @@ interface NavigationPanelProps {
 interface ListItemProps {
   navigationOpen: boolean;
   path?: string;
+  className?: string;
   children: ReactElement;
 }
 
 function ListItem({
   navigationOpen,
   path,
+  className,
   children,
 }: ListItemProps): ReactElement {
   return (
     <li
-      className={` flex items-center text-white hover:bg-blue-500 hover:p-2 hover:rounded-sm hover:mr-2 transition-all ${
+      className={`${className} flex items-center text-white hover:bg-blue-500 hover:p-2 hover:rounded-sm hover:mr-2 transition-all ${
         navigationOpen ? "w-full" : ""
       }`}
     >
@@ -58,27 +64,33 @@ export default function NavigationPanel({
   navigationOpen,
   handleMenuClick,
 }: NavigationPanelProps): ReactElement {
-  const authUser = useSession();
+  const [authUser, setAuthUser] = useState<Session | null>(null);
   const [showProfileDetails, setShowProfileDetails] = useState<boolean>(false);
   const handleLogout = async (): Promise<void> => {
     await logOut();
   };
+
+  useEffect(() => {
+    (async function () {
+      const session = await getSession();
+      setAuthUser(session);
+    })();
+  }, []);
 
   const handleProfileNameClick = (): void => {
     setShowProfileDetails((prev) => !prev);
   };
 
   const isUserAdmin = (): boolean => {
-    return (
-      authUser.data?.user.role && authUser.data.user.role === UserRole.admin
-    );
+    return authUser?.user?.role && authUser?.user.role === UserRole.admin;
   };
 
   const isUserEmployee = (): boolean => {
     return (
-      authUser.data?.user.role &&
-      (authUser.data.user.role === UserRole.admin ||
-        authUser.data.user.role === UserRole.employee)
+      authUser?.user?.role &&
+      authUser?.user.role &&
+      (authUser?.user.role === UserRole.admin ||
+        authUser?.user.role === UserRole.employee)
     );
   };
 
@@ -113,7 +125,7 @@ export default function NavigationPanel({
             <div className="mr-1.5">
               {navigationOpen && (
                 <div className="flex flex-col ml-2 h-full">
-                  {authUser.data?.user ? (
+                  {authUser?.user ? (
                     <div
                       className={`flex text-xs ${
                         showProfileDetails ? "flex-col" : "h-full items-center"
@@ -124,15 +136,12 @@ export default function NavigationPanel({
                           showProfileDetails ? "text-xl font-bold" : "text-xl"
                         }`}
                       >
-                        Welcome,{" "}
-                        {authUser.data?.user?.name.split(" ")[0] ?? "--:--"}
+                        Welcome, {authUser?.user?.name.split(" ")[0] ?? "--:--"}
                       </div>
                       {showProfileDetails && (
                         <div className="ease-linear transition-all ">
-                          <div>
-                            {authUser.data?.user?.phoneNumber ?? "--:--"}
-                          </div>
-                          <div>{authUser.data?.user?.email ?? "--:--"}</div>
+                          <div>{authUser?.user?.phoneNumber ?? "--:--"}</div>
+                          <div>{authUser?.user?.email ?? "--:--"}</div>
                         </div>
                       )}
                     </div>
@@ -198,12 +207,12 @@ export default function NavigationPanel({
               {navigationOpen && <p className="ml-2">Edit Profile</p>}
             </>
           </ListItem>
-          <ListItem navigationOpen={navigationOpen}>
+          <ListItem navigationOpen={navigationOpen} className="cursor-pointer">
             <>
               <LogOut
                 className="h-8 w-8"
                 strokeWidth={1}
-                onClick={async () => await handleLogout()}
+                onClick={handleLogout}
               />
               {navigationOpen && <p className="ml-2">Logout</p>}
             </>

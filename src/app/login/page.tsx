@@ -44,7 +44,7 @@ export default function Login(): ReactElement {
         {/* <p className="py-2 flex justify-end text-sm">
           Forgot password?
         </p> */}
-        <FormSubmitButton />
+        <FormSubmitButton name="Login" />
         <div
           className={`h-16 mt-3 mb-5 w-full sm:${
             !state?.errors.loginError ? "hidden" : ""

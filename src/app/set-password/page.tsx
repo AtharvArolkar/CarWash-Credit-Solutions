@@ -63,7 +63,7 @@ export default function ModifyPassword(): ReactElement {
         <p className="text-xs text-destructive italic pt-1">
           {state?.errors?.confirmNewPassword}
         </p>
-        <FormSubmitButton />
+        <FormSubmitButton name="Change Password" />
         <div
           className={`h-16 mt-3 mb-5 w-full sm:${
             !state?.errors.apiError ? "hidden" : ""
