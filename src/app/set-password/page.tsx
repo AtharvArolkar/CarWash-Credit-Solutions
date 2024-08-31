@@ -1,83 +1,41 @@
-"use client";
 import loginBg from "/public/login-bg.jpg";
-import { TriangleAlert } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { ReactElement } from "react";
-import { useFormState } from "react-dom";
 
 import { changePassword } from "@/actions/changePassword";
-import FormSubmitButton from "@/components/form-button";
-import { Input } from "@/components/ui/input";
+import { auth } from "@/auth";
+import FormComponent from "@/components/form-component";
 
-import Loading from "../loading";
-
-export default function ModifyPassword(): ReactElement {
-  const [state, changePasswordAction] = useFormState(changePassword, null);
-  const authUser = useSession().status;
-
-  if (authUser === "loading") {
-    return <Loading />;
-  }
+export default async function ModifyPassword(): Promise<ReactElement> {
+  const authUser = await auth();
   return (
     <div className="w-full h-screen relative flex justify-center sm:items-center">
-      {authUser === "unauthenticated" && (
+      {!authUser && (
         <Image src={loginBg} alt="bg" className="-z-5 h-[300px] sm:hidden" />
       )}
-      <form
-        className={`bottom-0 px-3 absolute w-full sm:w-96  sm:relative sm:border-[1px] sm:rounded-sm sm:py-10 sm:flex sm:justify-center ${
-          authUser === "authenticated"
-            ? "flex justify-center flex-col relative items-center"
-            : ""
-        } sm:px-5 sm:items-center sm:flex-col`}
-        action={changePasswordAction}
-      >
-        <div className="flex justify-center text-6xl font-bold mb-10">Logo</div>
-        <Input
-          type={authUser === "unauthenticated" ? "text" : "password"}
-          name={authUser === "unauthenticated" ? "identifier" : "oldPassword"}
-          placeholder={
-            authUser === "unauthenticated"
-              ? "Email or phone number"
-              : "Old Password"
-          }
-          className="h-[50px] text-sm bg-slate-50"
-        />
-        <p className="mb-3 text-xs text-destructive italic pt-1">
-          {state?.errors?.email || state?.errors.oldPassword}
-        </p>
-        <Input
-          type="password"
-          name="newPassword"
-          placeholder="New Password"
-          className="h-[50px] text-sm bg-slate-50"
-        />
-        <p className="mb-3 text-xs text-destructive italic pt-1">
-          {state?.errors?.newPassword}
-        </p>
-        <Input
-          type="password"
-          name="confirmNewPassword"
-          placeholder="Confirm New Password"
-          className="h-[50px] text-sm bg-slate-50"
-        />
-        <p className="text-xs text-destructive italic pt-1">
-          {state?.errors?.confirmNewPassword}
-        </p>
-        <FormSubmitButton name="Change Password" />
-        <div
-          className={`h-16 mt-3 mb-5 w-full sm:${
-            !state?.errors.apiError ? "hidden" : ""
-          } sm:mb-0`}
-        >
-          {state?.errors.apiError && (
-            <div className="bg-red-200 h-full p-2 flex items-center rounded-sm pl-4 text-sm">
-              <TriangleAlert className="text-red-600 mr-1 w-5 h-8" />
-              <div className="text-red-600">{state?.errors.apiError}</div>
-            </div>
-          )}
-        </div>
-      </form>
+      <FormComponent
+        formAction={changePassword}
+        formChildrens={[
+          {
+            name: `${!authUser ? "identifier" : "oldPassword"}`,
+            type: `${!authUser ? "text" : "password"}`,
+            placeholder: `${
+              !authUser ? "Email or phone number" : "Old Password"
+            }`,
+          },
+          {
+            name: "newPassword",
+            type: "password",
+            placeholder: "New Password",
+          },
+          {
+            name: "confirmNewPassword",
+            type: "password",
+            placeholder: "Confirm New Password",
+          },
+        ]}
+        submitButtonName="Change Password"
+      />
     </div>
   );
 }
