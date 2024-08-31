@@ -1,9 +1,10 @@
 "use server";
 
-import { signIn } from "@/auth";
-import { LoginFormError } from "@/types/common";
 import { CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
+
+import { signIn } from "@/auth";
+import { LoginFormError } from "@/types/common";
 
 export async function login(
   _: any,

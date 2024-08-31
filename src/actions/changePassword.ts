@@ -1,5 +1,8 @@
 "use server";
 
+import { AxiosError } from "axios";
+import { redirect } from "next/navigation";
+
 import { auth } from "@/auth";
 import { callApi } from "@/helpers/api-service";
 import { apiRoutes, paths } from "@/lib/routes";
@@ -9,8 +12,6 @@ import {
   ChangePasswordFormError,
 } from "@/types/common";
 import { ChangePasswordPayload } from "@/types/user";
-import { AxiosError } from "axios";
-import { redirect } from "next/navigation";
 
 export async function changePassword(
   _: any,

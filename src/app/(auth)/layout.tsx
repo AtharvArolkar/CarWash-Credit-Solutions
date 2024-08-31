@@ -1,6 +1,7 @@
-import { Inter } from "next/font/google";
-import MainLayout from "@/layouts/main-layout";
 import { Metadata } from "next";
+import { Inter } from "next/font/google";
+
+import MainLayout from "@/layouts/main-layout";
 
 export const metadata: Metadata = {
   title: "Car Wash Credit System",

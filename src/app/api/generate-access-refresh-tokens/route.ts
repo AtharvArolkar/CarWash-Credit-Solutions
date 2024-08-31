@@ -1,9 +1,9 @@
+import { createApiResponse } from "@/lib/api-response";
+import { STATUS_CODES } from "@/lib/constants";
 import {
   generateAccessToken,
   generateRefreshToken,
 } from "@/lib/generateTokens";
-import { createApiResponse } from "@/lib/api-response";
-import { STATUS_CODES } from "@/lib/constants";
 
 export async function POST(req: Request) {
   try {

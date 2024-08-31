@@ -1,5 +1,6 @@
-import { User, UserRole } from "@/types/user";
 import mongoose, { Schema } from "mongoose";
+
+import { User, UserRole } from "@/types/user";
 
 const UserSchema: Schema<User> = new Schema(
   {
