@@ -1,6 +1,7 @@
 "use client";
 import { logOut } from "@/helpers/auth ";
 import { paths } from "@/lib/routes";
+import { UserRole } from "@/types/user";
 import { Menu } from "lucide-react";
 import { LayoutDashboard } from "lucide-react";
 import { User } from "lucide-react";
@@ -8,6 +9,7 @@ import { SquareKanban } from "lucide-react";
 import { LogOut } from "lucide-react";
 import { Minimize2 } from "lucide-react";
 import { BadgeCent } from "lucide-react";
+import { Contact } from "lucide-react";
 import { UserRoundPen } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -62,7 +64,7 @@ export default function NavigationPanel({
   };
   return (
     <nav
-      className={`h-screen bg-gradient-to-r from-[#3458D6] to-blue-400 rounded-lg flex flex-col justify-between text-sm
+      className={`h-full bg-gradient-to-r from-[#3458D6] to-blue-400 rounded-r-lg flex flex-col justify-between text-sm
                 ease-out ${
                   navigationOpen ? "absolute w-2/3 sm:w-1/5 z-50 sm:pl-4" : ""
                 }`}
@@ -75,7 +77,7 @@ export default function NavigationPanel({
             }`}
           >
             <Menu
-              className="h-8 w-8 text-white"
+              className="h-8 w-8 text-white hover:p-1 hover:rounded-sm hover:mr-2 transition-all"
               strokeWidth={1}
               onClick={handleMenuClick}
             />
@@ -87,25 +89,31 @@ export default function NavigationPanel({
             <div className="mr-1.5">
               {navigationOpen && (
                 <div className="flex flex-col ml-2 h-full">
-                  <div
-                    className={`flex text-xs ${
-                      showProfileDetails ? "flex-col" : "h-full items-center"
-                    }`}
-                  >
+                  {authUser.data?.user ? (
                     <div
-                      className={`${
-                        showProfileDetails ? "text-2xl font-bold" : "text-2xl"
+                      className={`flex text-xs ${
+                        showProfileDetails ? "flex-col" : "h-full items-center"
                       }`}
                     >
-                      {authUser.data?.user.name}
-                    </div>
-                    {showProfileDetails && (
-                      <div className="ease-linear transition-all ">
-                        <div>{authUser.data?.user?.phoneNumber ?? "--:--"}</div>
-                        <div>{authUser.data?.user?.email ?? "--:--"}</div>
+                      <div
+                        className={`${
+                          showProfileDetails ? "text-2xl font-bold" : "text-2xl"
+                        }`}
+                      >
+                        {authUser.data?.user?.name ?? "--:--"}
                       </div>
-                    )}
-                  </div>
+                      {showProfileDetails && (
+                        <div className="ease-linear transition-all ">
+                          <div>
+                            {authUser.data?.user?.phoneNumber ?? "--:--"}
+                          </div>
+                          <div>{authUser.data?.user?.email ?? "--:--"}</div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <>Loading...</>
+                  )}
                 </div>
               )}
             </div>
@@ -138,6 +146,14 @@ export default function NavigationPanel({
               {navigationOpen && <p className="ml-2">Credits</p>}
             </>
           </ListItem>
+          {authUser.data?.user.role === UserRole.admin && (
+            <ListItem navigationOpen={navigationOpen}>
+              <>
+                <Contact className="h-8 w-8" strokeWidth={1} />
+                {navigationOpen && <p className="ml-2">Manage Users</p>}
+              </>
+            </ListItem>
+          )}
         </ul>
       </div>
       <div>
@@ -153,7 +169,7 @@ export default function NavigationPanel({
               <LogOut
                 className="h-8 w-8"
                 strokeWidth={1}
-                onClick={handleLogout}
+                onClick={async () => await handleLogout()}
               />
               {navigationOpen && <p className="ml-2">Logout</p>}
             </>

@@ -1,7 +1,6 @@
 "use client";
 import NavigationPanel from "@/components/navigation-panel";
-import { useSession } from "next-auth/react";
-import { ReactElement, ReactNode, useEffect, useState } from "react";
+import { ReactElement, ReactNode, useState } from "react";
 import { useRef } from "react";
 
 import { useOnClickOutside } from "usehooks-ts";
@@ -22,13 +21,11 @@ export default function MainLayout({
   useOnClickOutside(navRef, handleClickOutsideNav);
 
   const handleMenuClick = (): void => {
-    console.log("click");
     setNavigationOpen((prev) => !prev);
   };
-  const session = useSession();
 
   return (
-    <div className="grid grid-cols-7 sm:grid-cols-12 m-1 gap-2">
+    <div className="grid grid-cols-7 sm:grid-cols-12 gap-2 h-screen p-1">
       <aside className="col-span-1" ref={navRef}>
         <NavigationPanel
           navigationOpen={navigationOpen}
