@@ -16,9 +16,9 @@ import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { MouseEventHandler, ReactElement, useEffect, useState } from "react";
 
-import { logOut } from "@/helpers/auth ";
+import { isUserAdmin, isUserEmployee } from "@/helpers/auth";
+import { logOut } from "@/helpers/sign-out";
 import { paths } from "@/lib/routes";
-import { UserRole } from "@/types/user";
 
 interface NavigationPanelProps {
   navigationOpen: boolean;
@@ -79,19 +79,6 @@ export default function NavigationPanel({
 
   const handleProfileNameClick = (): void => {
     setShowProfileDetails((prev) => !prev);
-  };
-
-  const isUserAdmin = (): boolean => {
-    return authUser?.user?.role && authUser?.user.role === UserRole.admin;
-  };
-
-  const isUserEmployee = (): boolean => {
-    return (
-      authUser?.user?.role &&
-      authUser?.user.role &&
-      (authUser?.user.role === UserRole.admin ||
-        authUser?.user.role === UserRole.employee)
-    );
   };
 
   return (
@@ -173,7 +160,7 @@ export default function NavigationPanel({
               {navigationOpen && <p className="ml-2">Dashboard</p>}
             </>
           </ListItem>
-          {isUserEmployee() && (
+          {isUserEmployee(authUser) && (
             <ListItem navigationOpen={navigationOpen} path={paths.records}>
               <>
                 <SquareKanban className="h-8 w-8" strokeWidth={1} />
@@ -181,7 +168,7 @@ export default function NavigationPanel({
               </>
             </ListItem>
           )}
-          {isUserEmployee() && (
+          {isUserEmployee(authUser) && (
             <ListItem navigationOpen={navigationOpen} path={paths.credits}>
               <>
                 <BadgeCent className="h-8 w-8" strokeWidth={1} />
@@ -189,7 +176,7 @@ export default function NavigationPanel({
               </>
             </ListItem>
           )}
-          {isUserAdmin() && (
+          {isUserAdmin(authUser) && (
             <ListItem navigationOpen={navigationOpen} path={paths.manageUsers}>
               <>
                 <Contact className="h-8 w-8" strokeWidth={1} />

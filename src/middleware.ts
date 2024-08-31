@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
 
+import { isUserEmployee } from "./helpers/auth";
 import { paths } from "./lib/routes";
 
 export default auth((req) => {
@@ -14,6 +15,22 @@ export default auth((req) => {
 
   if (req.auth && req.nextUrl.pathname === paths.login) {
     return NextResponse.redirect(new URL(paths.home, req.url));
+  }
+
+  if (isUserEmployee(req.auth)) {
+    if (req.nextUrl.pathname.includes(paths.manageUsers)) {
+      return NextResponse.redirect(new URL(paths.home, req.url));
+    }
+  }
+
+  if (!isUserEmployee(req.auth)) {
+    if (
+      req.nextUrl.pathname.includes(paths.records) ||
+      req.nextUrl.pathname.includes(paths.credits) ||
+      req.nextUrl.pathname.includes(paths.manageUsers)
+    ) {
+      return NextResponse.redirect(new URL(paths.home, req.url));
+    }
   }
 
   return NextResponse.next();
