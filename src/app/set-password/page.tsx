@@ -9,19 +9,8 @@ import { ReactElement } from "react";
 import { useSession } from "next-auth/react";
 import Loading from "../loading";
 import { changePassword } from "@/actions/changePassword";
+import FormSubmitButton from "@/components/form-button";
 
-function FormSubmitButton(): ReactElement {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      type="submit"
-      className="w-full h-[50px] mt-5 text-sm"
-      disabled={pending}
-    >
-      {pending ? "Loading..." : "Change Password"}
-    </Button>
-  );
-}
 export default function ModifyPassword(): ReactElement {
   const [state, changePasswordAction] = useFormState(changePassword, null);
   const authUser = useSession().status;
@@ -32,11 +21,7 @@ export default function ModifyPassword(): ReactElement {
   return (
     <div className="w-full h-screen relative flex justify-center sm:items-center">
       {authUser === "unauthenticated" && (
-        <Image
-          src={loginBg}
-          alt="bg"
-          className="-z-5 w-screen h-screen sm:hidden"
-        />
+        <Image src={loginBg} alt="bg" className="-z-5 h-[300px] sm:hidden" />
       )}
       <form
         className={`bottom-0 px-3 absolute w-full sm:w-96  sm:relative sm:border-[1px] sm:rounded-sm sm:py-10 sm:flex sm:justify-center ${

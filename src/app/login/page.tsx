@@ -1,36 +1,20 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { TriangleAlert } from "lucide-react";
 import loginBg from "/public/login-bg.jpg";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
 import { login } from "../../actions/login";
 import Link from "next/link";
 import { ReactElement } from "react";
 import { paths } from "@/lib/routes";
+import FormSubmitButton from "@/components/form-button";
 
-function FormSubmitButton(): ReactElement {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      type="submit"
-      className="w-full h-[50px] mt-3 text-sm"
-      disabled={pending}
-    >
-      {pending ? "Loading..." : "Log in"}
-    </Button>
-  );
-}
 export default function Login(): ReactElement {
   const [state, loginAction] = useFormState(login, null);
   return (
     <div className="w-full h-screen relative flex justify-center sm:items-center">
-      <Image
-        src={loginBg}
-        alt="bg"
-        className="-z-5 w-screen h-screen object-fill sm:hidden"
-      />
+      <Image src={loginBg} alt="bg" className="-z-5 h-[300px] sm:hidden" />
       <form
         className="bottom-0 px-3 absolute w-full sm:w-96 sm:relative sm:border-[1px] sm:rounded-sm sm:py-10 sm:flex sm:justify-center sm:items-center sm:px-5 sm:flex-col"
         action={loginAction}
