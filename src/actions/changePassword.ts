@@ -6,26 +6,22 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { callApi } from "@/helpers/api-service";
 import { apiRoutes, paths } from "@/lib/routes";
-import {
-  ApiMethod,
-  ApiResponse,
-  ChangePasswordFormError,
-} from "@/types/common";
+import { ApiMethod, ApiResponse, FormError } from "@/types/common";
 import { ChangePasswordPayload } from "@/types/user";
 
 export async function changePassword(
   _: any,
   formData: FormData
-): Promise<ChangePasswordFormError> {
+): Promise<FormError> {
   const authUser = await auth();
 
   const identifier = formData.get("identifier");
   const oldPassword = formData.get("oldPassword");
   const newPassword = formData.get("newPassword");
   const confirmNewPassword = formData.get("confirmNewPassword");
-  const errorObject: ChangePasswordFormError = {
+  const errorObject: FormError = {
     errors: {
-      email: "",
+      identifier: "",
       oldPassword: "",
       newPassword: "",
       confirmNewPassword: "",
@@ -38,7 +34,7 @@ export async function changePassword(
     }
   } else {
     if (!identifier) {
-      errorObject.errors.email = "Please enter your email or phone number";
+      errorObject.errors.identifier = "Please enter your email or phone number";
     }
   }
   if (!newPassword) {
@@ -48,10 +44,10 @@ export async function changePassword(
     errorObject.errors.confirmNewPassword = "Please re-enter your new password";
   }
   if (
-    errorObject.errors.email.trim() ||
-    errorObject.errors.oldPassword.trim() ||
-    errorObject.errors.newPassword.trim() ||
-    errorObject.errors.confirmNewPassword.trim()
+    errorObject?.errors?.email?.trim() ||
+    errorObject?.errors?.oldPassword?.trim() ||
+    errorObject?.errors?.newPassword?.trim() ||
+    errorObject?.errors?.confirmNewPassword?.trim()
   ) {
     return errorObject;
   }

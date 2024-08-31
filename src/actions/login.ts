@@ -4,27 +4,27 @@ import { CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
 
 import { signIn } from "@/auth";
-import { LoginFormError } from "@/types/common";
+import { FormError } from "@/types/common";
 
-export async function login(
-  _: any,
-  formData: FormData
-): Promise<LoginFormError> {
+export async function login(_: any, formData: FormData): Promise<FormError> {
   const identifier = formData.get("identifier");
   const password = formData.get("password");
-  const errorObject: LoginFormError = {
-    errors: { email: "", password: "", loginError: "" },
+  const errorObject: FormError = {
+    errors: { identifier: "", password: "", apiError: "" },
   };
 
   if (!identifier) {
-    errorObject.errors.email = "Please enter your email or phone number";
+    errorObject.errors.identifier = "Please enter your email or phone number";
   }
 
   if (!password) {
     errorObject.errors.password = "Please enter your password";
   }
 
-  if (errorObject.errors.email.trim() || errorObject.errors.password.trim()) {
+  if (
+    errorObject?.errors?.identifier?.trim() ||
+    errorObject.errors.password?.trim()
+  ) {
     return errorObject;
   }
 
@@ -39,7 +39,7 @@ export async function login(
       errors: {
         email: "",
         password: "",
-        loginError: (error as CredentialsSignin).message.split(".")[0],
+        apiError: (error as CredentialsSignin).message.split(".")[0],
       },
     };
   }

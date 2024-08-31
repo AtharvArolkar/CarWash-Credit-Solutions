@@ -1,10 +1,7 @@
-import { ReactElement } from "react";
-
-export interface LoginFormError {
+export interface FormError {
   errors: {
-    email: string;
-    password: string;
-    loginError: string | ReactElement;
+    [key: string]: string | undefined;
+    apiError: string | undefined;
   };
 }
 
@@ -12,16 +9,6 @@ export enum ApiMethod {
   "GET",
   "POST",
   "DELETE",
-}
-
-export interface ChangePasswordFormError {
-  errors: {
-    email: string;
-    oldPassword: string;
-    newPassword: string;
-    confirmNewPassword: string;
-    apiError: string;
-  };
 }
 
 export interface ApiResponse {
