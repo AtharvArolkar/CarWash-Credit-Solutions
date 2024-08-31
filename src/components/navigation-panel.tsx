@@ -124,7 +124,8 @@ export default function NavigationPanel({
                           showProfileDetails ? "text-xl font-bold" : "text-xl"
                         }`}
                       >
-                        {authUser.data?.user?.name ?? "--:--"}
+                        Welcome,{" "}
+                        {authUser.data?.user?.name.split(" ")[0] ?? "--:--"}
                       </div>
                       {showProfileDetails && (
                         <div className="ease-linear transition-all ">
