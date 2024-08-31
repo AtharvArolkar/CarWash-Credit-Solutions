@@ -7,6 +7,7 @@ import { LayoutDashboard } from "lucide-react";
 import { User } from "lucide-react";
 import { SquareKanban } from "lucide-react";
 import { LogOut } from "lucide-react";
+import { Maximize2 } from "lucide-react";
 import { Minimize2 } from "lucide-react";
 import { BadgeCent } from "lucide-react";
 import { Contact } from "lucide-react";
@@ -62,9 +63,28 @@ export default function NavigationPanel({
   const handleLogout = async (): Promise<void> => {
     await logOut();
   };
+
+  const handleProfileNameClick = (): void => {
+    setShowProfileDetails((prev) => !prev);
+  };
+
+  const isUserAdmin = (): boolean => {
+    return (
+      authUser.data?.user.role && authUser.data.user.role === UserRole.admin
+    );
+  };
+
+  const isUserEmployee = (): boolean => {
+    return (
+      authUser.data?.user.role &&
+      (authUser.data.user.role === UserRole.admin ||
+        authUser.data.user.role === UserRole.employee)
+    );
+  };
+
   return (
     <nav
-      className={`h-full bg-gradient-to-r from-[#3458D6] to-blue-400 rounded-r-lg flex flex-col justify-between text-sm
+      className={`h-full bg-gradient-to-r from-[#3458D6] to-blue-400 rounded-r-lg flex flex-col justify-between text-sm drop-shadow-2xl
                 ease-out ${
                   navigationOpen ? "absolute w-2/3 sm:w-1/5 z-50 sm:pl-4" : ""
                 }`}
@@ -82,7 +102,11 @@ export default function NavigationPanel({
               onClick={handleMenuClick}
             />
           </li>
-          <li className={`flex text-white ${navigationOpen ? "w-full" : ""}`}>
+          <li
+            className={`flex ${
+              showProfileDetails ? "" : "items-center"
+            } text-white ${navigationOpen ? "w-full" : ""}`}
+          >
             <div>
               <User className="h-8 w-8" fill="white" strokeWidth={1} />
             </div>
@@ -97,7 +121,7 @@ export default function NavigationPanel({
                     >
                       <div
                         className={`${
-                          showProfileDetails ? "text-2xl font-bold" : "text-2xl"
+                          showProfileDetails ? "text-xl font-bold" : "text-xl"
                         }`}
                       >
                         {authUser.data?.user?.name ?? "--:--"}
@@ -118,13 +142,18 @@ export default function NavigationPanel({
               )}
             </div>
             {navigationOpen && (
-              <div className="flex items-center">
-                <Minimize2
-                  className="h-3 w-3"
-                  onClick={() => {
-                    setShowProfileDetails((prev) => !prev);
-                  }}
-                />
+              <div className={`${showProfileDetails ? "mt-2" : ""}`}>
+                {!showProfileDetails ? (
+                  <Maximize2
+                    className="h-4 w-4"
+                    onClick={handleProfileNameClick}
+                  />
+                ) : (
+                  <Minimize2
+                    className="h-4 w-4"
+                    onClick={handleProfileNameClick}
+                  />
+                )}
               </div>
             )}
           </li>
@@ -134,20 +163,24 @@ export default function NavigationPanel({
               {navigationOpen && <p className="ml-2">Dashboard</p>}
             </>
           </ListItem>
-          <ListItem navigationOpen={navigationOpen}>
-            <>
-              <SquareKanban className="h-8 w-8" strokeWidth={1} />
-              {navigationOpen && <p className="ml-2">Records</p>}
-            </>
-          </ListItem>
-          <ListItem navigationOpen={navigationOpen}>
-            <>
-              <BadgeCent className="h-8 w-8" strokeWidth={1} />
-              {navigationOpen && <p className="ml-2">Credits</p>}
-            </>
-          </ListItem>
-          {authUser.data?.user.role === UserRole.admin && (
-            <ListItem navigationOpen={navigationOpen}>
+          {isUserEmployee() && (
+            <ListItem navigationOpen={navigationOpen} path={paths.records}>
+              <>
+                <SquareKanban className="h-8 w-8" strokeWidth={1} />
+                {navigationOpen && <p className="ml-2">Records</p>}
+              </>
+            </ListItem>
+          )}
+          {isUserEmployee() && (
+            <ListItem navigationOpen={navigationOpen} path={paths.credits}>
+              <>
+                <BadgeCent className="h-8 w-8" strokeWidth={1} />
+                {navigationOpen && <p className="ml-2">Credits</p>}
+              </>
+            </ListItem>
+          )}
+          {isUserAdmin() && (
+            <ListItem navigationOpen={navigationOpen} path={paths.manageUsers}>
               <>
                 <Contact className="h-8 w-8" strokeWidth={1} />
                 {navigationOpen && <p className="ml-2">Manage Users</p>}
@@ -158,7 +191,7 @@ export default function NavigationPanel({
       </div>
       <div>
         <ul className=" h-full flex p-1 flex-col items-center gap-5 sm:gap-10  mb-2">
-          <ListItem navigationOpen={navigationOpen}>
+          <ListItem navigationOpen={navigationOpen} path={paths.editProfile}>
             <>
               <UserRoundPen className="h-8 w-8" strokeWidth={1} />
               {navigationOpen && <p className="ml-2">Edit Profile</p>}

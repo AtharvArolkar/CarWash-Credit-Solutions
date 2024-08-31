@@ -5,6 +5,10 @@ export const paths = {
   login: "/login",
   changePassword: "/change-password",
   setPassword: "/set-password",
+  records: "/records",
+  credits: "/credits",
+  manageUsers: "/manage-users",
+  editProfile: "/edit-profile",
 };
 
 export const apiRoutes = {
