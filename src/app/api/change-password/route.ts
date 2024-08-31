@@ -8,7 +8,7 @@ import { STATUS_CODES } from "@/lib/constants";
 import dbConnect from "@/lib/db-connect";
 import UserModel from "@/models/user.model";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   await dbConnect();
   const { identifier, oldPassword, newPassword } = await req.json();
 

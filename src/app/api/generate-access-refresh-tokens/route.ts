@@ -5,7 +5,7 @@ import {
   generateRefreshToken,
 } from "@/lib/generateTokens";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   try {
     const { identifier } = await req.json();
     if (!identifier) {
