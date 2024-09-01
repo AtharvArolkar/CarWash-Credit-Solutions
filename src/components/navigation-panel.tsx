@@ -1,53 +1,51 @@
 "use client";
+import carLogo from "/public/carLogo.png";
 import {
   BadgeCent,
   Contact,
   LayoutDashboard,
   LogOut,
-  Maximize2,
-  Menu,
-  Minimize2,
   SquareKanban,
   User,
-  UserRoundPen,
 } from "lucide-react";
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { MouseEventHandler, ReactElement, useEffect, useState } from "react";
 
 import { isUserAdmin, isUserEmployee } from "@/helpers/auth";
 import { logOut } from "@/helpers/sign-out";
 import { paths } from "@/lib/routes";
 
-interface NavigationPanelProps {
-  navigationOpen: boolean;
-  handleMenuClick: MouseEventHandler<SVGSVGElement> | undefined;
-}
-
 interface ListItemProps {
-  navigationOpen: boolean;
   path?: string;
   className?: string;
-  children: ReactElement;
+  children: ReactElement | ReactElement[];
+  onClick?: MouseEventHandler<HTMLLIElement>;
 }
 
 function ListItem({
-  navigationOpen,
   path,
   className,
   children,
+  onClick,
 }: ListItemProps): ReactElement {
+  const pathName = usePathname();
   return (
     <li
-      className={`${className} flex items-center text-white hover:bg-blue-500 hover:p-2 hover:rounded-sm hover:mr-2 transition-all ${
-        navigationOpen ? "w-full" : ""
+      className={`${className} flex items-center text-white sm:hover:text-lg sm:p-2 sm:hover:rounded-sm sm:hover:mr-2 transition-all sm:w-auto w-full sm:my-5 max-sm:justify-center max-sm:p-1  ${
+        path === pathName
+          ? "max-sm:border-t-[3px] sm:bg-white sm:rounded-sm sm:mr-2"
+          : ""
       }`}
+      onClick={onClick}
     >
       {path ? (
         <Link
-          className={`flex items-center text-white ${
-            navigationOpen ? "w-full" : ""
+          className={`flex items-center max-sm:flex-col max-sm:p-0 sm:w-full ${
+            path === pathName ? "sm:text-[#3458D6]" : ""
           }`}
           href={path}
         >
@@ -60,12 +58,8 @@ function ListItem({
   );
 }
 
-export default function NavigationPanel({
-  navigationOpen,
-  handleMenuClick,
-}: NavigationPanelProps): ReactElement {
+export default function NavigationPanel(): ReactElement {
   const [authUser, setAuthUser] = useState<Session | null>(null);
-  const [showProfileDetails, setShowProfileDetails] = useState<boolean>(false);
   const handleLogout = async (): Promise<void> => {
     await logOut();
   };
@@ -77,131 +71,101 @@ export default function NavigationPanel({
     })();
   }, []);
 
-  const handleProfileNameClick = (): void => {
-    setShowProfileDetails((prev) => !prev);
-  };
-
   return (
     <nav
-      className={`h-full bg-gradient-to-r from-[#3458D6] to-blue-400 rounded-r-lg flex flex-col justify-between text-sm drop-shadow-2xl
-                ease-out ${
-                  navigationOpen ? "absolute w-2/3 sm:w-1/5 z-50 sm:pl-4" : ""
-                }`}
+      className={`h-full bg-gradient-to-r from-[#3458D6] to-blue-400 max-sm:rounded-t-md sm:rounded-r-lg flex flex-col max-sm:text-xs sm:text-sm drop-shadow-2xl
+                ease-out sm:pl-4`}
     >
-      <div>
-        <ul className="h-full rounded-lg flex p-1 flex-col items-center gap-5 sm:gap-10 mt-3">
+      <div className="hidden sm:block w-full ">
+        <ul className=" h-full sm:p-1 flex-col items-center  max-sm:justify-evenly gap-5 sm:gap-10 mb-2">
           <li
-            className={` flex items-center text-white ${
-              navigationOpen ? "w-full" : ""
-            }`}
+            className={`mt-4 w-full bg flex items-center text-white transition-all sm:w-auto sm:my-5 max-sm:justify-center max-sm:p-1 `}
           >
-            <Menu
-              className="h-8 w-8 text-white hover:p-1 hover:rounded-sm hover:mr-2 transition-all"
-              strokeWidth={1}
-              onClick={handleMenuClick}
-            />
-          </li>
-          <li
-            className={`flex ${
-              showProfileDetails ? "" : "items-center"
-            } text-white ${navigationOpen ? "w-full" : ""}`}
-          >
-            <div>
-              <User className="h-8 w-8" fill="white" strokeWidth={1} />
-            </div>
-            <div className="mr-1.5">
-              {navigationOpen && (
-                <div className="flex flex-col ml-2 h-full">
-                  {authUser?.user ? (
-                    <div
-                      className={`flex text-xs ${
-                        showProfileDetails ? "flex-col" : "h-full items-center"
-                      }`}
-                    >
-                      <div
-                        className={`${
-                          showProfileDetails ? "text-xl font-bold" : "text-xl"
-                        }`}
-                      >
-                        Welcome, {authUser?.user?.name.split(" ")[0] ?? "--:--"}
-                      </div>
-                      {showProfileDetails && (
-                        <div className="ease-linear transition-all ">
-                          <div>{authUser?.user?.phoneNumber ?? "--:--"}</div>
-                          <div>{authUser?.user?.email ?? "--:--"}</div>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <>Loading...</>
-                  )}
-                </div>
-              )}
-            </div>
-            {navigationOpen && (
-              <div className={`${showProfileDetails ? "mt-2" : ""}`}>
-                {!showProfileDetails ? (
-                  <Maximize2
-                    className="h-4 w-4"
-                    onClick={handleProfileNameClick}
-                  />
-                ) : (
-                  <Minimize2
-                    className="h-4 w-4"
-                    onClick={handleProfileNameClick}
-                  />
-                )}
-              </div>
-            )}
-          </li>
-          <ListItem navigationOpen={navigationOpen} path={paths.home}>
             <>
-              <LayoutDashboard className="h-8 w-8" strokeWidth={1} />
-              {navigationOpen && <p className="ml-2">Dashboard</p>}
+              <Image
+                className="h-9 w-11 text-white "
+                src={carLogo}
+                alt="logo"
+              />
+              <p className="text-2xl ml-2 font-sans font-bold ">App Name</p>
             </>
+          </li>
+        </ul>
+      </div>
+      <div className="max-sm:h-full">
+        <ul className="sm:h-full sm:p-1 flex flex-row sm:block sm:mt-3  max-sm:h-full">
+          <ListItem
+            path={paths.viewProfile}
+            className="sm:pl-5 fill-transparent group"
+          >
+            <User
+              className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
+              strokeWidth={1}
+            />
+            <p className="sm:ml-2 text-md max-sm:hidden">
+              {authUser?.user
+                ? `Welcome, ${authUser?.user?.name.split(" ")[0] ?? "--:--"}`
+                : "Loading..."}
+            </p>
+            <p className="sm:ml-2 sm:hidden">Profile</p>
+          </ListItem>
+          <ListItem
+            path={paths.home}
+            className="sm:pl-5 fill-transparent group"
+          >
+            <LayoutDashboard
+              className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8 "
+              strokeWidth={1}
+            />
+            <p className="sm:ml-2">Dashboard</p>
           </ListItem>
           {isUserEmployee(authUser) && (
-            <ListItem navigationOpen={navigationOpen} path={paths.records}>
-              <>
-                <SquareKanban className="h-8 w-8" strokeWidth={1} />
-                {navigationOpen && <p className="ml-2">Records</p>}
-              </>
+            <ListItem
+              path={paths.records}
+              className="sm:pl-5 fill-transparent group"
+            >
+              <SquareKanban
+                className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
+                strokeWidth={1}
+              />
+              <p className="sm:ml-2">Records</p>
             </ListItem>
           )}
           {isUserEmployee(authUser) && (
-            <ListItem navigationOpen={navigationOpen} path={paths.credits}>
-              <>
-                <BadgeCent className="h-8 w-8" strokeWidth={1} />
-                {navigationOpen && <p className="ml-2">Credits</p>}
-              </>
+            <ListItem
+              path={paths.credits}
+              className="sm:pl-5 fill-transparent  group"
+            >
+              <BadgeCent
+                className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
+                strokeWidth={1}
+              />
+              <p className="sm:ml-2">Credits</p>
             </ListItem>
           )}
           {isUserAdmin(authUser) && (
-            <ListItem navigationOpen={navigationOpen} path={paths.manageUsers}>
-              <>
-                <Contact className="h-8 w-8" strokeWidth={1} />
-                {navigationOpen && <p className="ml-2">Manage Users</p>}
-              </>
+            <ListItem
+              path={paths.manageUsers}
+              className="sm:pl-5 fill-transparent group"
+            >
+              <Contact
+                className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
+                strokeWidth={1}
+              />
+              <p className="sm:ml-2 max-sm:hidden">Manage Users</p>
+              <p className="sm:ml-2 sm:hidden">Manage</p>
             </ListItem>
           )}
-        </ul>
-      </div>
-      <div>
-        <ul className=" h-full flex p-1 flex-col items-center gap-5 sm:gap-10  mb-2">
-          <ListItem navigationOpen={navigationOpen} path={paths.editProfile}>
-            <>
-              <UserRoundPen className="h-8 w-8" strokeWidth={1} />
-              {navigationOpen && <p className="ml-2">Edit Profile</p>}
-            </>
-          </ListItem>
-          <ListItem navigationOpen={navigationOpen} className="cursor-pointer">
+          <ListItem
+            className="sm:pl-5 fill-transparent group max-sm:hidden cursor-pointer"
+            onClick={handleLogout}
+          >
             <>
               <LogOut
-                className="h-8 w-8"
+                className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
                 strokeWidth={1}
-                onClick={handleLogout}
               />
-              {navigationOpen && <p className="ml-2">Logout</p>}
+              <p className="sm:ml-2">Logout</p>
             </>
           </ListItem>
         </ul>
