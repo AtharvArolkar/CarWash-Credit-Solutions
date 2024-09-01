@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
 
-import { isUserEmployee } from "./helpers/auth";
+import { isUserAdmin, isUserEmployee } from "./helpers/auth";
 import { paths } from "./lib/routes";
 
 export default auth((req) => {
@@ -17,7 +17,7 @@ export default auth((req) => {
     return NextResponse.redirect(new URL(paths.home, req.url));
   }
 
-  if (isUserEmployee(req.auth)) {
+  if (isUserEmployee(req.auth) && !isUserAdmin(req.auth)) {
     if (req.nextUrl.pathname.includes(paths.manageUsers)) {
       return NextResponse.redirect(new URL(paths.home, req.url));
     }

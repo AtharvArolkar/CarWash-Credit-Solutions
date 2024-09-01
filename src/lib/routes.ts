@@ -9,6 +9,7 @@ export const paths = {
   credits: "/credits",
   manageUsers: "/manage-users",
   editProfile: "/edit-profile",
+  viewProfile: "/view-profile",
 };
 
 export const apiRoutes = {
