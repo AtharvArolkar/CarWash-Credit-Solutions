@@ -14,15 +14,6 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    (async function () {
-      if (error.message === LOGIN_REQUIRED_MESSAGE) {
-        toast.error(error.message);
-        await logOut();
-      }
-    })();
-  }, [error]);
-
   return (
     <div className="h-screen w-full flex justify-center align-center flex-col gap-10">
       <h1 className="text-3xl font-bold text-center">Something went wrong!</h1>
