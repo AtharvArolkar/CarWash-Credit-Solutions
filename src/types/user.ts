@@ -8,6 +8,8 @@ export interface User extends Document {
   password: string;
   role: UserRole;
   isVerified: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export enum UserRole {

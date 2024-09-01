@@ -13,3 +13,5 @@ export const STATUS_CODES = {
 
 export const LOGIN_REQUIRED_MESSAGE =
   "Please login again as your role was changed";
+
+export const ITEMS_PER_PAGE = 20;
