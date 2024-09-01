@@ -41,7 +41,7 @@ export default function FormComponent({
   };
   return (
     <form
-      className="bottom-0 px-3 absolute  sm:w-96 sm:relative sm:border-[1px] sm:rounded-sm sm:py-10 w-full"
+      className="bottom-0 px-3 flex max-sm:h-full flex-col justify-end  sm:w-96 sm:relative sm:border-[1px] sm:rounded-sm sm:py-10 w-full"
       action={modifiedAction}
     >
       {formTitle && (
@@ -75,8 +75,8 @@ export default function FormComponent({
         } sm:mb-0`}
       >
         {state?.errors.apiError && (
-          <div className="bg-red-200 h-full p-2 flex items-center rounded-sm pl-4 text-sm">
-            <TriangleAlert className="text-red-600 mr-1 w-5 h-8" />
+          <div className="bg-red-200 h-full p-2 flex items-center rounded-sm pl-4 text-sm text-red-600 fill-transparent">
+            <TriangleAlert className="mr-1 w-5 h-8 " fill="white" />
             <div className="text-red-600">
               {state?.errors?.apiError}
               {(state?.errors.apiError ===
