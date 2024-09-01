@@ -12,7 +12,7 @@ import UserModel from "@/models/user.model";
 import { ApiResponse } from "@/types/common";
 import { JWTPayloadObject, UserRole } from "@/types/user";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   await dbConnect();
   const headerPayload = headers();
   const token = headerPayload.get("authorization")?.split(" ")[1] ?? "";
