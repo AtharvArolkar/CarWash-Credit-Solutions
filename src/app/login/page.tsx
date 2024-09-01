@@ -8,7 +8,7 @@ import { login } from "../../actions/login";
 
 export default function Login(): ReactElement {
   return (
-    <div className="w-full h-screen relative flex justify-center sm:items-center">
+    <div className="w-full h-screen relative flex flex-col sm:justify-center sm:items-center">
       <Image src={loginBg} alt="bg" className="-z-5 h-[300px] sm:hidden" />
       <FormComponent
         formAction={login}

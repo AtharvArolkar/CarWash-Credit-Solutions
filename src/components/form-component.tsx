@@ -41,7 +41,7 @@ export default function FormComponent({
   };
   return (
     <form
-      className="bottom-0 px-3 absolute  sm:w-96 sm:relative sm:border-[1px] sm:rounded-sm sm:py-10 w-full"
+      className="bottom-0 px-3 flex max-sm:h-full flex-col justify-end  sm:w-96 sm:relative sm:border-[1px] sm:rounded-sm sm:py-10 w-full"
       action={modifiedAction}
     >
       {formTitle && (

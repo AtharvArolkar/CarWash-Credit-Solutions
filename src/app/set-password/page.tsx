@@ -9,7 +9,7 @@ import FormComponent from "@/components/form-component";
 export default async function ModifyPassword(): Promise<ReactElement> {
   const authUser = await auth();
   return (
-    <div className="w-full h-screen relative flex justify-center sm:items-center">
+    <div className="w-full h-full  relative flex flex-col justify-center sm:items-center">
       {!authUser && (
         <Image src={loginBg} alt="bg" className="-z-5 h-[300px] sm:hidden" />
       )}
