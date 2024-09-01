@@ -24,7 +24,6 @@ export interface GetTicketsPayload {
 }
 
 export interface TicketReponse {
-  _id: string;
   carNumber: string;
   carModel: string;
   washType: string;
@@ -33,8 +32,6 @@ export interface TicketReponse {
   isCredit: boolean;
   createdAt: string;
   client: {
-    email: string;
-    phoneNumber: number;
     name: string;
   };
   entryBy: {

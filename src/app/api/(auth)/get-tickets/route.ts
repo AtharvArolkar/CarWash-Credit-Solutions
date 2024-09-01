@@ -124,6 +124,7 @@ export async function POST(req: Request) {
             },
             {
               $project: {
+                _id: 0,
                 carNumber: 1,
                 createdAt: 1,
                 carModel: 1,
@@ -132,8 +133,6 @@ export async function POST(req: Request) {
                 pricePaid: 1,
                 isCredit: 1,
                 "client.name": 1,
-                "client.email": 1,
-                "client.phoneNumber": 1,
                 "entryBy.name": 1,
               },
             },
