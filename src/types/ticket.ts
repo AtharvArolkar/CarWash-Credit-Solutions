@@ -15,3 +15,32 @@ export enum WashType {
   bodyWash = "BODY_WASH",
   fullWash = "FULL_WASH",
 }
+
+export interface GetTicketsPayload {
+  page: number;
+  startDate?: number;
+  endDate?: number;
+  search?: string;
+}
+
+export interface TicketReponse {
+  carNumber: string;
+  carModel: string;
+  washType: string;
+  price: number;
+  pricePaid: number;
+  isCredit: boolean;
+  createdAt: string;
+  client: {
+    name: string;
+  };
+  entryBy: {
+    name: string;
+  };
+}
+
+export interface GetTicketsReposne {
+  returnedTickets: number;
+  totalTickets?: number;
+  tickets: TicketReponse[];
+}
