@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
 import { callApi } from "@/helpers/api-service";
+import { checkErrorResponse } from "@/helpers/response-checker";
 import { apiRoutes, paths } from "@/lib/routes";
 import { ApiMethod, ApiResponse, FormError } from "@/types/common";
 import { ChangePasswordPayload } from "@/types/user";
@@ -78,6 +79,7 @@ export async function changePassword(
     );
   } catch (error) {
     const apiError = error as AxiosError<ApiResponse>;
+    await checkErrorResponse(apiError);
     errorObject.errors.apiError =
       apiError.response?.data.message ?? "Something went wrong";
     return errorObject;

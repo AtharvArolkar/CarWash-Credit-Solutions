@@ -8,4 +8,8 @@ export const STATUS_CODES = {
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
   BAD_GATEWAY: 502,
+  LOGIN_REQUIRED: 440,
 } as const;
+
+export const LOGIN_REQUIRED_MESSAGE =
+  "Please login again as your role was changed";

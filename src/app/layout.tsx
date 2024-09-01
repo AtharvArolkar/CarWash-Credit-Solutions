@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 
 import AuthProvider from "@/context/AuthProvider";
 
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Toaster richColors />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
