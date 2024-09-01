@@ -6,6 +6,6 @@ export async function checkErrorResponse(
   res: AxiosError<ApiResponse>
 ): Promise<void> {
   if (res.response?.status === STATUS_CODES.LOGIN_REQUIRED) {
-    throw new Error(res.response.data.message ?? "Please login in again");
+    throw new Error(res.response.data.message ?? "Something went wrong!");
   }
 }
