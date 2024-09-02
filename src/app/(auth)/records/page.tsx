@@ -9,8 +9,8 @@ import { ApiMethod } from "@/types/common";
 import { GetTicketsPayload, TicketReponse, WashType } from "@/types/ticket";
 import dayjs from "dayjs";
 import { ReactElement, ReactNode, Suspense } from "react";
-import { ChevronLeft } from "lucide-react";
-import { ChevronRight } from "lucide-react";
+import { DatePickerWithRange } from "@/components/date-picker-range";
+import FilterRecords from "@/components/filter-records";
 
 function TableHeader({ children }: { children: ReactNode }): ReactElement {
   return (
@@ -77,7 +77,7 @@ async function RecordsList({
   }
 
   if (Number.isFinite(Number(searchParams?.endDate))) {
-    payload.startDate = Number(searchParams?.endDate);
+    payload.endDate = Number(searchParams?.endDate);
   }
 
   const recordsList = await callApi(
@@ -95,30 +95,21 @@ async function RecordsList({
         return "Full";
     }
   };
-  console.log(recordsList.data.returnedTickets);
+  console.log(searchParams);
   return (
     <div className="p-4 overflow-y drop-shadow-sm rounded-l-md border-2">
       <div className="overflow-y rounded-sm border-[1px] max-sm:hidden">
-        <div className="h-16 items-center px-6 grid grid-cols-12">
-          <div className="col-span-5 text-xl text-gray-600 font-bold">
+        <div className="h-20 items-center px-6 grid grid-cols-12">
+          <div className="col-span-4 text-xl text-gray-600 font-bold">
             {`Records ${recordsList.data.returnedTickets ?? 0} | ${
               recordsList.data.totalTickets ?? 0
             }`}
           </div>
-          <div className="col-span-3">
-            <Input
-              className="w-full text-xs"
-              placeholder="Search By Client Name / Car no."
-            />
-          </div>
-          <div className="col-span-3">s</div>
-          <div className="col-span-1 fill-transparent text-gray-600 flex gap-2 justify-end">
-            <ChevronLeft strokeWidth={1} />
-            {searchParams?.page ?? 1}
-            <ChevronRight strokeWidth={1} />
+          <div className="col-span-8">
+            <FilterRecords />
           </div>
         </div>
-        <table className="table-auto min-w-full divide-y divide-gray-200 dark:divide-neutral-700 border-20 border-gray-100 rounded-md overflow-scroll h-full">
+        <table className="table-auto min-w-full divide-y divide-gray-200 dark:divide-neutral-700 border-20 border-gray-100 rounded-md overflow-y-scroll">
           <thead className="bg-gray-100 rounded-t-md h-16">
             <tr>
               <TableHeader>Name</TableHeader>
@@ -148,7 +139,9 @@ async function RecordsList({
                     <TableDataCell>
                       <div
                         className={`rounded-sm text-white p-1 text-xs w-8 flex justify-center ${
-                          ticket.isCredit ? "bg-red-500" : "bg-green-500"
+                          ticket.isCredit
+                            ? "bg-red-200 text-red-500"
+                            : "bg-green-200 text-green-500"
                         }`}
                       >
                         {ticket.isCredit ? "Yes" : "No"}
