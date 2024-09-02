@@ -47,7 +47,7 @@ export async function POST(req: Request): Promise<Response> {
     if (!page) {
       throw new Error("Invalid request paramters.");
     }
-
+    console.log(page, start, end, searchByNameAndCarnumber);
     let dateQuery: { createdAt: { $gte?: Date; $lte?: Date } } = {
       createdAt: {},
     };
@@ -62,6 +62,7 @@ export async function POST(req: Request): Promise<Response> {
       throw new Error("Please provide start date if providing end date.");
     } else if (start) {
       const startDate = dayjs.unix(start).toDate();
+      console.log(startDate);
       const startOfStartDate = dayjs(startDate).startOf("day").toDate();
       const endfStartDate = dayjs(startDate).endOf("day").toDate();
       dateQuery.createdAt = {

@@ -1,16 +1,21 @@
-import Loading from "@/app/loading";
+import dayjs from "dayjs";
+import { ReactElement, ReactNode, Suspense } from "react";
+
 import { auth } from "@/auth";
+import FilterRecords from "@/components/filter-records";
 import SuspenseLoading from "@/components/suspense-loading";
-import { Input } from "@/components/ui/input";
 import { callApi } from "@/helpers/api-service";
 import { TABLE_DATE_FORMAT } from "@/lib/constants";
 import { apiRoutes } from "@/lib/routes";
 import { ApiMethod } from "@/types/common";
 import { GetTicketsPayload, TicketReponse, WashType } from "@/types/ticket";
-import dayjs from "dayjs";
-import { ReactElement, ReactNode, Suspense } from "react";
-import { DatePickerWithRange } from "@/components/date-picker-range";
-import FilterRecords from "@/components/filter-records";
+
+interface RecordsSearchParams {
+  search?: string;
+  page?: string;
+  startDate?: string;
+  endDate?: string;
+}
 
 function TableHeader({ children }: { children: ReactNode }): ReactElement {
   return (
@@ -34,13 +39,6 @@ function TableDataCell({ children }: { children: ReactNode }): ReactElement {
   );
 }
 
-interface RecordsSearchParams {
-  search?: string;
-  page?: string;
-  startDate?: string;
-  endDate?: string;
-}
-
 export default function Records({
   searchParams,
 }: {
@@ -61,7 +59,6 @@ async function RecordsList({
   const authToken = await auth();
   const payload: GetTicketsPayload = {
     page: 1,
-    startDate: 1725107307,
   };
 
   if (Number.isFinite(Number(searchParams?.page))) {
@@ -95,18 +92,16 @@ async function RecordsList({
         return "Full";
     }
   };
-  console.log(searchParams);
+
   return (
-    <div className="p-4 overflow-y drop-shadow-sm rounded-l-md border-2">
+    <div className="p-4 overflow-y drop-shadow-sm rounded-l-md border-2 h-full">
       <div className="overflow-y rounded-sm border-[1px] max-sm:hidden">
         <div className="h-20 items-center px-6 grid grid-cols-12">
           <div className="col-span-4 text-xl text-gray-600 font-bold">
-            {`Records ${recordsList.data.returnedTickets ?? 0} | ${
-              recordsList.data.totalTickets ?? 0
-            }`}
+            {`${recordsList.data.returnedTickets ?? 0} Record(s)`}
           </div>
           <div className="col-span-8">
-            <FilterRecords />
+            <FilterRecords totalRecords={recordsList.data.totalTickets ?? 0} />
           </div>
         </div>
         <table className="table-auto min-w-full divide-y divide-gray-200 dark:divide-neutral-700 border-20 border-gray-100 rounded-md overflow-y-scroll">
@@ -128,7 +123,9 @@ async function RecordsList({
               (ticket: TicketReponse, key: number) => {
                 return (
                   <tr key={key}>
-                    <TableDataCell>{ticket.client?.name ?? "-"}</TableDataCell>
+                    <TableDataCell>
+                      {ticket.client?.name ?? "Client"}
+                    </TableDataCell>
                     <TableDataCell>{ticket.carNumber}</TableDataCell>
                     <TableDataCell>{ticket.carModel}</TableDataCell>
                     <TableDataCell>
@@ -138,10 +135,10 @@ async function RecordsList({
                     <TableDataCell>{ticket.pricePaid}</TableDataCell>
                     <TableDataCell>
                       <div
-                        className={`rounded-sm text-white p-1 text-xs w-8 flex justify-center ${
+                        className={`rounded-sm text-white p-[1px] text-[12px] w-8 flex justify-center ${
                           ticket.isCredit
-                            ? "bg-red-200 text-red-500"
-                            : "bg-green-200 text-green-500"
+                            ? "bg-red-100 text-red-500"
+                            : "bg-green-100 text-green-500"
                         }`}
                       >
                         {ticket.isCredit ? "Yes" : "No"}
