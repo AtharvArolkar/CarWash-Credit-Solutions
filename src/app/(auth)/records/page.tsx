@@ -1,16 +1,16 @@
 import dayjs from "dayjs";
+import { Plus } from "lucide-react";
 import { ReactElement, ReactNode, Suspense } from "react";
 
 import { auth } from "@/auth";
 import FilterRecords from "@/components/filter-records";
 import SuspenseLoading from "@/components/suspense-loading";
+import { Button } from "@/components/ui/button";
 import { callApi } from "@/helpers/api-service";
 import { TABLE_DATE_FORMAT } from "@/lib/constants";
 import { apiRoutes } from "@/lib/routes";
 import { ApiMethod } from "@/types/common";
 import { GetTicketsPayload, TicketReponse, WashType } from "@/types/ticket";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 
 interface RecordsSearchParams {
   search?: string;
@@ -102,7 +102,6 @@ async function RecordsList({
         <Button
           type="submit"
           className="h-full w-48 p-3 mb-4 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex gap-2"
-          // onClick={handleFilterApply}
         >
           <Plus className="w-5 h-5" />
           Add New Records
@@ -110,9 +109,7 @@ async function RecordsList({
       </div>
       <div className="overflow-y rounded-sm border-[1px] max-sm:hidden">
         <div className="h-20 items-center px-6 grid grid-cols-12">
-          <div className="col-span-4 text-xl text-gray-600 font-bold">
-            {/* {`${recordsList.data.returnedTickets ?? 0} Record(s)`} */}
-          </div>
+          <div className="col-span-4 text-xl text-gray-600 font-bold"></div>
           <div className="col-span-8">
             <FilterRecords totalRecords={recordsList.data.totalTickets ?? 0} />
           </div>
