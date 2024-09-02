@@ -15,3 +15,5 @@ export const LOGIN_REQUIRED_MESSAGE =
   "Please login again as your role was changed";
 
 export const ITEMS_PER_PAGE = 20;
+
+export const TABLE_DATE_FORMAT = "DD/MM/YYYY";

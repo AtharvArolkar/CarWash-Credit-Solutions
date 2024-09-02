@@ -39,7 +39,7 @@ export interface TicketReponse {
   };
 }
 
-export interface GetTicketsReposne {
+export interface GetTicketsResposne {
   returnedTickets: number;
   totalTickets?: number;
   tickets: TicketReponse[];
