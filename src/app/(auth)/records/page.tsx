@@ -9,6 +9,7 @@ import { TABLE_DATE_FORMAT } from "@/lib/constants";
 import { apiRoutes } from "@/lib/routes";
 import { ApiMethod } from "@/types/common";
 import { GetTicketsPayload, TicketReponse, WashType } from "@/types/ticket";
+import { Button } from "@/components/ui/button";
 
 interface RecordsSearchParams {
   search?: string;
@@ -95,10 +96,21 @@ async function RecordsList({
 
   return (
     <div className="p-4 overflow-y-auto drop-shadow-sm rounded-l-md border-2">
+      <div className="flex justify-between items-center">
+        <div className="text-2xl text-gray-600 font-bold">Record(s)</div>
+        <Button
+          type="submit"
+          className="h-full w-48 p-3 px-7 mb-4 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex justify-evenly"
+          // onClick={handleFilterApply}
+        >
+          Add New Records
+          {/* <Search className="w-5 h-5" /> */}
+        </Button>
+      </div>
       <div className="overflow-y rounded-sm border-[1px] max-sm:hidden">
         <div className="h-20 items-center px-6 grid grid-cols-12">
           <div className="col-span-4 text-xl text-gray-600 font-bold">
-            {`${recordsList.data.returnedTickets ?? 0} Record(s)`}
+            {/* {`${recordsList.data.returnedTickets ?? 0} Record(s)`} */}
           </div>
           <div className="col-span-8">
             <FilterRecords totalRecords={recordsList.data.totalTickets ?? 0} />
