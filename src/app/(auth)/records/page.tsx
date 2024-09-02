@@ -94,7 +94,7 @@ async function RecordsList({
   };
 
   return (
-    <div className="p-4 overflow-y drop-shadow-sm rounded-l-md border-2 h-full">
+    <div className="p-4 overflow-y-auto drop-shadow-sm rounded-l-md border-2">
       <div className="overflow-y rounded-sm border-[1px] max-sm:hidden">
         <div className="h-20 items-center px-6 grid grid-cols-12">
           <div className="col-span-4 text-xl text-gray-600 font-bold">
@@ -105,7 +105,7 @@ async function RecordsList({
           </div>
         </div>
         <table className="table-auto min-w-full divide-y divide-gray-200 dark:divide-neutral-700 border-20 border-gray-100 rounded-md overflow-y-scroll">
-          <thead className="bg-gray-100 rounded-t-md h-16">
+          <thead className="bg-gray-100 rounded-t-md h-16  sticky top-0">
             <tr>
               <TableHeader>Name</TableHeader>
               <TableHeader>Car Number</TableHeader>
@@ -118,7 +118,7 @@ async function RecordsList({
               <TableHeader>Created At</TableHeader>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+          <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 sm:overflow-y-scroll">
             {recordsList.data.tickets.map(
               (ticket: TicketReponse, key: number) => {
                 return (
