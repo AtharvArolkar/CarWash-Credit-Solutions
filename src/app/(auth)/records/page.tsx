@@ -10,6 +10,7 @@ import { apiRoutes } from "@/lib/routes";
 import { ApiMethod } from "@/types/common";
 import { GetTicketsPayload, TicketReponse, WashType } from "@/types/ticket";
 import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 interface RecordsSearchParams {
   search?: string;
@@ -100,11 +101,11 @@ async function RecordsList({
         <div className="text-2xl text-gray-600 font-bold">Record(s)</div>
         <Button
           type="submit"
-          className="h-full w-48 p-3 px-7 mb-4 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex justify-evenly"
+          className="h-full w-48 p-3 mb-4 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex gap-2"
           // onClick={handleFilterApply}
         >
+          <Plus className="w-5 h-5" />
           Add New Records
-          {/* <Search className="w-5 h-5" /> */}
         </Button>
       </div>
       <div className="overflow-y rounded-sm border-[1px] max-sm:hidden">
