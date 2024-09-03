@@ -9,7 +9,7 @@ import {
   User,
 } from "lucide-react";
 import { Session } from "next-auth";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -60,16 +60,14 @@ function ListItem({
 
 export default function NavigationPanel(): ReactElement {
   const [authUser, setAuthUser] = useState<Session | null>(null);
+  const { data: session } = useSession();
   const handleLogout = async (): Promise<void> => {
     await logOut();
   };
 
   useEffect(() => {
-    (async function () {
-      const session = await getSession();
-      setAuthUser(session);
-    })();
-  }, []);
+    setAuthUser(session);
+  }, [session]);
 
   return (
     <nav

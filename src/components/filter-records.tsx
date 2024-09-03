@@ -62,8 +62,8 @@ export default function FilterRecords({
     replace(`${pathname}?${params}`);
   };
   return (
-    <div className="grid grid-cols-11 gap-2">
-      <div className="col-span-4">
+    <div className="grid grid-cols-12 lg:grid-cols-11 gap-2 max-sm:grid max-sm:p-2 max-sm:h-1/2">
+      <div className="col-span-4 max-sm:col-span-8 max-sm:order-1">
         <Input
           className="w-full text-xs"
           placeholder="Search By Client Name / Car no."
@@ -72,24 +72,24 @@ export default function FilterRecords({
           }}
         />
       </div>
-      <div className="col-span-4">
+      <div className="col-span-4 max-sm:col-span-9 max-sm:order-3">
         <DatePickerWithRange
           className="text-gray-500  fill-transparent"
           date={date}
           setDate={setDate}
         />
       </div>
-      <div className="col-span-2">
+      <div className="col-span-2 max-sm:col-span-4 max-sm:order-2">
         <Button
           type="submit"
-          className="w-full h-full text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex justify-evenly"
+          className="w-full h-full text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex justify-evenly sm:justify-center sm:gap-1 max-sm:text-xs"
           onClick={handleFilterApply}
         >
+          <Search className="w-5 h-5 max-sm:h:4 max-sm:h-4" />
           Search
-          <Search className="w-5 h-5" />
         </Button>
       </div>
-      <div className="h-full col-span-1 fill-transparent text-gray-600 flex items-center justify-end">
+      <div className="h-full lg:col-span-1 sm:col-span-2 max-sm:col-span-3 fill-transparent text-gray-600 flex items-center justify-end max-sm:order-4">
         <Button
           className="p-0 bg-transparent  hover:bg-transparent text-gray-600"
           onClick={() => handlePagination("prev")}

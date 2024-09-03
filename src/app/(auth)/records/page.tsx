@@ -96,75 +96,131 @@ async function RecordsList({
   };
 
   return (
-    <div className="p-4 overflow-y-auto drop-shadow-sm rounded-l-md border-2">
-      <div className="flex justify-between items-center">
-        <div className="text-2xl text-gray-600 font-bold">Record(s)</div>
-        <Button
-          type="submit"
-          className="h-full w-48 p-3 mb-4 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex gap-2"
-        >
-          <Plus className="w-5 h-5" />
-          Add New Records
-        </Button>
-      </div>
-      <div className="overflow-y rounded-sm border-[1px] max-sm:hidden">
-        <div className="h-20 items-center px-6 grid grid-cols-12">
-          <div className="col-span-4 text-xl text-gray-600 font-bold"></div>
-          <div className="col-span-8">
-            <FilterRecords totalRecords={recordsList.data.totalTickets ?? 0} />
+    <>
+      <div className="overflow-y-auto drop-shadow-sm rounded-l-md sm:border-2 h-full no-scrollbar">
+        <div className="flex justify-between items-center h-20 sticky top-0 bg-white px-4 max-sm:hidden">
+          <div className="text-2xl text-gray-600 font-bold  max-sm:hidden">
+            Record(s)
+          </div>
+          <Button
+            type="submit"
+            className="h-12 max-sm:w-24 sm:w-48 p-3 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex max-sm:justify-start gap-2"
+          >
+            <Plus className="w-5 h-5" />
+            <span className="max-sm:hidden">Add New Records</span>
+          </Button>
+        </div>
+        <div className="overflow-y rounded-sm border-b-[1px] sticky sm:top-20 top-0 sm:-z-10">
+          <div className="h-20 max-sm:h-auto items-center sm:px-6 grid grid-cols-12 sticky top-20 border-t-[1px] bg-white">
+            <div className="col-span-4 text-xl text-gray-600 font-bold max-sm:hidden"></div>
+            <div className="lg:col-span-8 col-span-12 bg-white">
+              <FilterRecords
+                totalRecords={recordsList.data.totalTickets ?? 0}
+              />
+            </div>
+          </div>
+          <div className="overflow-x-scroll sticky top-80  sm:-z-10">
+            <table className="table-fixed min-w-full divide-y overflow-x-auto divide-gray-200 dark:divide-neutral-700 border-20 border-gray-100 rounded-md overflow-y-scroll  max-sm:hidden">
+              <thead className="bg-gray-100 rounded-t-md h-16 sticky top-0 ">
+                <tr>
+                  <TableHeader>Name</TableHeader>
+                  <TableHeader>Car Number</TableHeader>
+                  <TableHeader>Car Model</TableHeader>
+                  <TableHeader>Wash Type</TableHeader>
+                  <TableHeader>Price</TableHeader>
+                  <TableHeader>Price Paid</TableHeader>
+                  <TableHeader>Is Credit</TableHeader>
+                  <TableHeader>Created By</TableHeader>
+                  <TableHeader>Created At</TableHeader>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 sm:overflow-y-scroll  overflow-x-scroll">
+                {recordsList.data.tickets.map(
+                  (ticket: TicketReponse, key: number) => {
+                    return (
+                      <tr key={key}>
+                        <TableDataCell>
+                          {ticket.client?.name ?? "Client"}
+                        </TableDataCell>
+                        <TableDataCell>{ticket.carNumber}</TableDataCell>
+                        <TableDataCell>{ticket.carModel}</TableDataCell>
+                        <TableDataCell>
+                          {getWashTypeLabel(ticket.washType as WashType)}
+                        </TableDataCell>
+                        <TableDataCell>{ticket.price}</TableDataCell>
+                        <TableDataCell>{ticket.pricePaid}</TableDataCell>
+                        <TableDataCell>
+                          <div
+                            className={`rounded-sm p-[1px] text-[12px] w-8 flex justify-center ${
+                              ticket.isCredit
+                                ? "bg-red-100 text-red-500"
+                                : "bg-green-100 text-green-500"
+                            }`}
+                          >
+                            {ticket.isCredit ? "Yes" : "No"}
+                          </div>
+                        </TableDataCell>
+                        <TableDataCell>
+                          {ticket.entryBy?.name ?? ""}
+                        </TableDataCell>
+                        <TableDataCell>
+                          {dayjs(ticket.createdAt).format(TABLE_DATE_FORMAT)}
+                        </TableDataCell>
+                      </tr>
+                    );
+                  }
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
-        <table className="table-auto min-w-full divide-y divide-gray-200 dark:divide-neutral-700 border-20 border-gray-100 rounded-md overflow-y-scroll">
-          <thead className="bg-gray-100 rounded-t-md h-16  sticky top-0">
-            <tr>
-              <TableHeader>Name</TableHeader>
-              <TableHeader>Car Number</TableHeader>
-              <TableHeader>Car Model</TableHeader>
-              <TableHeader>Wash Type</TableHeader>
-              <TableHeader>Price</TableHeader>
-              <TableHeader>Price Paid</TableHeader>
-              <TableHeader>Is Credit</TableHeader>
-              <TableHeader>Created By</TableHeader>
-              <TableHeader>Created At</TableHeader>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 sm:overflow-y-scroll">
-            {recordsList.data.tickets.map(
-              (ticket: TicketReponse, key: number) => {
-                return (
-                  <tr key={key}>
-                    <TableDataCell>
+        <div className="sm:hidden -z-20">
+          {recordsList.data.tickets.map(
+            (ticket: TicketReponse, key: number) => {
+              return (
+                <div
+                  key={key}
+                  className={`p-4 border-[0.5px] my-1 border-y-gray-200 rounded-sm flex flex-col gap-4`}
+                >
+                  <div className="flex justify-between items-center">
+                    <div className="font-bold text-lg">
                       {ticket.client?.name ?? "Client"}
-                    </TableDataCell>
-                    <TableDataCell>{ticket.carNumber}</TableDataCell>
-                    <TableDataCell>{ticket.carModel}</TableDataCell>
-                    <TableDataCell>
-                      {getWashTypeLabel(ticket.washType as WashType)}
-                    </TableDataCell>
-                    <TableDataCell>{ticket.price}</TableDataCell>
-                    <TableDataCell>{ticket.pricePaid}</TableDataCell>
-                    <TableDataCell>
+                    </div>
+                    <div className="text-sm">{`${ticket.carNumber} | ${ticket.carModel}`}</div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div>{`Price: ${ticket.price}`}</div>
                       <div
-                        className={`rounded-sm text-white p-[1px] text-[12px] w-8 flex justify-center ${
+                        className={` py-1 ${
                           ticket.isCredit
                             ? "bg-red-100 text-red-500"
                             : "bg-green-100 text-green-500"
                         }`}
-                      >
-                        {ticket.isCredit ? "Yes" : "No"}
-                      </div>
-                    </TableDataCell>
-                    <TableDataCell>{ticket.entryBy?.name ?? ""}</TableDataCell>
-                    <TableDataCell>
+                      >{`Paid: ${ticket.pricePaid}`}</div>
+                    </div>
+                    <div className="text-lg uppercase">{`${getWashTypeLabel(
+                      ticket.washType as WashType
+                    )} Wash`}</div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div>{ticket.entryBy?.name ?? "-"}</div>
+                    <div className="text-sm">
                       {dayjs(ticket.createdAt).format(TABLE_DATE_FORMAT)}
-                    </TableDataCell>
-                  </tr>
-                );
-              }
-            )}
-          </tbody>
-        </table>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+          )}
+        </div>
       </div>
-    </div>
+      <Button
+        type="submit"
+        className="sm:hidden h-12 max-sm:rounded-3xl max-sm:w-12 sm:w-48 p-3 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex max-sm:justify-center gap-2 max-sm:absolute max-sm:right-6 max-sm:bottom-[100px] z-10"
+      >
+        <Plus className="w-15 h-15" />
+      </Button>
+    </>
   );
 }

@@ -72,3 +72,7 @@
   fill: inherit;
   color: inherit;
 }
+
+.no-scrollbar{
+  scrollbar-width: none;
+}
