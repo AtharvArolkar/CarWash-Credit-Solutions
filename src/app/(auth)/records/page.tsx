@@ -34,32 +34,46 @@ function RecordCard({
 }): ReactElement {
   return (
     <div
-      className={`p-4 border-[0.5px] my-1 border-y-gray-200 rounded-sm flex flex-col gap-4`}
+      className={`p-4 border-[0.5px] my-1 border-y-gray-200 rounded-sm flex justify-between gap-4`}
     >
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-2">
         <div className="font-bold text-lg">
           {ticket.client?.name ?? "Client"}
         </div>
-        <div className="text-sm">{`${ticket.carNumber} | ${ticket.carModel}`}</div>
-      </div>
-      <div className="flex justify-between items-center">
-        <div>
-          <div>{`Price: ${ticket.price}`}</div>
-          <div
-            className={` py-1 ${
-              ticket.isCredit
-                ? "bg-red-100 text-red-500"
-                : "bg-green-100 text-green-500"
-            }`}
-          >{`Paid: ${ticket.pricePaid}`}</div>
-        </div>
-        <div className="text-lg uppercase">{`${getWashTypeLabel(
+        <div className="text-sm">{` ${ticket.carModel} | ${ticket.carNumber}`}</div>
+        <div className="text-sm">{`${getWashTypeLabel(
           ticket.washType as WashType
         )} Wash`}</div>
       </div>
       <div className="flex justify-between items-center">
-        <div className="text-sm">
-          {dayjs(ticket.createdAt).format(TABLE_DATE_FORMAT)}
+        <div>
+          <div
+            className={`min-w-36 p-2 grid grid-cols-3 rounded-3xl ${
+              ticket.isCredit
+                ? ticket.pricePaid === 0
+                  ? "bg-red-200 text-red-500 border-red-500 border-[0.5px]"
+                  : "bg-yellow-400 text-yellow-800 border-yellow-800 border-[0.5px]"
+                : "bg-green-100 text-green-500 border-green-500 border-[0.5px]"
+            }`}
+          >
+            {ticket.paymentMethod && (
+              <div className="col-span-1">
+                <Image
+                  src={getPaymentImagePath(ticket.paymentMethod) as string}
+                  alt="payment"
+                  width={30}
+                  height={30}
+                />
+              </div>
+            )}
+            <div
+              className={`${
+                ticket.paymentMethod
+                  ? "col-span-2"
+                  : "col-span-3 justify-center"
+              } flex items-center`}
+            >{`Price: ${ticket.price}`}</div>
+          </div>
         </div>
       </div>
     </div>
