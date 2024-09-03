@@ -91,14 +91,32 @@ export async function POST(req: Request): Promise<Response> {
       },
       {
         $lookup: {
-          from: "users",
-          localField: "createdBy",
-          foreignField: "_id",
-          as: "entryBy",
+          from: "transactions",
+          localField: "_id",
+          foreignField: "ticketTransacted.ticketId",
+          as: "transactions",
         },
       },
       { $unwind: { path: "$client", preserveNullAndEmptyArrays: true } },
-      { $unwind: { path: "$entryBy", preserveNullAndEmptyArrays: true } },
+      // { $unwind: { path: "$transactions", preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          paymentMethod: {
+            $arrayElemAt: [
+              {
+                $reverseArray: {
+                  $map: {
+                    input: "$transactions",
+                    as: "transaction",
+                    in: "$$transaction.paymentMethod",
+                  },
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
       {
         $facet: {
           totalCount: [
@@ -125,7 +143,7 @@ export async function POST(req: Request): Promise<Response> {
             },
             {
               $project: {
-                _id: 0,
+                _id: 1,
                 carNumber: 1,
                 createdAt: 1,
                 carModel: 1,
@@ -134,7 +152,7 @@ export async function POST(req: Request): Promise<Response> {
                 pricePaid: 1,
                 isCredit: 1,
                 "client.name": 1,
-                "entryBy.name": 1,
+                paymentMethod: 1,
               },
             },
             { $skip: ITEMS_PER_PAGE * (page - 1) },
@@ -149,6 +167,7 @@ export async function POST(req: Request): Promise<Response> {
         },
       },
     ]);
+    console.log(result[0]);
     const response = {
       returnedTickets: result[0].tickets.length ?? 0,
       ...result[0],

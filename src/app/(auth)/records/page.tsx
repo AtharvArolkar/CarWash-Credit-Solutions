@@ -13,6 +13,10 @@ import { TABLE_DATE_FORMAT } from "@/lib/constants";
 import { apiRoutes } from "@/lib/routes";
 import { ApiMethod } from "@/types/common";
 import { GetTicketsPayload, TicketReponse, WashType } from "@/types/ticket";
+import gpay from "/public/gpay.png";
+import cash from "/public/cash.png";
+import Image, { StaticImageData } from "next/image";
+import { PaymentMethod } from "@/types/transaction";
 
 interface RecordsSearchParams {
   search?: string;
@@ -54,7 +58,6 @@ function RecordCard({
         )} Wash`}</div>
       </div>
       <div className="flex justify-between items-center">
-        <div>{ticket.entryBy?.name ?? "-"}</div>
         <div className="text-sm">
           {dayjs(ticket.createdAt).format(TABLE_DATE_FORMAT)}
         </div>
@@ -73,6 +76,17 @@ export default function Records({
       <RecordsList searchParams={searchParams} />
     </Suspense>
   );
+}
+
+function getPaymentImagePath(paymentMethod: string): StaticImageData | "" {
+  switch (paymentMethod) {
+    case PaymentMethod.cash:
+      return cash;
+    case PaymentMethod.gpay:
+      return gpay;
+    default:
+      return "";
+  }
 }
 
 async function RecordsList({
@@ -107,7 +121,7 @@ async function RecordsList({
     authToken?.accessToken,
     payload
   );
-
+  console.log(authToken?.accessToken);
   const getWashTypeLabel = (washTypeValue: WashType): string => {
     switch (washTypeValue) {
       case WashType.bodyWash:
@@ -151,8 +165,8 @@ async function RecordsList({
                   <TableHeader>Wash Type</TableHeader>
                   <TableHeader>Price</TableHeader>
                   <TableHeader>Price Paid</TableHeader>
+                  <TableHeader>Payment Method</TableHeader>
                   <TableHeader>Is Credit</TableHeader>
-                  <TableHeader>Created By</TableHeader>
                   <TableHeader>Created At</TableHeader>
                 </tr>
               </thead>
@@ -172,6 +186,24 @@ async function RecordsList({
                         <TableDataCell>{ticket.price}</TableDataCell>
                         <TableDataCell>{ticket.pricePaid}</TableDataCell>
                         <TableDataCell>
+                          <>
+                            {ticket.paymentMethod ? (
+                              <Image
+                                src={
+                                  getPaymentImagePath(
+                                    ticket.paymentMethod
+                                  ) as string
+                                }
+                                alt="payment"
+                                width={40}
+                                height={40}
+                              />
+                            ) : (
+                              "-"
+                            )}
+                          </>
+                        </TableDataCell>
+                        <TableDataCell>
                           <div
                             className={`rounded-sm p-[1px] text-[12px] w-8 flex justify-center ${
                               ticket.isCredit
@@ -181,9 +213,6 @@ async function RecordsList({
                           >
                             {ticket.isCredit ? "Yes" : "No"}
                           </div>
-                        </TableDataCell>
-                        <TableDataCell>
-                          {ticket.entryBy?.name ?? ""}
                         </TableDataCell>
                         <TableDataCell>
                           {dayjs(ticket.createdAt).format(TABLE_DATE_FORMAT)}

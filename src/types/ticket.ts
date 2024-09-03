@@ -34,9 +34,7 @@ export interface TicketReponse {
   client: {
     name: string;
   };
-  entryBy: {
-    name: string;
-  };
+  paymentMethod?: string;
 }
 
 export interface GetTicketsResposne {
