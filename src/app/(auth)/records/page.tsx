@@ -5,6 +5,8 @@ import { ReactElement, ReactNode, Suspense } from "react";
 import { auth } from "@/auth";
 import FilterRecords from "@/components/filter-records";
 import SuspenseLoading from "@/components/suspense-loading";
+import TableDataCell from "@/components/table-body";
+import TableHeader from "@/components/table-header";
 import { Button } from "@/components/ui/button";
 import { callApi } from "@/helpers/api-service";
 import { TABLE_DATE_FORMAT } from "@/lib/constants";
@@ -19,25 +21,45 @@ interface RecordsSearchParams {
   endDate?: string;
 }
 
-function TableHeader({ children }: { children: ReactNode }): ReactElement {
+function RecordCard({
+  ticket,
+  getWashTypeLabel,
+}: {
+  ticket: TicketReponse;
+  getWashTypeLabel: (washTypeValue: WashType) => string;
+}): ReactElement {
   return (
-    <th
-      scope="col"
-      className="px-6 py-3 text-start text-sm font-medium text-gray-500 dark:text-neutral-500"
+    <div
+      className={`p-4 border-[0.5px] my-1 border-y-gray-200 rounded-sm flex flex-col gap-4`}
     >
-      {children}
-    </th>
-  );
-}
-
-function TableDataCell({ children }: { children: ReactNode }): ReactElement {
-  return (
-    <td
-      scope="col"
-      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200"
-    >
-      {children}
-    </td>
+      <div className="flex justify-between items-center">
+        <div className="font-bold text-lg">
+          {ticket.client?.name ?? "Client"}
+        </div>
+        <div className="text-sm">{`${ticket.carNumber} | ${ticket.carModel}`}</div>
+      </div>
+      <div className="flex justify-between items-center">
+        <div>
+          <div>{`Price: ${ticket.price}`}</div>
+          <div
+            className={` py-1 ${
+              ticket.isCredit
+                ? "bg-red-100 text-red-500"
+                : "bg-green-100 text-green-500"
+            }`}
+          >{`Paid: ${ticket.pricePaid}`}</div>
+        </div>
+        <div className="text-lg uppercase">{`${getWashTypeLabel(
+          ticket.washType as WashType
+        )} Wash`}</div>
+      </div>
+      <div className="flex justify-between items-center">
+        <div>{ticket.entryBy?.name ?? "-"}</div>
+        <div className="text-sm">
+          {dayjs(ticket.createdAt).format(TABLE_DATE_FORMAT)}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -120,7 +142,7 @@ async function RecordsList({
             </div>
           </div>
           <div className="overflow-x-scroll sticky top-80  sm:-z-10">
-            <table className="table-fixed min-w-full divide-y overflow-x-auto divide-gray-200 dark:divide-neutral-700 border-20 border-gray-100 rounded-md overflow-y-scroll  max-sm:hidden">
+            <table className="table-fixed min-w-full divide-y overflow-x-auto divide-gray-200 dark:divide-neutral-700 border-20 border-gray-100 rounded-md overflow-y-scroll  max-sm:hidden no-scrollbar">
               <thead className="bg-gray-100 rounded-t-md h-16 sticky top-0 ">
                 <tr>
                   <TableHeader>Name</TableHeader>
@@ -134,7 +156,7 @@ async function RecordsList({
                   <TableHeader>Created At</TableHeader>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 sm:overflow-y-scroll  overflow-x-scroll">
+              <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 sm:overflow-y-scroll  overflow-x-scroll no-scrollbar">
                 {recordsList.data.tickets.map(
                   (ticket: TicketReponse, key: number) => {
                     return (
@@ -178,38 +200,11 @@ async function RecordsList({
           {recordsList.data.tickets.map(
             (ticket: TicketReponse, key: number) => {
               return (
-                <div
+                <RecordCard
+                  ticket={ticket}
+                  getWashTypeLabel={getWashTypeLabel}
                   key={key}
-                  className={`p-4 border-[0.5px] my-1 border-y-gray-200 rounded-sm flex flex-col gap-4`}
-                >
-                  <div className="flex justify-between items-center">
-                    <div className="font-bold text-lg">
-                      {ticket.client?.name ?? "Client"}
-                    </div>
-                    <div className="text-sm">{`${ticket.carNumber} | ${ticket.carModel}`}</div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div>{`Price: ${ticket.price}`}</div>
-                      <div
-                        className={` py-1 ${
-                          ticket.isCredit
-                            ? "bg-red-100 text-red-500"
-                            : "bg-green-100 text-green-500"
-                        }`}
-                      >{`Paid: ${ticket.pricePaid}`}</div>
-                    </div>
-                    <div className="text-lg uppercase">{`${getWashTypeLabel(
-                      ticket.washType as WashType
-                    )} Wash`}</div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <div>{ticket.entryBy?.name ?? "-"}</div>
-                    <div className="text-sm">
-                      {dayjs(ticket.createdAt).format(TABLE_DATE_FORMAT)}
-                    </div>
-                  </div>
-                </div>
+                />
               );
             }
           )}

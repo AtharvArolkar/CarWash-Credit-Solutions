@@ -1,16 +1,16 @@
 import { ReactElement, ReactNode } from "react";
 
-export default function TableHeader({
+export default function TableDataCell({
   children,
 }: {
   children: ReactNode;
 }): ReactElement {
   return (
-    <th
+    <td
       scope="col"
-      className="px-6 py-3 text-start text-sm font-medium text-gray-500 dark:text-neutral-500"
+      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200"
     >
       {children}
-    </th>
+    </td>
   );
 }
