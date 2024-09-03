@@ -1,6 +1,9 @@
+import cash from "/public/cash.png";
+import gpay from "/public/gpay.png";
 import dayjs from "dayjs";
 import { Plus } from "lucide-react";
-import { ReactElement, ReactNode, Suspense } from "react";
+import Image, { StaticImageData } from "next/image";
+import { ReactElement, Suspense } from "react";
 
 import { auth } from "@/auth";
 import FilterRecords from "@/components/filter-records";
@@ -13,9 +16,6 @@ import { TABLE_DATE_FORMAT } from "@/lib/constants";
 import { apiRoutes } from "@/lib/routes";
 import { ApiMethod } from "@/types/common";
 import { GetTicketsPayload, TicketReponse, WashType } from "@/types/ticket";
-import gpay from "/public/gpay.png";
-import cash from "/public/cash.png";
-import Image, { StaticImageData } from "next/image";
 import { PaymentMethod } from "@/types/transaction";
 
 interface RecordsSearchParams {
