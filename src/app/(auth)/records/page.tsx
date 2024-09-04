@@ -183,7 +183,6 @@ async function RecordsList({
                   <TableHeader>Created At</TableHeader>
                 </tr>
               </thead>
-
               <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 sm:overflow-y-scroll  overflow-x-scroll no-scrollbar">
                 {recordsList.data.tickets.map(
                   (ticket: TicketReponse, key: number) => {
@@ -213,7 +212,7 @@ async function RecordsList({
                                 height={40}
                               />
                             ) : (
-                              "-"
+                              ""
                             )}
                           </>
                         </TableDataCell>

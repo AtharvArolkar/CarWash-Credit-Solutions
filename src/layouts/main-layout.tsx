@@ -13,7 +13,7 @@ export default function MainLayout({
       <aside className=" order-2 sm:order-1 max-sm:row-span-1 sm:col-span-2">
         <NavigationPanel />
       </aside>
-      <section className="order-1 sm:order-2 max-sm:row-span-11 sm:col-span-10 sm:overflow-y-scroll p-4">
+      <section className="order-1 sm:order-2 max-sm:row-span-11 sm:col-span-10 sm:overflow-y-scroll p-4 sm:shadow-xl sm:rounded-l-lg">
         {children}
       </section>
     </div>
