@@ -7,6 +7,7 @@ import { ReactElement, Suspense } from "react";
 
 import { auth } from "@/auth";
 import FilterRecords from "@/components/filter-records";
+import NoRecord from "@/components/no-records";
 import SuspenseLoading from "@/components/suspense-loading";
 import TableDataCell from "@/components/table-body";
 import TableHeader from "@/components/table-header";
@@ -158,8 +159,8 @@ async function RecordsList({
             <span className="max-sm:hidden">Add New Records</span>
           </Button>
         </div>
-        <div className="overflow-y rounded-sm border-b-[1px] sticky sm:top-20 top-0 sm:-z-10">
-          <div className="h-20 max-sm:h-auto items-center sm:px-6 grid grid-cols-12 sticky top-20 border-t-[1px] bg-white">
+        <div className="overflow-y rounded-sm sticky sm:top-20 top-0 sm:-z-10">
+          <div className="h-20 max-sm:h-auto items-center sm:px-6 grid grid-cols-12 sticky sm:top-20 border-t-[1px] bg-white">
             <div className="col-span-2 text-xl text-gray-600 font-bold max-sm:hidden"></div>
             <div className="lg:col-span-10 col-span-12 bg-white">
               <FilterRecords
@@ -167,7 +168,7 @@ async function RecordsList({
               />
             </div>
           </div>
-          <div className="overflow-x-scroll sticky top-80  sm:-z-10">
+          <div className="overflow-x-scroll sticky top-80  sm:-z-10 w-full no-scrollbar">
             <table className="table-fixed min-w-full divide-y overflow-x-auto divide-gray-200 dark:divide-neutral-700 border-20 border-gray-100 rounded-md overflow-y-scroll  max-sm:hidden no-scrollbar">
               <thead className="bg-gray-100 rounded-t-md h-16 sticky top-0 ">
                 <tr>
@@ -182,6 +183,7 @@ async function RecordsList({
                   <TableHeader>Created At</TableHeader>
                 </tr>
               </thead>
+
               <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 sm:overflow-y-scroll  overflow-x-scroll no-scrollbar">
                 {recordsList.data.tickets.map(
                   (ticket: TicketReponse, key: number) => {
@@ -235,6 +237,7 @@ async function RecordsList({
                 )}
               </tbody>
             </table>
+            {recordsList.data.tickets.length === 0 && <NoRecord />}
           </div>
         </div>
         <div className="sm:hidden -z-20">
