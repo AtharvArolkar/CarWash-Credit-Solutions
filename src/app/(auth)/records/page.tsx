@@ -37,7 +37,7 @@ function RecordCard({
     <div
       className={`p-4 border-[0.5px] my-1 border-y-gray-200 rounded-sm flex justify-between gap-4`}
     >
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 w-full">
         <div className="font-bold text-lg">
           {ticket.client?.name ?? "Client"}
         </div>
@@ -46,35 +46,27 @@ function RecordCard({
           ticket.washType as WashType
         )} Wash`}</div>
       </div>
-      <div className="flex justify-between items-center">
-        <div>
-          <div
-            className={`min-w-36 p-2 grid grid-cols-3 rounded-3xl ${
-              ticket.isCredit
-                ? ticket.pricePaid === 0
-                  ? "bg-red-200 text-red-500 border-red-500 border-[0.5px]"
-                  : "bg-yellow-400 text-yellow-800 border-yellow-800 border-[0.5px]"
-                : "bg-green-100 text-green-500 border-green-500 border-[0.5px]"
-            }`}
-          >
-            {ticket.paymentMethod && (
-              <div className="col-span-1">
-                <Image
-                  src={getPaymentImagePath(ticket.paymentMethod) as string}
-                  alt="payment"
-                  width={30}
-                  height={30}
-                />
-              </div>
-            )}
-            <div
-              className={`${
-                ticket.paymentMethod
-                  ? "col-span-2"
-                  : "col-span-3 justify-center"
-              } flex items-center`}
-            >{`Price: ${ticket.price}`}</div>
-          </div>
+      <div className="col-span-1 flex justify-center items-center w-20">
+        {ticket.paymentMethod && (
+          <Image
+            src={getPaymentImagePath(ticket?.paymentMethod) as string}
+            alt="payment"
+            width={30}
+            height={30}
+          />
+        )}
+      </div>
+      <div className="flex justify-center items-center w-full p-1">
+        <div
+          className={`p-3 rounded-3xl flex items-center justify-center font-bold text-sm ${
+            ticket.isCredit
+              ? ticket.pricePaid === 0
+                ? "bg-red-200 text-red-500 border-red-500 border-[0.5px]"
+                : "bg-yellow-200 text-yellow-800 border-yellow-800 border-[0.5px]"
+              : "bg-green-100 text-green-500 border-green-500 border-[0.5px]"
+          }`}
+        >
+          {`Price: ${ticket.price}`}
         </div>
       </div>
     </div>

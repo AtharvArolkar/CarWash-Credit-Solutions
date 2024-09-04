@@ -116,7 +116,8 @@ export default function FilterRecords({
         }`}
       >
         <Switch
-          id="airplane-mode"
+          className="data-[state=checked]:bg-[#3458D6]"
+          color="#3458D6"
           checked={isCreditFilter}
           onCheckedChange={setIscreditFilter}
         />
