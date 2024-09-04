@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 
 import { verifyJWT } from "@/helpers/jwt-verify";
 import { createApiResponse } from "@/lib/api-response";
-import { ITEMS_PER_PAGE, STATUS_CODES } from "@/lib/constants";
+import { ITEMS_PER_PAGE, RECORDS_QUERY, STATUS_CODES } from "@/lib/constants";
 import dbConnect from "@/lib/db-connect";
 import TicketModel from "@/models/ticket.model";
 import UserModel from "@/models/user.model";
@@ -39,22 +39,30 @@ export async function POST(req: Request): Promise<Response> {
     const requestPayload = await req.json();
 
     const {
-      page,
-      startDate: start,
-      endDate: end,
-      search: searchByNameAndCarnumber,
+      [RECORDS_QUERY.PAGE]: page,
+      [RECORDS_QUERY.START_DATE]: start,
+      [RECORDS_QUERY.END_DATE]: end,
+      [RECORDS_QUERY.SEARCH]: searchByNameAndCarnumber,
+      [RECORDS_QUERY.HIDE_CREDITS]: hideCredits,
     } = requestPayload;
     if (!page) {
       throw new Error("Invalid request paramters.");
     }
 
-    let dateQuery: { createdAt: { $gte?: Date; $lte?: Date } } = {
+    let filterQuery: {
+      createdAt: { $gte?: Date; $lte?: Date };
+      isCredit?: boolean;
+    } = {
       createdAt: {},
     };
+
+    if (hideCredits) {
+      filterQuery.isCredit = !hideCredits;
+    }
     if (start && end) {
       const startOfStartDate = dayjs.unix(start).startOf("day").toDate();
       const endOfEndDate = dayjs.unix(end).endOf("day").toDate();
-      dateQuery.createdAt = {
+      filterQuery.createdAt = {
         $gte: startOfStartDate,
         $lte: endOfEndDate,
       };
@@ -64,7 +72,7 @@ export async function POST(req: Request): Promise<Response> {
       const startDate = dayjs.unix(start).toDate();
       const startOfStartDate = dayjs(startDate).startOf("day").toDate();
       const endfStartDate = dayjs(startDate).endOf("day").toDate();
-      dateQuery.createdAt = {
+      filterQuery.createdAt = {
         $gte: startOfStartDate,
         $lte: endfStartDate,
       };
@@ -72,14 +80,14 @@ export async function POST(req: Request): Promise<Response> {
       const todaysDate = dayjs();
       const startOfTodaysDate = dayjs(todaysDate).startOf("day").toDate();
       const endfTodaysDate = dayjs(todaysDate).endOf("day").toDate();
-      dateQuery.createdAt = {
+      filterQuery.createdAt = {
         $gte: startOfTodaysDate,
         $lte: endfTodaysDate,
       };
     }
     const searchString = searchByNameAndCarnumber ?? "";
     const result = await TicketModel.aggregate([
-      { $match: { ...dateQuery } },
+      { $match: { ...filterQuery } },
       {
         $lookup: {
           from: "users",
@@ -90,14 +98,31 @@ export async function POST(req: Request): Promise<Response> {
       },
       {
         $lookup: {
-          from: "users",
-          localField: "createdBy",
-          foreignField: "_id",
-          as: "entryBy",
+          from: "transactions",
+          localField: "_id",
+          foreignField: "ticketTransacted.ticketId",
+          as: "transactions",
         },
       },
       { $unwind: { path: "$client", preserveNullAndEmptyArrays: true } },
-      { $unwind: { path: "$entryBy", preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          paymentMethod: {
+            $arrayElemAt: [
+              {
+                $reverseArray: {
+                  $map: {
+                    input: "$transactions",
+                    as: "transaction",
+                    in: "$$transaction.paymentMethod",
+                  },
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
       {
         $facet: {
           totalCount: [
@@ -133,7 +158,7 @@ export async function POST(req: Request): Promise<Response> {
                 pricePaid: 1,
                 isCredit: 1,
                 "client.name": 1,
-                "entryBy.name": 1,
+                paymentMethod: 1,
               },
             },
             { $skip: ITEMS_PER_PAGE * (page - 1) },

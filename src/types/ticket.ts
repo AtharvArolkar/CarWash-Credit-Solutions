@@ -21,6 +21,7 @@ export interface GetTicketsPayload {
   startDate?: number;
   endDate?: number;
   search?: string;
+  credits?: boolean;
 }
 
 export interface TicketReponse {
@@ -34,12 +35,10 @@ export interface TicketReponse {
   client: {
     name: string;
   };
-  entryBy: {
-    name: string;
-  };
+  paymentMethod?: string;
 }
 
-export interface GetTicketsReposne {
+export interface GetTicketsResposne {
   returnedTickets: number;
   totalTickets?: number;
   tickets: TicketReponse[];

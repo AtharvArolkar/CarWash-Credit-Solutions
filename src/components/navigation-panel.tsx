@@ -8,8 +8,8 @@ import {
   SquareKanban,
   User,
 } from "lucide-react";
-import { Session } from "next-auth";
-import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { Url } from "next/dist/shared/lib/router/router";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -17,10 +17,11 @@ import { MouseEventHandler, ReactElement, useEffect, useState } from "react";
 
 import { isUserAdmin, isUserEmployee } from "@/helpers/auth";
 import { logOut } from "@/helpers/sign-out";
+import { RECORDS_QUERY } from "@/lib/constants";
 import { paths } from "@/lib/routes";
 
 interface ListItemProps {
-  path?: string;
+  path?: Url;
   className?: string;
   children: ReactElement | ReactElement[];
   onClick?: MouseEventHandler<HTMLLIElement>;
@@ -33,10 +34,14 @@ function ListItem({
   onClick,
 }: ListItemProps): ReactElement {
   const pathName = usePathname();
+  const checkPathName = (): boolean => {
+    return path === pathName || path?.pathname === pathName;
+  };
+
   return (
     <li
       className={`${className} flex items-center text-white sm:hover:text-lg sm:p-2 sm:hover:rounded-sm sm:hover:mr-2 transition-all sm:w-auto w-full sm:my-5 max-sm:justify-center max-sm:p-1  ${
-        path === pathName
+        checkPathName()
           ? "max-sm:border-t-[3px] max-sm:border-t-slate-200 sm:bg-white sm:rounded-sm sm:mr-2"
           : ""
       }`}
@@ -45,7 +50,7 @@ function ListItem({
       {path ? (
         <Link
           className={`flex items-center max-sm:flex-col max-sm:p-0 sm:w-full ${
-            path === pathName ? "sm:text-[#3458D6]" : ""
+            checkPathName() ? "sm:text-[#3458D6]" : ""
           }`}
           href={path}
         >
@@ -59,17 +64,10 @@ function ListItem({
 }
 
 export default function NavigationPanel(): ReactElement {
-  const [authUser, setAuthUser] = useState<Session | null>(null);
+  const { data: authUser } = useSession();
   const handleLogout = async (): Promise<void> => {
     await logOut();
   };
-
-  useEffect(() => {
-    (async function () {
-      const session = await getSession();
-      setAuthUser(session);
-    })();
-  }, []);
 
   return (
     <nav
@@ -96,7 +94,7 @@ export default function NavigationPanel(): ReactElement {
         <ul className="sm:h-full sm:p-1 flex flex-row sm:block sm:mt-3  max-sm:h-full">
           <ListItem
             path={paths.viewProfile}
-            className="sm:pl-5 fill-transparent group"
+            className="sm:pl-5 fill-transparent group max-sm:order-5"
           >
             <User
               className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
@@ -111,7 +109,7 @@ export default function NavigationPanel(): ReactElement {
           </ListItem>
           <ListItem
             path={paths.home}
-            className="sm:pl-5 fill-transparent group"
+            className="sm:pl-5 fill-transparent group max-sm:order-2"
           >
             <LayoutDashboard
               className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8 "
@@ -121,8 +119,11 @@ export default function NavigationPanel(): ReactElement {
           </ListItem>
           {isUserEmployee(authUser) && (
             <ListItem
-              path={paths.records}
-              className="sm:pl-5 fill-transparent group"
+              path={{
+                pathname: `${paths.records}`,
+                query: { [RECORDS_QUERY.HIDE_CREDITS]: "true" },
+              }}
+              className="sm:pl-5 fill-transparent group max-sm:order-3"
             >
               <SquareKanban
                 className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
@@ -134,7 +135,7 @@ export default function NavigationPanel(): ReactElement {
           {isUserEmployee(authUser) && (
             <ListItem
               path={paths.credits}
-              className="sm:pl-5 fill-transparent  group"
+              className="sm:pl-5 fill-transparent  group max-sm:order-4"
             >
               <BadgeCent
                 className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
@@ -146,7 +147,7 @@ export default function NavigationPanel(): ReactElement {
           {isUserAdmin(authUser) && (
             <ListItem
               path={paths.manageUsers}
-              className="sm:pl-5 fill-transparent group"
+              className="sm:pl-5 fill-transparent group max-sm:order-1"
             >
               <Contact
                 className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"

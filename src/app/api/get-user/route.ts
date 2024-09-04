@@ -1,6 +1,7 @@
 import { createApiResponse } from "@/lib/api-response";
 import { STATUS_CODES } from "@/lib/constants";
 import dbConnect from "@/lib/db-connect";
+import { isStringFiniteNumber } from "@/lib/utils";
 import UserModel from "@/models/user.model";
 
 export async function POST(req: Request): Promise<Response> {
@@ -12,7 +13,7 @@ export async function POST(req: Request): Promise<Response> {
       $or: [
         { email: identifier },
         {
-          phoneNumber: Number.isFinite(Number(identifier))
+          phoneNumber: isStringFiniteNumber(identifier)
             ? Number(identifier)
             : "",
         },
