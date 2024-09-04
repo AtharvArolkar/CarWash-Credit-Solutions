@@ -14,6 +14,7 @@ export const STATUS_CODES = {
 export const LOGIN_REQUIRED_MESSAGE =
   "Please login again as your role was changed";
 
+// TODO: Set to appropriate number while deploying
 export const ITEMS_PER_PAGE = 10;
 
 export const TABLE_DATE_FORMAT = "DD/MM/YYYY";
