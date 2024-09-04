@@ -34,10 +34,14 @@ function ListItem({
   onClick,
 }: ListItemProps): ReactElement {
   const pathName = usePathname();
+  const checkPathName = (): boolean => {
+    return path === pathName || path?.pathname === pathName;
+  };
+
   return (
     <li
       className={`${className} flex items-center text-white sm:hover:text-lg sm:p-2 sm:hover:rounded-sm sm:hover:mr-2 transition-all sm:w-auto w-full sm:my-5 max-sm:justify-center max-sm:p-1  ${
-        path === pathName
+        checkPathName()
           ? "max-sm:border-t-[3px] max-sm:border-t-slate-200 sm:bg-white sm:rounded-sm sm:mr-2"
           : ""
       }`}
@@ -46,7 +50,7 @@ function ListItem({
       {path ? (
         <Link
           className={`flex items-center max-sm:flex-col max-sm:p-0 sm:w-full ${
-            path === pathName ? "sm:text-[#3458D6]" : ""
+            checkPathName() ? "sm:text-[#3458D6]" : ""
           }`}
           href={path}
         >
