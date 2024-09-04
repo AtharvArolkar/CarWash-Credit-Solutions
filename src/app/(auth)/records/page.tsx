@@ -27,6 +27,17 @@ interface RecordsSearchParams {
   [RECORDS_QUERY.HIDE_CREDITS]?: string;
 }
 
+function getPaymentImagePath(paymentMethod: string): StaticImageData | "" {
+  switch (paymentMethod) {
+    case PaymentMethod.cash:
+      return cash;
+    case PaymentMethod.gpay:
+      return gpay;
+    default:
+      return "";
+  }
+}
+
 function RecordCard({
   ticket,
   getWashTypeLabel,
@@ -84,17 +95,6 @@ export default function Records({
       <RecordsList searchParams={searchParams} />
     </Suspense>
   );
-}
-
-function getPaymentImagePath(paymentMethod: string): StaticImageData | "" {
-  switch (paymentMethod) {
-    case PaymentMethod.cash:
-      return cash;
-    case PaymentMethod.gpay:
-      return gpay;
-    default:
-      return "";
-  }
 }
 
 async function RecordsList({

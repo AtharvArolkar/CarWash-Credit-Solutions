@@ -13,15 +13,17 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
+interface DatePickerWithRangeProps {
+  className: string;
+  date: DateRange | undefined;
+  setDate: Dispatch<SetStateAction<DateRange | undefined>>;
+}
+
 export function DatePickerWithRange({
   className,
   date,
   setDate,
-}: {
-  className: string;
-  date: DateRange | undefined;
-  setDate: Dispatch<SetStateAction<DateRange | undefined>>;
-}) {
+}: DatePickerWithRangeProps) {
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>

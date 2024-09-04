@@ -27,6 +27,8 @@ export default function FilterRecords({
 }): ReactElement {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
+  const pathname = usePathname();
+  const { replace } = useRouter();
   const [date, setDate] = useState<DateRange | undefined>({
     from:
       (isStringFiniteNumber(params?.get(RECORDS_QUERY.START_DATE)) &&
@@ -47,8 +49,6 @@ export default function FilterRecords({
   const [isCreditFilter, setIscreditFilter] = useState<boolean>(
     params?.get(RECORDS_QUERY.HIDE_CREDITS) === "true" || false
   );
-  const pathname = usePathname();
-  const { replace } = useRouter();
   const pageNumber = isStringFiniteNumber(searchParams.get(RECORDS_QUERY.PAGE))
     ? Number(searchParams.get(RECORDS_QUERY.PAGE)) || 1
     : 1;
