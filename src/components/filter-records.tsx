@@ -79,7 +79,7 @@ export default function FilterRecords({
     <div className="grid grid-cols-12 lg:grid-cols-11 gap-2 max-sm:grid max-sm:p-2 max-sm:h-1/2 relative">
       <div className="col-span-3 max-sm:col-span-8 max-sm:order-1 sm:order-2">
         <Input
-          className="w-full text-xs"
+          className="w-full max-sm:text-sm sm:text-xs"
           placeholder="Search By Client Name / Car no."
           onChange={(e) => {
             setSearchByNameAndCarNumber(e.target.value);
@@ -132,7 +132,6 @@ export default function FilterRecords({
       </div>
       <div className={`col-span-2 max-sm:col-span-4 max-sm:order-2 sm:order-4`}>
         <Button
-          type="submit"
           className="w-full h-full text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex justify-evenly sm:justify-center sm:gap-1 max-sm:text-xs"
           onClick={handleFilterApply}
         >

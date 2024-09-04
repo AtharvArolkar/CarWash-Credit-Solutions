@@ -88,7 +88,7 @@ export default function NavigationPanel(): ReactElement {
         <ul className="sm:h-full sm:p-1 flex flex-row sm:block sm:mt-3  max-sm:h-full">
           <ListItem
             path={paths.viewProfile}
-            className="sm:pl-5 fill-transparent group"
+            className="sm:pl-5 fill-transparent group max-sm:order-5"
           >
             <User
               className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
@@ -103,7 +103,7 @@ export default function NavigationPanel(): ReactElement {
           </ListItem>
           <ListItem
             path={paths.home}
-            className="sm:pl-5 fill-transparent group"
+            className="sm:pl-5 fill-transparent group max-sm:order-2"
           >
             <LayoutDashboard
               className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8 "
@@ -114,7 +114,7 @@ export default function NavigationPanel(): ReactElement {
           {isUserEmployee(authUser) && (
             <ListItem
               path={paths.records}
-              className="sm:pl-5 fill-transparent group"
+              className="sm:pl-5 fill-transparent group max-sm:order-3"
             >
               <SquareKanban
                 className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
@@ -126,7 +126,7 @@ export default function NavigationPanel(): ReactElement {
           {isUserEmployee(authUser) && (
             <ListItem
               path={paths.credits}
-              className="sm:pl-5 fill-transparent  group"
+              className="sm:pl-5 fill-transparent  group max-sm:order-4"
             >
               <BadgeCent
                 className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
@@ -138,7 +138,7 @@ export default function NavigationPanel(): ReactElement {
           {isUserAdmin(authUser) && (
             <ListItem
               path={paths.manageUsers}
-              className="sm:pl-5 fill-transparent group"
+              className="sm:pl-5 fill-transparent group max-sm:order-1"
             >
               <Contact
                 className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"

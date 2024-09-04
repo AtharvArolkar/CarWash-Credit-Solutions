@@ -59,11 +59,11 @@ function RecordCard({
       <div className="flex justify-center items-center w-full p-1">
         <div
           className={`p-3 rounded-3xl flex items-center justify-center font-bold text-sm ${
-            ticket.isCredit
-              ? ticket.pricePaid === 0
-                ? "bg-red-200 text-red-500 border-red-500 border-[0.5px]"
-                : "bg-yellow-200 text-yellow-800 border-yellow-800 border-[0.5px]"
-              : "bg-green-100 text-green-500 border-green-500 border-[0.5px]"
+            ticket.pricePaid === ticket.price
+              ? "bg-green-100 text-green-500 border-green-500 border-[0.5px]"
+              : ticket.isCredit
+              ? "bg-yellow-200 text-yellow-800 border-yellow-800 border-[0.5px]"
+              : "bg-red-200 text-red-500 border-red-500 border-[0.5px]"
           }`}
         >
           {`Price: ${ticket.price}`}
