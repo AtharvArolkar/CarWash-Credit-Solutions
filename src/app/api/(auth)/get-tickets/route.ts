@@ -43,18 +43,26 @@ export async function POST(req: Request): Promise<Response> {
       startDate: start,
       endDate: end,
       search: searchByNameAndCarnumber,
+      onlyCredits,
     } = requestPayload;
     if (!page) {
       throw new Error("Invalid request paramters.");
     }
-    console.log(page, start, end, searchByNameAndCarnumber);
-    let dateQuery: { createdAt: { $gte?: Date; $lte?: Date } } = {
+
+    let filterQuery: {
+      createdAt: { $gte?: Date; $lte?: Date };
+      isCredit?: boolean;
+    } = {
       createdAt: {},
     };
+
+    if (onlyCredits) {
+      filterQuery.isCredit = onlyCredits;
+    }
     if (start && end) {
       const startOfStartDate = dayjs.unix(start).startOf("day").toDate();
       const endOfEndDate = dayjs.unix(end).endOf("day").toDate();
-      dateQuery.createdAt = {
+      filterQuery.createdAt = {
         $gte: startOfStartDate,
         $lte: endOfEndDate,
       };
@@ -62,10 +70,9 @@ export async function POST(req: Request): Promise<Response> {
       throw new Error("Please provide start date if providing end date.");
     } else if (start) {
       const startDate = dayjs.unix(start).toDate();
-      console.log(startDate);
       const startOfStartDate = dayjs(startDate).startOf("day").toDate();
       const endfStartDate = dayjs(startDate).endOf("day").toDate();
-      dateQuery.createdAt = {
+      filterQuery.createdAt = {
         $gte: startOfStartDate,
         $lte: endfStartDate,
       };
@@ -73,14 +80,14 @@ export async function POST(req: Request): Promise<Response> {
       const todaysDate = dayjs();
       const startOfTodaysDate = dayjs(todaysDate).startOf("day").toDate();
       const endfTodaysDate = dayjs(todaysDate).endOf("day").toDate();
-      dateQuery.createdAt = {
+      filterQuery.createdAt = {
         $gte: startOfTodaysDate,
         $lte: endfTodaysDate,
       };
     }
     const searchString = searchByNameAndCarnumber ?? "";
     const result = await TicketModel.aggregate([
-      { $match: { ...dateQuery } },
+      { $match: { ...filterQuery } },
       {
         $lookup: {
           from: "users",
@@ -98,7 +105,6 @@ export async function POST(req: Request): Promise<Response> {
         },
       },
       { $unwind: { path: "$client", preserveNullAndEmptyArrays: true } },
-      // { $unwind: { path: "$transactions", preserveNullAndEmptyArrays: true } },
       {
         $addFields: {
           paymentMethod: {
@@ -167,7 +173,6 @@ export async function POST(req: Request): Promise<Response> {
         },
       },
     ]);
-    console.log(result[0]);
     const response = {
       returnedTickets: result[0].tickets.length ?? 0,
       ...result[0],

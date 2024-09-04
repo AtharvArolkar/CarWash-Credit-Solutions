@@ -23,6 +23,7 @@ interface RecordsSearchParams {
   page?: string;
   startDate?: string;
   endDate?: string;
+  isCredit?: string;
 }
 
 function RecordCard({
@@ -129,13 +130,16 @@ async function RecordsList({
     payload.endDate = Number(searchParams?.endDate);
   }
 
+  if (searchParams?.isCredit) {
+    payload.onlyCredits = searchParams.isCredit === "true" || false;
+  }
+
   const recordsList = await callApi(
     apiRoutes.getTickets,
     ApiMethod.POST,
     authToken?.accessToken,
     payload
   );
-  console.log(authToken?.accessToken);
   const getWashTypeLabel = (washTypeValue: WashType): string => {
     switch (washTypeValue) {
       case WashType.bodyWash:
@@ -162,8 +166,8 @@ async function RecordsList({
         </div>
         <div className="overflow-y rounded-sm border-b-[1px] sticky sm:top-20 top-0 sm:-z-10">
           <div className="h-20 max-sm:h-auto items-center sm:px-6 grid grid-cols-12 sticky top-20 border-t-[1px] bg-white">
-            <div className="col-span-4 text-xl text-gray-600 font-bold max-sm:hidden"></div>
-            <div className="lg:col-span-8 col-span-12 bg-white">
+            <div className="col-span-2 text-xl text-gray-600 font-bold max-sm:hidden"></div>
+            <div className="lg:col-span-10 col-span-12 bg-white">
               <FilterRecords
                 totalRecords={recordsList.data.totalTickets ?? 0}
               />
