@@ -217,15 +217,7 @@ async function RecordsList({
                           </>
                         </TableDataCell>
                         <TableDataCell>
-                          <div
-                            className={`rounded-sm p-[1px] text-[12px] w-8 flex justify-center ${
-                              ticket.isCredit
-                                ? "bg-red-100 text-red-500"
-                                : "bg-green-100 text-green-500"
-                            }`}
-                          >
-                            {ticket.isCredit ? "Yes" : "No"}
-                          </div>
+                          {ticket.isCredit ? "Yes" : "No"}
                         </TableDataCell>
                         <TableDataCell>
                           {dayjs(ticket.createdAt).format(TABLE_DATE_FORMAT)}

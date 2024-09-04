@@ -9,6 +9,7 @@ import {
   User,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { Url } from "next/dist/shared/lib/router/router";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,10 +17,11 @@ import { MouseEventHandler, ReactElement, useEffect, useState } from "react";
 
 import { isUserAdmin, isUserEmployee } from "@/helpers/auth";
 import { logOut } from "@/helpers/sign-out";
+import { RECORDS_QUERY } from "@/lib/constants";
 import { paths } from "@/lib/routes";
 
 interface ListItemProps {
-  path?: string;
+  path?: Url;
   className?: string;
   children: ReactElement | ReactElement[];
   onClick?: MouseEventHandler<HTMLLIElement>;
@@ -113,7 +115,10 @@ export default function NavigationPanel(): ReactElement {
           </ListItem>
           {isUserEmployee(authUser) && (
             <ListItem
-              path={paths.records}
+              path={{
+                pathname: `${paths.records}`,
+                query: { [RECORDS_QUERY.HIDE_CREDITS]: "true" },
+              }}
               className="sm:pl-5 fill-transparent group max-sm:order-3"
             >
               <SquareKanban
