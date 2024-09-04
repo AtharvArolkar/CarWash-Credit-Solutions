@@ -12,7 +12,8 @@ import { ReactElement, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 import { Switch } from "@/components/ui/switch";
-import { ITEMS_PER_PAGE } from "@/lib/constants";
+import { ITEMS_PER_PAGE, RECORDS_QUERY } from "@/lib/constants";
+import { isStringFiniteNumber } from "@/lib/utils";
 
 import { DatePickerWithRange } from "./date-picker-range";
 import { Button } from "./ui/button";
@@ -24,41 +25,58 @@ export default function FilterRecords({
 }: {
   totalRecords: number;
 }): ReactElement {
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams);
   const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(),
+    from:
+      (isStringFiniteNumber(params?.get(RECORDS_QUERY.START_DATE)) &&
+        dayjs
+          .unix(Number(params?.get(RECORDS_QUERY.START_DATE)) ?? "")
+          .toDate()) ||
+      new Date(),
+    to:
+      (isStringFiniteNumber(params?.get(RECORDS_QUERY.END_DATE)) &&
+        dayjs
+          .unix(Number(params?.get(RECORDS_QUERY.END_DATE)) ?? "")
+          .toDate()) ||
+      undefined,
   });
   const [searchByNameAndCarNumber, setSearchByNameAndCarNumber] =
     useState<string>("");
   const [showMoreFilters, setShowMoreFilters] = useState<boolean>(false);
-  const [isCreditFilter, setIscreditFilter] = useState<boolean>(false);
-  const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams);
+  const [isCreditFilter, setIscreditFilter] = useState<boolean>(
+    params?.get(RECORDS_QUERY.HIDE_CREDITS) === "true" || false
+  );
   const pathname = usePathname();
   const { replace } = useRouter();
-  const pageNumber = Number.isFinite(Number(searchParams.get("page")))
-    ? Number(searchParams.get("page")) || 1
+  const pageNumber = isStringFiniteNumber(searchParams.get(RECORDS_QUERY.PAGE))
+    ? Number(searchParams.get(RECORDS_QUERY.PAGE)) || 1
     : 1;
 
-  if (searchParams.get("page") === "1") {
-    params.delete("page");
+  if (searchParams.get(RECORDS_QUERY.PAGE) === "1") {
+    params.delete(RECORDS_QUERY.PAGE);
     replace(`${pathname}?${params}`);
   }
 
   const handleFilterApply = (): void => {
     if (date?.from) {
-      params.set("startDate", dayjs(date.from).unix().toString());
+      params.set(RECORDS_QUERY.START_DATE, dayjs(date.from).unix().toString());
+    } else {
+      params.delete(RECORDS_QUERY.START_DATE);
     }
     if (date?.to && date.to !== date.from) {
-      params.set("endDate", dayjs(date.to).unix().toString());
+      params.set(RECORDS_QUERY.END_DATE, dayjs(date.to).unix().toString());
+    } else {
+      params.delete(RECORDS_QUERY.END_DATE);
     }
-    params.set("search", searchByNameAndCarNumber);
+    params.set(RECORDS_QUERY.SEARCH, searchByNameAndCarNumber);
     if (searchByNameAndCarNumber === "") {
-      params.delete("search");
+      params.delete(RECORDS_QUERY.SEARCH);
     }
     if (isCreditFilter) {
-      params.set("isCredit", isCreditFilter.toString());
+      params.set(RECORDS_QUERY.HIDE_CREDITS, isCreditFilter.toString());
     } else {
-      params.delete("isCredit");
+      params.delete(RECORDS_QUERY.HIDE_CREDITS);
     }
     replace(`${pathname}?${params}`);
   };
@@ -67,10 +85,10 @@ export default function FilterRecords({
     const params = new URLSearchParams(searchParams);
     switch (direction) {
       case "next":
-        params.set("page", (pageNumber + 1).toString());
+        params.set(RECORDS_QUERY.PAGE, (pageNumber + 1).toString());
         break;
       case "prev":
-        params.set("page", (pageNumber - 1).toString());
+        params.set(RECORDS_QUERY.PAGE, (pageNumber - 1).toString());
         break;
     }
     replace(`${pathname}?${params}`);
@@ -116,12 +134,13 @@ export default function FilterRecords({
         }`}
       >
         <Switch
+          id="credits"
           className="data-[state=checked]:bg-[#3458D6]"
           color="#3458D6"
           checked={isCreditFilter}
           onCheckedChange={setIscreditFilter}
         />
-        <Label htmlFor="airplane-mode">Only credits</Label>
+        <Label htmlFor="credits">Hide credits</Label>
       </div>
       <div className={`col-span-3 max-sm:col-span-9 max-sm:order-3 sm:order-3`}>
         <DatePickerWithRange

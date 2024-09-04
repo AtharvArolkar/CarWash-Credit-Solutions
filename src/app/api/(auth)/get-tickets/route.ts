@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 
 import { verifyJWT } from "@/helpers/jwt-verify";
 import { createApiResponse } from "@/lib/api-response";
-import { ITEMS_PER_PAGE, STATUS_CODES } from "@/lib/constants";
+import { ITEMS_PER_PAGE, RECORDS_QUERY, STATUS_CODES } from "@/lib/constants";
 import dbConnect from "@/lib/db-connect";
 import TicketModel from "@/models/ticket.model";
 import UserModel from "@/models/user.model";
@@ -39,11 +39,11 @@ export async function POST(req: Request): Promise<Response> {
     const requestPayload = await req.json();
 
     const {
-      page,
-      startDate: start,
-      endDate: end,
-      search: searchByNameAndCarnumber,
-      onlyCredits,
+      [RECORDS_QUERY.PAGE]: page,
+      [RECORDS_QUERY.START_DATE]: start,
+      [RECORDS_QUERY.END_DATE]: end,
+      [RECORDS_QUERY.SEARCH]: searchByNameAndCarnumber,
+      [RECORDS_QUERY.HIDE_CREDITS]: hideCredits,
     } = requestPayload;
     if (!page) {
       throw new Error("Invalid request paramters.");
@@ -56,8 +56,8 @@ export async function POST(req: Request): Promise<Response> {
       createdAt: {},
     };
 
-    if (onlyCredits) {
-      filterQuery.isCredit = onlyCredits;
+    if (hideCredits) {
+      filterQuery.isCredit = !hideCredits;
     }
     if (start && end) {
       const startOfStartDate = dayjs.unix(start).startOf("day").toDate();

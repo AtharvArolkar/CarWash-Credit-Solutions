@@ -14,6 +14,14 @@ export const STATUS_CODES = {
 export const LOGIN_REQUIRED_MESSAGE =
   "Please login again as your role was changed";
 
-export const ITEMS_PER_PAGE = 20;
+export const ITEMS_PER_PAGE = 10;
 
 export const TABLE_DATE_FORMAT = "DD/MM/YYYY";
+
+export const RECORDS_QUERY = {
+  SEARCH: "search",
+  PAGE: "page",
+  START_DATE: "startDate",
+  END_DATE: "endDate",
+  HIDE_CREDITS: "credits",
+} as const;

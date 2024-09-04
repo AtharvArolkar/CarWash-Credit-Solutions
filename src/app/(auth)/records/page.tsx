@@ -12,18 +12,19 @@ import TableDataCell from "@/components/table-body";
 import TableHeader from "@/components/table-header";
 import { Button } from "@/components/ui/button";
 import { callApi } from "@/helpers/api-service";
-import { TABLE_DATE_FORMAT } from "@/lib/constants";
+import { RECORDS_QUERY, TABLE_DATE_FORMAT } from "@/lib/constants";
 import { apiRoutes } from "@/lib/routes";
+import { isStringFiniteNumber } from "@/lib/utils";
 import { ApiMethod } from "@/types/common";
 import { GetTicketsPayload, TicketReponse, WashType } from "@/types/ticket";
 import { PaymentMethod } from "@/types/transaction";
 
 interface RecordsSearchParams {
-  search?: string;
-  page?: string;
-  startDate?: string;
-  endDate?: string;
-  isCredit?: string;
+  [RECORDS_QUERY.SEARCH]?: string;
+  [RECORDS_QUERY.PAGE]?: string;
+  [RECORDS_QUERY.START_DATE]?: string;
+  [RECORDS_QUERY.END_DATE]?: string;
+  [RECORDS_QUERY.HIDE_CREDITS]?: string;
 }
 
 function RecordCard({
@@ -106,24 +107,25 @@ async function RecordsList({
     page: 1,
   };
 
-  if (Number.isFinite(Number(searchParams?.page))) {
-    payload.page = Number(searchParams?.page) ?? undefined;
+  if (isStringFiniteNumber(searchParams?.[RECORDS_QUERY.PAGE])) {
+    payload.page = Number(searchParams?.[RECORDS_QUERY.PAGE]) ?? undefined;
   }
 
-  if (searchParams?.search) {
-    payload.search = searchParams.search;
+  if (searchParams?.[RECORDS_QUERY.SEARCH]) {
+    payload.search = searchParams?.[RECORDS_QUERY.SEARCH];
   }
 
-  if (Number.isFinite(Number(searchParams?.startDate))) {
-    payload.startDate = Number(searchParams?.startDate);
+  if (isStringFiniteNumber(searchParams?.[RECORDS_QUERY.START_DATE])) {
+    payload.startDate = Number(searchParams?.[RECORDS_QUERY.START_DATE]);
   }
 
-  if (Number.isFinite(Number(searchParams?.endDate))) {
-    payload.endDate = Number(searchParams?.endDate);
+  if (isStringFiniteNumber(searchParams?.[RECORDS_QUERY.END_DATE])) {
+    payload.endDate = Number(searchParams?.[RECORDS_QUERY.END_DATE]);
   }
 
-  if (searchParams?.isCredit) {
-    payload.onlyCredits = searchParams.isCredit === "true" || false;
+  if (searchParams?.[RECORDS_QUERY.HIDE_CREDITS]) {
+    payload.credits =
+      searchParams?.[RECORDS_QUERY.HIDE_CREDITS] === "true" || false;
   }
 
   const recordsList = await callApi(
