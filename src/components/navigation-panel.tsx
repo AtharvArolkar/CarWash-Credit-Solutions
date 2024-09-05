@@ -8,6 +8,7 @@ import {
   SquareKanban,
   User,
 } from "lucide-react";
+import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -64,8 +65,11 @@ function ListItem({
   );
 }
 
-export default function NavigationPanel(): ReactElement {
-  const { data: authUser } = useSession();
+export default function NavigationPanel({
+  authUser,
+}: {
+  authUser: Session | null;
+}): ReactElement {
   const handleLogout = async (): Promise<void> => {
     await logOut();
   };

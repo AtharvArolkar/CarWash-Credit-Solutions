@@ -139,7 +139,7 @@ async function RecordsList({
 
   return (
     <>
-      <div className="overflow-y-auto drop-shadow-sm rounded-l-md sm:border-2 h-full no-scrollbar">
+      <div className="overflow-y-auto rounded-l-md sm:border-2 h-full no-scrollbar">
         <div className="overflow-y rounded-sm sticky top-0 sm:-z-10">
           <div className="flex justify-between items-center h-20 sticky top-0 bg-white px-4 max-sm:hidden">
             <div className="text-2xl text-gray-600 font-bold  max-sm:hidden">

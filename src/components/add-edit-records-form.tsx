@@ -22,7 +22,7 @@ import { PaymentMethod } from "@/types/transaction";
 import { AddUsersClientObject, User } from "@/types/user";
 
 import { AppModal } from "./app-modal";
-import { Button } from "./ui/button";
+import FormSubmitButton from "./form-button";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -110,6 +110,7 @@ export function AddEditRecordForm({
       // @ts-ignore: Object is possibly 'null'.
       dialogRef.current.click();
     }
+    //eslint-disable-next-line
   }, [state]);
 
   return (
@@ -339,12 +340,10 @@ export function AddEditRecordForm({
         </div>
       </div>
       <div className="flex max-sm:flex-col gap-2 sm:justify-end mt-2">
-        <Button
-          type="submit"
+        <FormSubmitButton
+          name="Add"
           className="max-sm:w-full sm:w-36 h-12 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 flex justify-evenly sm:justify-center sm:gap-1 max-sm:text-xs"
-        >
-          Add
-        </Button>
+        />
       </div>
     </form>
   );
