@@ -51,3 +51,8 @@ export interface JWTPayloadObject extends JWTPayload {
   exp?: number;
   iat?: number;
 }
+
+export interface AddUsersClientObject {
+  _id: string;
+  name: string;
+}

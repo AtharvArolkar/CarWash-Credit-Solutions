@@ -1,5 +1,5 @@
 "use client";
-import { MouseEventHandler, ReactNode } from "react";
+import { MouseEventHandler, ReactElement, ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,7 @@ interface AppModalProps {
   showSubmitButton?: boolean;
   submitButtonText?: string;
   submitButtonHandler?: MouseEventHandler<HTMLButtonElement>;
+  children: ReactElement;
 }
 
 export function AppModal({
@@ -28,10 +29,12 @@ export function AppModal({
   showSubmitButton = true,
   submitButtonText,
   submitButtonHandler,
-}: AppModalProps) {
+  children,
+}: AppModalProps): ReactElement {
   return (
     <Dialog>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="sm:max-w-fit">
         <DialogHeader>
           <DialogTitle>{modalTitle}</DialogTitle>
           {modalDescription && (
