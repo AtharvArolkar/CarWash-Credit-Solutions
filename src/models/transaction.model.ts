@@ -18,7 +18,7 @@ const TransactedTicketSchema: Schema<TransactedTicket> = new Schema({
 });
 
 const TransactionSchema: Schema<Transaction> = new Schema({
-  clientId: { type: Schema.Types.ObjectId, required: true },
+  clientId: { type: Schema.Types.ObjectId, required: false },
   amount: { type: Number, required: [true, "Transaction amount is required"] },
   paymentMethod: {
     type: String,

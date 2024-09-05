@@ -161,6 +161,9 @@ export async function POST(req: Request): Promise<Response> {
                 paymentMethod: 1,
               },
             },
+            {
+              $sort: { createdAt: -1 },
+            },
             { $skip: ITEMS_PER_PAGE * (page - 1) },
             { $limit: ITEMS_PER_PAGE },
           ],

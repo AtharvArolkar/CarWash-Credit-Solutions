@@ -1,9 +1,15 @@
 "use client";
-import { MouseEventHandler, ReactElement, ReactNode } from "react";
+import {
+  MouseEventHandler,
+  MutableRefObject,
+  ReactElement,
+  ReactNode,
+} from "react";
 
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -18,6 +24,7 @@ interface AppModalProps {
   modalContent: ReactNode;
   showSubmitButton?: boolean;
   submitButtonText?: string;
+  dialogRef?: MutableRefObject<null>;
   submitButtonHandler?: MouseEventHandler<HTMLButtonElement>;
   children: ReactElement;
 }
@@ -28,6 +35,7 @@ export function AppModal({
   modalContent,
   showSubmitButton = true,
   submitButtonText,
+  dialogRef,
   submitButtonHandler,
   children,
 }: AppModalProps): ReactElement {
@@ -42,8 +50,8 @@ export function AppModal({
           )}
         </DialogHeader>
         {modalContent}
-        {showSubmitButton && (
-          <DialogFooter>
+        <DialogFooter>
+          {showSubmitButton && (
             <Button
               className="mt-5 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400"
               onClick={submitButtonHandler}
@@ -51,8 +59,15 @@ export function AppModal({
             >
               {submitButtonText}
             </Button>
-          </DialogFooter>
-        )}
+          )}
+          <DialogClose asChild className="hideen">
+            <Button
+              className="hidden h-0"
+              type="submit"
+              ref={dialogRef}
+            ></Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

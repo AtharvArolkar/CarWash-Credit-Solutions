@@ -1,4 +1,5 @@
 import { Document, Types } from "mongoose";
+import { PaymentMethod } from "./transaction";
 
 export interface Ticket extends Document {
   carNumber: string;
@@ -42,4 +43,16 @@ export interface GetTicketsResposne {
   returnedTickets: number;
   totalTickets?: number;
   tickets: TicketReponse[];
+}
+
+export interface AddTicketPayload {
+  carNumber: string;
+  carModel: string;
+  washType: WashType;
+  price: number;
+  pricePaid?: number;
+  paymentMethod?: PaymentMethod;
+  createdBy: string;
+  clientId?: string;
+  isCredit?: boolean;
 }

@@ -3,6 +3,7 @@ export interface FormError {
     [key: string]: string | undefined;
     apiError: string | undefined;
   };
+  success?: boolean;
 }
 
 export enum ApiMethod {

@@ -1,8 +1,17 @@
 "use client";
 import { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import {
+  MutableRefObject,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useFormState } from "react-dom";
+import { toast } from "sonner";
 
+import { addTicket } from "@/actions/addTicket";
 import { callApi } from "@/helpers/api-service";
 import { checkErrorResponse } from "@/helpers/response-checker";
 import { apiRoutes } from "@/lib/routes";
@@ -22,6 +31,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
@@ -33,26 +43,43 @@ interface AddEditRecordProps {
 export default function AddEditRecord({
   children,
 }: AddEditRecordProps): ReactElement {
+  const dialogRef = useRef(null);
   return (
     <AppModal
       modalTitle={"Add New Record"}
-      modalContent={<AddEditRecordForm />}
+      modalContent={<AddEditRecordForm dialogRef={dialogRef} />}
       showSubmitButton={false}
+      dialogRef={dialogRef}
     >
       {children}
     </AppModal>
   );
 }
 
-export function AddEditRecordForm(): ReactElement {
-  const [isCreditUser, setIsCreditUser] = useState<boolean>(false);
-  const [hasPaid, setHasPaid] = useState<boolean>(false);
+export function AddEditRecordForm({
+  dialogRef,
+}: {
+  dialogRef: MutableRefObject<null>;
+}): ReactElement {
   const pricePaidRef = useRef(null);
   const isPaidRef = useRef(null);
-  const [clientUser, setClientUsers] = useState<AddUsersClientObject[]>([]);
+  const [selectedWashType, setSelectedWashType] = useState<string | undefined>(
+    undefined
+  );
   const [amount, setAmount] = useState<string>("");
+  const [isCreditUser, setIsCreditUser] = useState<boolean>(false);
+  const [hasPaid, setHasPaid] = useState<boolean>(false);
   const [amountPaid, setAmountPaid] = useState<string>("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
+    string | undefined
+  >(undefined);
+  const [selectedClient, setSelectedClient] = useState<string | undefined>(
+    undefined
+  );
+
+  const [clientUser, setClientUsers] = useState<AddUsersClientObject[]>([]);
   const authUser = useSession();
+  const [state, formAction] = useFormState(addTicket, null);
   useEffect(() => {
     (async function () {
       try {
@@ -73,8 +100,20 @@ export function AddEditRecordForm(): ReactElement {
     })();
     //eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (state?.errors.apiError) {
+      toast.error(state?.errors.apiError);
+    }
+    if (state?.success) {
+      toast.success("Successfully created a record");
+      // @ts-ignore: Object is possibly 'null'.
+      dialogRef.current.click();
+    }
+  }, [state]);
+
   return (
-    <form>
+    <form action={formAction}>
       <div className="flex max-sm:flex-col gap-2">
         <div className="w-full sm:flex sm:justify-center sm:flex-col pt-1  sm:mb-4">
           <Label htmlFor="carModel" className="mb-1">
@@ -85,11 +124,11 @@ export function AddEditRecordForm(): ReactElement {
             name={"carModel"}
             className={`sm:h-[50px] w-full sm:w-72 text-sm bg-slate-50`}
           />
-          <p className="text-xs text-destructive italic">
-            {/* {state?.errors?.[name]} */}
+          <p className="text-xs text-destructive italic h-2">
+            {state?.errors?.carModel}
           </p>
         </div>
-        <div className="w-full sm:flex sm:justify-center sm:flex-col pt-2  sm:mb-4">
+        <div className="w-full sm:flex sm:justify-center sm:flex-col pt-1  sm:mb-4">
           <Label htmlFor="carNumber" className="mb-1">
             Car Number
           </Label>
@@ -98,8 +137,8 @@ export function AddEditRecordForm(): ReactElement {
             name={"carNumber"}
             className={`sm:h-[50px] w-full  sm:w-72 text-sm bg-slate-50`}
           />
-          <p className="text-xs text-destructive italic">
-            {/* {state?.errors?.[name]} */}
+          <p className="text-xs text-destructive italic h-2">
+            {state?.errors?.carNumber}
           </p>
         </div>
       </div>
@@ -108,12 +147,17 @@ export function AddEditRecordForm(): ReactElement {
           <Label htmlFor="washType" className="mb-1">
             Wash Type
           </Label>
-          <Select name="washType">
+          <Select
+            name="washType"
+            value={selectedWashType}
+            onValueChange={setSelectedWashType}
+          >
             <SelectTrigger className="sm:h-[50px] w-full  sm:w-72 text-sm bg-slate-50">
               <SelectValue placeholder="Select the wash type" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
+                <SelectLabel>Select</SelectLabel>
                 {Object.values(WashType).map((wash) => {
                   return (
                     <SelectItem value={wash} key={wash}>
@@ -124,6 +168,9 @@ export function AddEditRecordForm(): ReactElement {
               </SelectGroup>
             </SelectContent>
           </Select>
+          <p className="text-xs text-destructive italic h-2">
+            {state?.errors?.washType}
+          </p>
         </div>
         <div className="w-full sm:flex sm:justify-center sm:flex-col pt-1  sm:mb-4">
           <Label htmlFor="price" className="mb-1">
@@ -145,8 +192,8 @@ export function AddEditRecordForm(): ReactElement {
               }
             }}
           />
-          <p className="text-xs text-destructive italic">
-            {/* {state?.errors?.[name]} */}
+          <p className="text-xs text-destructive italic h-2">
+            {state?.errors?.price}
           </p>
         </div>
       </div>
@@ -155,11 +202,19 @@ export function AddEditRecordForm(): ReactElement {
         <div className="w-full flex flex-row pt-1 gap-4 sm:mb-4 sm:w-full max-sm:pt-4">
           <div className="flex items-center gap-1">
             <Checkbox
-              id="isCredit"
               checked={isCreditUser}
               onCheckedChange={(value) => {
                 setIsCreditUser(Boolean(value));
+                if (!Boolean(value)) {
+                  // @ts-ignore: Object is possibly 'null'
+                  setSelectedClient("");
+                }
               }}
+            />
+            <input
+              type="hidden"
+              name="isCredit"
+              value={isCreditUser ? "true" : "false"}
             />
             <label
               htmlFor="isCredit"
@@ -170,7 +225,6 @@ export function AddEditRecordForm(): ReactElement {
           </div>
           <div className="flex items-center gap-1">
             <Checkbox
-              id="paid"
               ref={isPaidRef}
               checked={hasPaid}
               onCheckedChange={(value) => {
@@ -180,8 +234,18 @@ export function AddEditRecordForm(): ReactElement {
                   pricePaidRef.current.value = amount;
                   setAmountPaid(amount);
                 }
+                if (!Boolean(value)) {
+                  // @ts-ignore: Object is possibly 'null'.
+                  pricePaidRef.current.value = "";
+                  setSelectedPaymentMethod("");
+                }
               }}
               disabled={!hasPaid && amount === ""}
+            />
+            <input
+              type="hidden"
+              name="paid"
+              value={hasPaid ? "true" : "false"}
             />
             <label
               htmlFor="paid"
@@ -197,7 +261,7 @@ export function AddEditRecordForm(): ReactElement {
           </Label>
           <Input
             ref={pricePaidRef}
-            type={"number"}
+            type="number"
             name={"pricePaid"}
             className={`sm:h-[50px] w-full  sm:w-72 text-sm bg-slate-50`}
             disabled={amount === "" || hasPaid}
@@ -205,18 +269,22 @@ export function AddEditRecordForm(): ReactElement {
               setAmountPaid(e.target.value);
             }}
           />
-          <p className="text-xs text-destructive italic">
-            {/* {state?.errors?.[name]} */}
+          <p className="text-xs text-destructive italic h-2">
+            {state?.errors.pricePaid}
           </p>
         </div>
       </div>
 
       <div className="flex max-sm:flex-col gap-2">
         <div className="w-full sm:flex sm:justify-center sm:flex-col pt-1  sm:mb-4 sm:w-72">
-          <Label htmlFor="paymentType" className="mb-1">
+          <Label htmlFor="paymentMethod" className="mb-1">
             Payment Method
           </Label>
-          <Select name="paymentType">
+          <Select
+            name="paymentMethod"
+            value={selectedPaymentMethod}
+            onValueChange={setSelectedPaymentMethod}
+          >
             <SelectTrigger
               className="sm:h-[50px] w-full  sm:w-72 text-sm bg-slate-50"
               disabled={amountPaid === ""}
@@ -225,6 +293,7 @@ export function AddEditRecordForm(): ReactElement {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
+                <SelectLabel>Select</SelectLabel>
                 {Object.values(PaymentMethod).map((paymentMet) => {
                   return (
                     <SelectItem value={paymentMet} key={paymentMet}>
@@ -235,12 +304,19 @@ export function AddEditRecordForm(): ReactElement {
               </SelectGroup>
             </SelectContent>
           </Select>
+          <p className="text-xs text-destructive italic h-2">
+            {state?.errors?.paymentMethod}
+          </p>
         </div>
         <div className="w-full sm:flex sm:justify-center sm:flex-col pt-1  sm:mb-4">
           <Label htmlFor="creditUser" className="mb-1">
             Select Client
           </Label>
-          <Select name="creditUser">
+          <Select
+            name="creditUser"
+            value={selectedClient}
+            onValueChange={setSelectedClient}
+          >
             <SelectTrigger
               className="sm:h-[50px] w-full  sm:w-72 text-sm bg-slate-50"
               disabled={!isCreditUser}
@@ -248,19 +324,17 @@ export function AddEditRecordForm(): ReactElement {
               <SelectValue placeholder="Select client" />
             </SelectTrigger>
             <SelectContent>
-              <SelectGroup>
-                {clientUser.map((client) => {
-                  return (
-                    <SelectItem value={client._id} key={client._id}>
-                      {client.name}
-                    </SelectItem>
-                  );
-                })}
-              </SelectGroup>
+              {clientUser.map((client) => {
+                return (
+                  <SelectItem value={client._id} key={client._id}>
+                    {client.name}
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
-          <p className="text-xs text-destructive italic">
-            {/* {state?.errors?.[name]} */}
+          <p className="text-xs text-destructive italic h-2">
+            {state?.errors?.creditUser}
           </p>
         </div>
       </div>
@@ -275,5 +349,3 @@ export function AddEditRecordForm(): ReactElement {
     </form>
   );
 }
-
-// add ref for client user
