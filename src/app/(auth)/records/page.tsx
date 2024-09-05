@@ -140,7 +140,7 @@ async function RecordsList({
   return (
     <>
       <div className="overflow-y-auto rounded-l-md sm:border-2 h-full no-scrollbar">
-        <div className="overflow-y rounded-sm sticky top-0 sm:-z-10">
+        <div className="overflow-y rounded-sm sticky top-0">
           <div className="flex justify-between items-center h-20 sticky top-0 bg-white px-4 max-sm:hidden">
             <div className="text-2xl text-gray-600 font-bold  max-sm:hidden">
               Record(s)
@@ -155,7 +155,7 @@ async function RecordsList({
               </Button>
             </AddEditRecord>
           </div>
-          <div className="h-20 max-sm:h-auto items-center sm:px-6 grid grid-cols-12 sticky sm:top-20 border-t-[1px] bg-white">
+          <div className="h-20 max-sm:h-auto items-center sm:px-6 grid grid-cols-12 sticky sm:top-20 sm:border-y-[1px] bg-white">
             <div className="col-span-2 text-xl text-gray-600 font-bold max-sm:hidden"></div>
             <div className="lg:col-span-10 col-span-12 bg-white">
               <FilterRecords
