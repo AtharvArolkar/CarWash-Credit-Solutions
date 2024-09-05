@@ -1,4 +1,4 @@
-const BASE_URL = process.env.HOSTED_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_HOSTED_URL;
 
 export const paths = {
   home: "/",

@@ -47,7 +47,7 @@ export async function POST(req: Request): Promise<Response> {
       carModel,
       washType,
       price: totalTicketAmout,
-      pricePaid,
+      pricePaid = 0,
       paymentMethod,
       clientId,
       createdBy,
@@ -67,6 +67,11 @@ export async function POST(req: Request): Promise<Response> {
       throw new Error("Invalid request paramters.");
     }
 
+    if (pricePaid !== 0) {
+      if (pricePaid > totalTicketAmout) {
+        throw new Error("Price paid cannot be greater than the total amount.");
+      }
+    }
     if (clientId) {
       const clientUser = UserModel.findById({
         _id: new Types.ObjectId(clientId),
@@ -124,7 +129,8 @@ export async function POST(req: Request): Promise<Response> {
         errorResponse.statusCode = STATUS_CODES.NOT_FOUND;
         break;
       }
-      case "Invalid request paramters.": {
+      case "Invalid request paramters.":
+      case "Price paid cannot be greater than the total amount.": {
         errorResponse.message = errorMessage;
         errorResponse.statusCode = STATUS_CODES.BAD_REQUEST;
         break;
