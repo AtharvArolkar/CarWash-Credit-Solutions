@@ -136,6 +136,7 @@ export function AddEditRecordForm(): ReactElement {
             onChange={(e) => {
               setAmount(e.target.value);
               if (hasPaid) {
+                // @ts-ignore: Object is possibly 'null'.
                 pricePaidRef.current.value = e.target.value;
                 setAmountPaid(e.target.value);
               }
@@ -175,7 +176,7 @@ export function AddEditRecordForm(): ReactElement {
               onCheckedChange={(value) => {
                 setHasPaid(Boolean(value));
                 if (Boolean(value)) {
-                  console.log("checked");
+                  // @ts-ignore: Object is possibly 'null'.
                   pricePaidRef.current.value = amount;
                   setAmountPaid(amount);
                 }
