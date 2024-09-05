@@ -18,6 +18,7 @@ export const apiRoutes = {
   changePassword: `${BASE_URL}/api/change-password `,
   checkUser: `${BASE_URL}/api/check-user`,
   getUsers: `${BASE_URL}/api/get-user`,
+  getClientUsers: `${BASE_URL}/api/get-client-users`,
   addTickets: `${BASE_URL}/api/add-tickets`,
   getTickets: `${BASE_URL}/api/get-tickets`,
 } as const;
