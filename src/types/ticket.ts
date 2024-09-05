@@ -21,7 +21,7 @@ export interface GetTicketsPayload {
   startDate?: number;
   endDate?: number;
   search?: string;
-  credits?: boolean;
+  hideCredits?: boolean;
 }
 
 export interface TicketReponse {

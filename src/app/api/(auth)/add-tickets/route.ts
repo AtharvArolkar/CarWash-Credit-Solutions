@@ -51,6 +51,7 @@ export async function POST(req: Request): Promise<Response> {
       paymentMethod,
       clientId,
       createdBy,
+      isCredit = false,
     } = requestPayload;
 
     if (
@@ -60,14 +61,13 @@ export async function POST(req: Request): Promise<Response> {
       !totalTicketAmout ||
       pricePaid === undefined ||
       !createdBy ||
-      (pricePaid !== 0 && !paymentMethod)
+      (pricePaid !== 0 && !paymentMethod) ||
+      (isCredit && !clientId)
     ) {
       throw new Error("Invalid request paramters.");
     }
 
-    let isCredit = false;
-    if (pricePaid < totalTicketAmout) {
-      if (!clientId) throw new Error("Invalid request paramters.");
+    if (clientId) {
       const clientUser = UserModel.findById({
         _id: new Types.ObjectId(clientId),
       });
@@ -76,7 +76,6 @@ export async function POST(req: Request): Promise<Response> {
           "No client found, Please register this client before entering the record."
         );
       }
-      isCredit = true;
     }
 
     const newTicket = new TicketModel({

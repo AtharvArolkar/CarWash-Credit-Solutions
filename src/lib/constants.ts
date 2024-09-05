@@ -24,5 +24,5 @@ export const RECORDS_QUERY = {
   PAGE: "page",
   START_DATE: "startDate",
   END_DATE: "endDate",
-  HIDE_CREDITS: "credits",
+  HIDE_CREDITS: "hideCredits",
 } as const;

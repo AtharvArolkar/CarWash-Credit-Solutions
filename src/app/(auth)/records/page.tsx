@@ -125,7 +125,7 @@ async function RecordsList({
   }
 
   if (searchParams?.[RECORDS_QUERY.HIDE_CREDITS]) {
-    payload.credits =
+    payload.hideCredits =
       searchParams?.[RECORDS_QUERY.HIDE_CREDITS] === "true" || false;
   }
 
