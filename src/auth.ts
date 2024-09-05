@@ -86,7 +86,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           const payload: GetUserPayload = { identifier };
           const response = await callApi<ApiResponse>(
-            apiRoutes.getUser,
+            apiRoutes.checkUser,
             ApiMethod.POST,
             undefined,
             payload
