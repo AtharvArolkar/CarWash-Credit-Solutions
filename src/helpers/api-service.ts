@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 
 import { ApiMethod } from "@/types/common";
 import { AddTicketPayload, GetTicketsPayload } from "@/types/ticket";
