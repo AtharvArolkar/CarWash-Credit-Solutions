@@ -1,15 +1,14 @@
 import { JWTVerifyResult } from "jose";
+import { Types } from "mongoose";
 import { headers } from "next/headers";
 
 import { verifyJWT } from "@/helpers/jwt-verify";
-import { JWTPayloadObject, UserRole } from "@/types/user";
 import { createApiResponse } from "@/lib/api-response";
 import { STATUS_CODES } from "@/lib/constants";
-import { Types } from "mongoose";
-import UserModel from "@/models/user.model";
 import dbConnect from "@/lib/db-connect";
-import { AxiosError } from "axios";
+import UserModel from "@/models/user.model";
 import { ApiResponse } from "@/types/common";
+import { JWTPayloadObject, UserRole } from "@/types/user";
 
 export async function GET(req: Request) {
   await dbConnect();
