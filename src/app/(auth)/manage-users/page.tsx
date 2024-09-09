@@ -108,7 +108,10 @@ async function UsersList(): Promise<ReactElement> {
                             <Button className="bg-white border-[#3458D6] text-[#3458D6] border-[1px] hover:bg-white">
                               Edit
                             </Button>
-                            <Button className="bg-white border-[#3458D6] text-[#3458D6] border-[1px] hover:bg-white">
+                            <Button
+                              className="bg-white border-[#3458D6] text-[#3458D6] border-[1px] hover:bg-white"
+                              disabled={user._id === authToken?.user._id}
+                            >
                               Delete
                             </Button>
                           </div>
