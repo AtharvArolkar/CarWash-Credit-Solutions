@@ -1,6 +1,7 @@
 "use client";
 import { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import {
   MutableRefObject,
   ReactElement,
@@ -203,6 +204,7 @@ export function AddEditRecordForm({
         <div className="w-full flex flex-row pt-1 gap-4 sm:mb-4 sm:w-full max-sm:pt-4">
           <div className="flex items-center gap-1">
             <Checkbox
+              name="isCredit"
               checked={isCreditUser}
               onCheckedChange={(value) => {
                 setIsCreditUser(Boolean(value));
@@ -226,6 +228,7 @@ export function AddEditRecordForm({
           </div>
           <div className="flex items-center gap-1">
             <Checkbox
+              name="paid"
               ref={isPaidRef}
               checked={hasPaid}
               onCheckedChange={(value) => {
@@ -312,6 +315,9 @@ export function AddEditRecordForm({
         <div className="w-full sm:flex sm:justify-center sm:flex-col pt-1  sm:mb-4">
           <Label htmlFor="creditUser" className="mb-1">
             Select Client
+            <Link href="/" className="underline text-blue-600 ml-2">
+              Add new?
+            </Link>
           </Label>
           <Select
             name="creditUser"
