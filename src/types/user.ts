@@ -56,3 +56,12 @@ export interface AddUsersClientObject {
   _id: string;
   name: string;
 }
+
+export interface UserResponse {
+  _id: string;
+  name: string;
+  email: string;
+  phoneNumber: number;
+  role: UserRole;
+  isVerified: boolean;
+}
