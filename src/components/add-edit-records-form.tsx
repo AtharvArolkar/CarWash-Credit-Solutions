@@ -319,6 +319,7 @@ export function AddEditRecordForm({
               Add new?
             </Link>
           </Label>
+          {/* TODO: Known bug, on click of dropdown, behind elements get clicked */}
           <Select
             name="creditUser"
             value={selectedClient}
