@@ -36,7 +36,7 @@ export async function GET(req: Request) {
     }
     const userList = await UserModel.find(
       {},
-      { _id: 1, email: 1, phoneNumber: 1, role: 1, isVerified: 1 }
+      { _id: 1, email: 1, phoneNumber: 1, role: 1, isVerified: 1, name: 1 }
     );
 
     return createApiResponse({

@@ -17,7 +17,7 @@ export const apiRoutes = {
   refreshAccessToken: `${BASE_URL}/api/refresh-access-token`,
   changePassword: `${BASE_URL}/api/change-password `,
   checkUser: `${BASE_URL}/api/check-user`,
-  getUsers: `${BASE_URL}/api/get-user`,
+  getUsers: `${BASE_URL}/api/get-users`,
   getClientUsers: `${BASE_URL}/api/get-client-users`,
   addTickets: `${BASE_URL}/api/add-tickets`,
   getTickets: `${BASE_URL}/api/get-tickets`,
