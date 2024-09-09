@@ -315,6 +315,7 @@ export function AddEditRecordForm({
         <div className="w-full sm:flex sm:justify-center sm:flex-col pt-1  sm:mb-4">
           <Label htmlFor="creditUser" className="mb-1">
             Select Client
+            {/* TODO: Link add new users page to this */}
             <Link href="/" className="underline text-blue-600 ml-2">
               Add new?
             </Link>
