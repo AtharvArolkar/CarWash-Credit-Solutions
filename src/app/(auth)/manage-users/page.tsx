@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { callApi } from "@/helpers/api-service";
 import { apiRoutes } from "@/lib/routes";
 import { ApiMethod } from "@/types/common";
-import { UserResponse } from "@/types/user";
+import { UserListPayload, UserResponse } from "@/types/user";
 
 function UserCard({
   user,
@@ -58,11 +58,13 @@ export default function ManageUsers(): ReactElement {
 
 async function UsersList(): Promise<ReactElement> {
   const authToken = await auth();
-
+  // TODO: Add search functionality.
+  const payload: UserListPayload = {};
   const usersList = await callApi(
     apiRoutes.getUsers,
-    ApiMethod.GET,
-    authToken?.accessToken
+    ApiMethod.POST,
+    authToken?.accessToken,
+    payload
   );
 
   return (

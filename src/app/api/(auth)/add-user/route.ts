@@ -10,10 +10,10 @@ import UserModel from "@/models/user.model";
 import { ApiResponse } from "@/types/common";
 import { JWTPayloadObject, UserRole } from "@/types/user";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   await dbConnect();
   const headerPayload = headers();
-  const token = headerPayload?.get("authorization")?.split(" ")[1] ?? "";
+  const token = headerPayload.get("authorization")?.split(" ")[1] || "";
   let jwtPayload: JWTVerifyResult<JWTPayloadObject> | undefined = undefined;
   try {
     jwtPayload = await verifyJWT(token, process.env.ACCESS_TOKEN_SECRET!);
@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     });
   }
   const userId = new Types.ObjectId(jwtPayload.payload.identifier);
+
   try {
     const user = await UserModel.findById({ _id: userId });
     if (!user) {
@@ -33,19 +34,35 @@ export async function POST(req: Request) {
     if (user.role !== UserRole.admin) {
       throw new Error("You are not allowed to access this resource.");
     }
+
     const requestPayload = await req.json();
-    const { search: searchByName } = requestPayload;
 
-    const userList = await UserModel.find(
-      { name: { $regex: new RegExp(searchByName, "i") } },
-      { _id: 1, email: 1, phoneNumber: 1, role: 1, isVerified: 1, name: 1 }
-    );
+    const { name, phoneNumber, role, email } = requestPayload;
+    if (!name || !phoneNumber || !role) {
+      throw new Error("Invalid request paramters.");
+    }
 
+    const checkExisting = await UserModel.findOne({
+      $or: [
+        { email },
+        {
+          phoneNumber,
+        },
+      ],
+    });
+
+    if (checkExisting) {
+      throw new Error("User with this phoneNumber or email already exists.");
+    }
+
+    const newUser = new UserModel({ name, phoneNumber, role, email });
+
+    const createdUser = await newUser.save();
     return createApiResponse({
       success: true,
-      statusCode: STATUS_CODES.OK,
-      message: "OK",
-      body: { users: userList },
+      statusCode: STATUS_CODES.CREATED,
+      message: "Created user.",
+      body: { id: createdUser._id },
     });
   } catch (error) {
     const errorMessage = (error as Error).message;
@@ -55,12 +72,22 @@ export async function POST(req: Request) {
       message: errorMessage || "Something went wrong.",
     };
     switch (errorMessage) {
-      case "User not found.":
+      case "User not found.": {
+        errorResponse.message = errorMessage;
         errorResponse.statusCode = STATUS_CODES.NOT_FOUND;
         break;
-      case "You are not allowed to access this resource.":
+      }
+      case "You are not allowed to access this resource.": {
+        errorResponse.message = errorMessage;
         errorResponse.statusCode = STATUS_CODES.FORBIDDEN;
         break;
+      }
+      case "Invalid request paramters.":
+      case "User with this phoneNumber or email already exists.": {
+        errorResponse.message = errorMessage;
+        errorResponse.statusCode = STATUS_CODES.BAD_REQUEST;
+        break;
+      }
     }
     return createApiResponse(errorResponse);
   }

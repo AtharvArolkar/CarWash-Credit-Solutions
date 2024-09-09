@@ -65,3 +65,14 @@ export interface UserResponse {
   role: UserRole;
   isVerified: boolean;
 }
+
+export interface UserListPayload {
+  search?: string;
+}
+
+export interface AddUserPayload {
+  name: string;
+  phoneNumber: number;
+  role: UserRole;
+  email?: string;
+}
