@@ -91,7 +91,7 @@ export async function POST(req: Request): Promise<Response> {
       {
         $lookup: {
           from: "users",
-          localField: "clientId",
+          localField: "createdBy",
           foreignField: "_id",
           as: "client",
         },
@@ -160,6 +160,9 @@ export async function POST(req: Request): Promise<Response> {
                 "client.name": 1,
                 paymentMethod: 1,
               },
+            },
+            {
+              $sort: { createdAt: -1 },
             },
             { $skip: ITEMS_PER_PAGE * (page - 1) },
             { $limit: ITEMS_PER_PAGE },

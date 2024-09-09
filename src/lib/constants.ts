@@ -15,7 +15,7 @@ export const LOGIN_REQUIRED_MESSAGE =
   "Please login again as your role was changed";
 
 // TODO: Set to appropriate number while deploying
-export const ITEMS_PER_PAGE = 10;
+export const ITEMS_PER_PAGE = 20;
 
 export const TABLE_DATE_FORMAT = "DD/MM/YYYY";
 
@@ -24,5 +24,5 @@ export const RECORDS_QUERY = {
   PAGE: "page",
   START_DATE: "startDate",
   END_DATE: "endDate",
-  HIDE_CREDITS: "credits",
+  HIDE_CREDITS: "hideCredits",
 } as const;

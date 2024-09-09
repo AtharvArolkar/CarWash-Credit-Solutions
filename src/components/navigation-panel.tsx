@@ -8,8 +8,8 @@ import {
   SquareKanban,
   User,
 } from "lucide-react";
+import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { Url } from "next/dist/shared/lib/router/router";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,7 +21,8 @@ import { RECORDS_QUERY } from "@/lib/constants";
 import { paths } from "@/lib/routes";
 
 interface ListItemProps {
-  path?: Url;
+  path?: string;
+  query?: any;
   className?: string;
   children: ReactElement | ReactElement[];
   onClick?: MouseEventHandler<HTMLLIElement>;
@@ -29,13 +30,14 @@ interface ListItemProps {
 
 function ListItem({
   path,
+  query,
   className,
   children,
   onClick,
 }: ListItemProps): ReactElement {
   const pathName = usePathname();
   const checkPathName = (): boolean => {
-    return path === pathName || path?.pathname === pathName;
+    return path === pathName;
   };
 
   return (
@@ -52,7 +54,7 @@ function ListItem({
           className={`flex items-center max-sm:flex-col max-sm:p-0 sm:w-full ${
             checkPathName() ? "sm:text-[#3458D6]" : ""
           }`}
-          href={path}
+          href={{ pathname: path, query: { ...query } }}
         >
           {children}
         </Link>
@@ -63,8 +65,11 @@ function ListItem({
   );
 }
 
-export default function NavigationPanel(): ReactElement {
-  const { data: authUser } = useSession();
+export default function NavigationPanel({
+  authUser,
+}: {
+  authUser: Session | null;
+}): ReactElement {
   const handleLogout = async (): Promise<void> => {
     await logOut();
   };
@@ -119,10 +124,8 @@ export default function NavigationPanel(): ReactElement {
           </ListItem>
           {isUserEmployee(authUser) && (
             <ListItem
-              path={{
-                pathname: `${paths.records}`,
-                query: { [RECORDS_QUERY.HIDE_CREDITS]: "true" },
-              }}
+              path={paths.records}
+              query={{ [RECORDS_QUERY.HIDE_CREDITS]: "true" }}
               className="sm:pl-5 fill-transparent group max-sm:order-3"
             >
               <SquareKanban

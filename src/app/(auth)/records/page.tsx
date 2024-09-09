@@ -6,6 +6,7 @@ import Image, { StaticImageData } from "next/image";
 import { ReactElement, Suspense } from "react";
 
 import { auth } from "@/auth";
+import AddEditRecord from "@/components/add-edit-records-form";
 import FilterRecords from "@/components/filter-records";
 import NoRecord from "@/components/no-records";
 import SuspenseLoading from "@/components/suspense-loading";
@@ -15,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { callApi } from "@/helpers/api-service";
 import { RECORDS_QUERY, TABLE_DATE_FORMAT } from "@/lib/constants";
 import { apiRoutes } from "@/lib/routes";
-import { isStringFiniteNumber } from "@/lib/utils";
+import { getWashTypeLabel, isStringFiniteNumber } from "@/lib/utils";
 import { ApiMethod } from "@/types/common";
 import { GetTicketsPayload, TicketReponse, WashType } from "@/types/ticket";
 import { PaymentMethod } from "@/types/transaction";
@@ -125,7 +126,7 @@ async function RecordsList({
   }
 
   if (searchParams?.[RECORDS_QUERY.HIDE_CREDITS]) {
-    payload.credits =
+    payload.hideCredits =
       searchParams?.[RECORDS_QUERY.HIDE_CREDITS] === "true" || false;
   }
 
@@ -135,32 +136,26 @@ async function RecordsList({
     authToken?.accessToken,
     payload
   );
-  const getWashTypeLabel = (washTypeValue: WashType): string => {
-    switch (washTypeValue) {
-      case WashType.bodyWash:
-        return "Body";
-      case WashType.fullWash:
-        return "Full";
-    }
-  };
 
   return (
     <>
-      <div className="overflow-y-auto drop-shadow-sm rounded-l-md sm:border-2 h-full no-scrollbar">
-        <div className="flex justify-between items-center h-20 sticky top-0 bg-white px-4 max-sm:hidden">
-          <div className="text-2xl text-gray-600 font-bold  max-sm:hidden">
-            Record(s)
+      <div className="overflow-y-auto rounded-l-md sm:border-2 h-full no-scrollbar">
+        <div className="overflow-y rounded-sm sticky top-0">
+          <div className="flex justify-between items-center h-20 sticky top-0 bg-white px-4 max-sm:hidden">
+            <div className="text-2xl text-gray-600 font-bold  max-sm:hidden">
+              Record(s)
+            </div>
+            <AddEditRecord>
+              <Button
+                type="submit"
+                className="h-12 max-sm:w-24 sm:w-48 p-3 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex max-sm:justify-start gap-2"
+              >
+                <Plus className="w-5 h-5" />
+                <span className="max-sm:hidden">Add New Records</span>
+              </Button>
+            </AddEditRecord>
           </div>
-          <Button
-            type="submit"
-            className="h-12 max-sm:w-24 sm:w-48 p-3 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex max-sm:justify-start gap-2"
-          >
-            <Plus className="w-5 h-5" />
-            <span className="max-sm:hidden">Add New Records</span>
-          </Button>
-        </div>
-        <div className="overflow-y rounded-sm sticky sm:top-20 top-0 sm:-z-10">
-          <div className="h-20 max-sm:h-auto items-center sm:px-6 grid grid-cols-12 sticky sm:top-20 border-t-[1px] bg-white">
+          <div className="h-20 max-sm:h-auto items-center sm:px-6 grid grid-cols-12 sticky sm:top-20 sm:border-y-[1px] bg-white">
             <div className="col-span-2 text-xl text-gray-600 font-bold max-sm:hidden"></div>
             <div className="lg:col-span-10 col-span-12 bg-white">
               <FilterRecords
@@ -245,12 +240,14 @@ async function RecordsList({
           )}
         </div>
       </div>
-      <Button
-        type="submit"
-        className="sm:hidden h-12 max-sm:rounded-3xl max-sm:w-12 sm:w-48 p-3 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex max-sm:justify-center gap-2 max-sm:absolute max-sm:right-6 max-sm:bottom-[100px] z-10"
-      >
-        <Plus className="w-15 h-15" />
-      </Button>
+      <AddEditRecord>
+        <Button
+          type="submit"
+          className="sm:hidden h-12 max-sm:rounded-3xl max-sm:w-12 sm:w-48 p-3 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex max-sm:justify-center gap-2 max-sm:absolute max-sm:right-6 max-sm:bottom-[100px] z-10"
+        >
+          <Plus className="w-15 h-15" />
+        </Button>
+      </AddEditRecord>
     </>
   );
 }

@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export interface Transaction {
-  clientId: Types.ObjectId;
+  clientId?: Types.ObjectId;
   amount: number;
   paymentMethod: PaymentMethod;
   ticketTransacted: TransactedTicket[];

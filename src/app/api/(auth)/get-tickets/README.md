@@ -16,11 +16,13 @@
         - Start _Aggregation Pipeline_
           - Match based on date query
           - Lookup into user table for client user with fk value (clientID) and get corresponding client user objects
-          - Lookup into user table for client user with fk value (createadBy) and get corresspondin createdBy user objects
+          - Lookup into transaction table for the corresponding record id, and fetch the transaction details
+          - Add a field names paymentMethod, and fetch the latest transaction for that record and insert the method there.
           - Start a facet for creating 2 seperate pipelines from here
             1. Match based on regex stored as search string, for substring matches and get count of total number of matches found. If no search string pass empty string.
             2. - Match based on regex stored as search string, for substring matches
                - Select what fields to project from the results.
+               - Sort the results by latest first
                - Add skip and limit for pagination.
             - Project the facet results(1,2) as totalTickets present in DB and fetched tickets array for that page
           - End of facet

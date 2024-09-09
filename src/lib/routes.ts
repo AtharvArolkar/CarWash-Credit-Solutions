@@ -1,4 +1,4 @@
-const BASE_URL = process.env.HOSTED_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_HOSTED_URL;
 
 export const paths = {
   home: "/",
@@ -16,7 +16,9 @@ export const apiRoutes = {
   generateAccessRefreshTokens: `${BASE_URL}/api/generate-access-refresh-tokens`,
   refreshAccessToken: `${BASE_URL}/api/refresh-access-token`,
   changePassword: `${BASE_URL}/api/change-password `,
-  getUser: `${BASE_URL}/api/get-user`,
+  checkUser: `${BASE_URL}/api/check-user`,
+  getUsers: `${BASE_URL}/api/get-user`,
+  getClientUsers: `${BASE_URL}/api/get-client-users`,
   addTickets: `${BASE_URL}/api/add-tickets`,
   getTickets: `${BASE_URL}/api/get-tickets`,
 } as const;
