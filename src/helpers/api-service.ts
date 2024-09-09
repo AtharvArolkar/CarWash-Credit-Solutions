@@ -7,6 +7,7 @@ import {
   ChangePasswordPayload,
   GetAccessRefreshPayload,
   GetUserPayload,
+  UserListPayload,
 } from "../types/user";
 
 export const callApi = async <Type>(
@@ -19,6 +20,7 @@ export const callApi = async <Type>(
     | GetUserPayload
     | GetTicketsPayload
     | AddTicketPayload
+    | UserListPayload
     | string
 ): Promise<AxiosResponse> => {
   const callOption = {

@@ -1,17 +1,16 @@
 import { JWTVerifyResult } from "jose";
+import { Types } from "mongoose";
 import { headers } from "next/headers";
 
 import { verifyJWT } from "@/helpers/jwt-verify";
-import { JWTPayloadObject, UserRole } from "@/types/user";
 import { createApiResponse } from "@/lib/api-response";
 import { STATUS_CODES } from "@/lib/constants";
-import { Types } from "mongoose";
-import UserModel from "@/models/user.model";
 import dbConnect from "@/lib/db-connect";
-import { AxiosError } from "axios";
+import UserModel from "@/models/user.model";
 import { ApiResponse } from "@/types/common";
+import { JWTPayloadObject, UserRole } from "@/types/user";
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   await dbConnect();
   const headerPayload = headers();
   const token = headerPayload?.get("authorization")?.split(" ")[1] ?? "";
@@ -34,8 +33,11 @@ export async function GET(req: Request) {
     if (user.role !== UserRole.admin) {
       throw new Error("You are not allowed to access this resource.");
     }
+    const requestPayload = await req.json();
+    const { search: searchByName } = requestPayload;
+
     const userList = await UserModel.find(
-      {},
+      { name: { $regex: new RegExp(searchByName, "i") } },
       { _id: 1, email: 1, phoneNumber: 1, role: 1, isVerified: 1, name: 1 }
     );
 
@@ -60,5 +62,6 @@ export async function GET(req: Request) {
         errorResponse.statusCode = STATUS_CODES.FORBIDDEN;
         break;
     }
+    return createApiResponse(errorResponse);
   }
 }

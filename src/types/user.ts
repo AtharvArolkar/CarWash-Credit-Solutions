@@ -66,6 +66,10 @@ export interface UserResponse {
   isVerified: boolean;
 }
 
+export interface UserListPayload {
+  search?: string;
+}
+
 export interface AddUserPayload {
   name: string;
   phoneNumber: number;
