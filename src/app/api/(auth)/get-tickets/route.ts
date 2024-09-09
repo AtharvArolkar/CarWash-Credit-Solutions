@@ -91,7 +91,7 @@ export async function POST(req: Request): Promise<Response> {
       {
         $lookup: {
           from: "users",
-          localField: "createdBy",
+          localField: "clientId",
           foreignField: "_id",
           as: "client",
         },
