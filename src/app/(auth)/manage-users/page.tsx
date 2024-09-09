@@ -13,7 +13,13 @@ import { apiRoutes } from "@/lib/routes";
 import { ApiMethod } from "@/types/common";
 import { UserResponse } from "@/types/user";
 
-function UserCard({ user }: { user: UserResponse }): ReactElement {
+function UserCard({
+  user,
+  loggedUserId,
+}: {
+  user: UserResponse;
+  loggedUserId: string;
+}): ReactElement {
   return (
     <div
       className={`p-4 border-[0.5px] my-1 border-y-gray-200 rounded-sm flex justify-between gap-4`}
@@ -30,7 +36,11 @@ function UserCard({ user }: { user: UserResponse }): ReactElement {
       <div className="flex flex-col justify-between items-end w-full p-1">
         <div className="fill-transparent flex flex-row justify-between">
           <Pencil className="w-5 h-5 mx-2" />
-          <Trash2 className="w-5 h-5" />
+          <span
+            className={`${user._id === loggedUserId ? "text-gray-500" : ""}`}
+          >
+            <Trash2 className="w-5 h-5" />
+          </span>
         </div>
         {user.isVerified ? "Verified" : "Not Verified"}
       </div>
@@ -127,7 +137,13 @@ async function UsersList(): Promise<ReactElement> {
         </div>
         <div className="sm:hidden -z-20">
           {usersList.data.users.map((user: UserResponse, key: number) => {
-            return <UserCard user={user} key={key} />;
+            return (
+              <UserCard
+                user={user}
+                loggedUserId={authToken?.user._id}
+                key={key}
+              />
+            );
           })}
         </div>
       </div>
