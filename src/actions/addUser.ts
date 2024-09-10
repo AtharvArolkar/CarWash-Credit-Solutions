@@ -71,9 +71,7 @@ export async function addUser(
     return errorObject;
   } catch (error) {
     const apiError = error as AxiosError<ApiResponse>;
-    console.log(apiError, "@@@@@@@@@@@@@");
     await checkErrorResponse(apiError);
-    console.log(apiError, "##################");
     errorObject.errors.apiError =
       apiError.response?.data.message ?? "Something went wrong";
     return errorObject;
