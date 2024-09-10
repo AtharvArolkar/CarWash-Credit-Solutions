@@ -35,6 +35,10 @@ export const callApi = async <Type>(
         return await axios.post(url, payload, callOption);
       case ApiMethod.DELETE:
         return await axios.delete(url, callOption);
+      case ApiMethod.PATCH:
+        return await axios.patch(url, payload, callOption);
+      case ApiMethod.PUT:
+        return await axios.put(url, payload, callOption);
     }
   } catch (error) {
     throw error;
