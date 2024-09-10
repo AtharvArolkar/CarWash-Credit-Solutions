@@ -12,6 +12,8 @@ import { callApi } from "@/helpers/api-service";
 import { apiRoutes } from "@/lib/routes";
 import { ApiMethod } from "@/types/common";
 import { UserListPayload, UserResponse } from "@/types/user";
+import ComfirmationPopup from "@/components/confirmation-pop";
+import { deleteUser } from "@/actions/deleteUser";
 
 function UserCard({
   user,
@@ -99,6 +101,10 @@ async function UsersList(): Promise<ReactElement> {
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 sm:overflow-y-scroll  overflow-x-scroll no-scrollbar">
                 {usersList.data.users.map((user: UserResponse, key: number) => {
+                  const deleteOnClick = async (): Promise<void> => {
+                    "use server";
+                    await deleteUser(user._id);
+                  };
                   return (
                     <tr key={key} className="group">
                       <TableDataCell>{user.name ?? "-"}</TableDataCell>
@@ -120,12 +126,20 @@ async function UsersList(): Promise<ReactElement> {
                             <Button className="bg-white border-[#3458D6] text-[#3458D6] border-[1px] hover:bg-white">
                               Edit
                             </Button>
-                            <Button
-                              className="bg-white border-[#3458D6] text-[#3458D6] border-[1px] hover:bg-white"
-                              disabled={user._id === authToken?.user._id}
+                            <ComfirmationPopup
+                              popUpTitle="Delete User"
+                              submitButtonText="Delete"
+                              popUpDescription="Are you sure you want to delete this user?"
+                              submitButtonHandler={deleteOnClick}
                             >
-                              Delete
-                            </Button>
+                              <Button
+                                type="submit"
+                                className="bg-white border-[#3458D6] text-[#3458D6] border-[1px] hover:bg-white"
+                                disabled={user._id === authToken?.user._id}
+                              >
+                                Delete
+                              </Button>
+                            </ComfirmationPopup>
                           </div>
                         </div>
                       </TableDataCell>
