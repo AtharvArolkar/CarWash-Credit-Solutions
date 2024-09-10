@@ -2,7 +2,7 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 import { ReactElement, Suspense } from "react";
 
 import { auth } from "@/auth";
-import AddEditRecord from "@/components/add-edit-records-form";
+import AddEditUser from "@/components/add-user-form";
 import NoRecord from "@/components/no-records";
 import SuspenseLoading from "@/components/suspense-loading";
 import TableDataCell from "@/components/table-body";
@@ -75,7 +75,7 @@ async function UsersList(): Promise<ReactElement> {
             <div className="text-2xl text-gray-600 font-bold  max-sm:hidden">
               Users(s)
             </div>
-            <AddEditRecord>
+            <AddEditUser>
               <Button
                 type="submit"
                 className="h-12 max-sm:w-24 sm:w-48 p-3 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex max-sm:justify-start gap-2"
@@ -83,7 +83,7 @@ async function UsersList(): Promise<ReactElement> {
                 <Plus className="w-5 h-5" />
                 <span className="max-sm:hidden">Add New User</span>
               </Button>
-            </AddEditRecord>
+            </AddEditUser>
           </div>
           <div className="overflow-x-scroll sticky top-80  sm:-z-10 w-full no-scrollbar">
             <table className="table-fixed min-w-full divide-y overflow-x-auto divide-gray-200 dark:divide-neutral-700 border-20 border-gray-100 rounded-md overflow-y-scroll  max-sm:hidden no-scrollbar">
@@ -149,14 +149,14 @@ async function UsersList(): Promise<ReactElement> {
           })}
         </div>
       </div>
-      <AddEditRecord>
+      <AddEditUser>
         <Button
           type="submit"
           className="sm:hidden h-12 max-sm:rounded-3xl max-sm:w-12 sm:w-48 p-3 text-sm bg-gradient-to-r from-[#3458D6] to-blue-400 fill-transparent flex max-sm:justify-center gap-2 max-sm:absolute max-sm:right-6 max-sm:bottom-[100px] z-10"
         >
           <Plus className="w-15 h-15" />
         </Button>
-      </AddEditRecord>
+      </AddEditUser>
     </>
   );
 }

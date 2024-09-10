@@ -41,12 +41,11 @@ export async function POST(req: Request): Promise<Response> {
     if (!name || !phoneNumber || !role) {
       throw new Error("Invalid request paramters.");
     }
-
     const checkExisting = await UserModel.findOne({
       $or: [
         { email },
         {
-          phoneNumber,
+          phoneNumber: Number(phoneNumber),
         },
       ],
     });
@@ -55,8 +54,12 @@ export async function POST(req: Request): Promise<Response> {
       throw new Error("User with this phoneNumber or email already exists.");
     }
 
-    const newUser = new UserModel({ name, phoneNumber, role, email });
-
+    const newUser = new UserModel({
+      name,
+      phoneNumber: Number(phoneNumber),
+      role,
+      email,
+    });
     const createdUser = await newUser.save();
     return createApiResponse({
       success: true,

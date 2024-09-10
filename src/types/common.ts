@@ -10,6 +10,8 @@ export enum ApiMethod {
   "GET",
   "POST",
   "DELETE",
+  "PUT",
+  "PATCH",
 }
 
 export interface ApiResponse {
