@@ -1,6 +1,13 @@
 "use client";
-import { MutableRefObject, ReactElement, useRef, useState } from "react";
+import {
+  MutableRefObject,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useFormState } from "react-dom";
+import { toast } from "sonner";
 
 import { addUser } from "@/actions/addUser";
 import { UserResponse, UserRole } from "@/types/user";
@@ -46,6 +53,17 @@ export function AddEditRecordForm({
 }): ReactElement {
   const [userRole, setUserRole] = useState<string | undefined>(undefined);
   const [state, formAction] = useFormState(addUser, null);
+  useEffect(() => {
+    if (state?.errors.apiError) {
+      toast.error(state?.errors.apiError);
+    }
+    if (state?.success) {
+      toast.success("Successfully created a user");
+      // @ts-ignore: Object is possibly 'null'.
+      dialogRef.current.click();
+    }
+    //eslint-disable-next-line
+  }, [state]);
   return (
     <form action={formAction}>
       <div className="flex max-sm:flex-col gap-2">

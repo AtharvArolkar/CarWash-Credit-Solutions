@@ -1,7 +1,14 @@
 "use server";
 
+import { AxiosError } from "axios";
+import { revalidatePath } from "next/cache";
+
 import { auth } from "@/auth";
-import { FormError } from "@/types/common";
+import { callApi } from "@/helpers/api-service";
+import { checkErrorResponse } from "@/helpers/response-checker";
+import { apiRoutes, paths } from "@/lib/routes";
+import { ApiMethod, ApiResponse, FormError } from "@/types/common";
+import { AddUserPayload, UserRole } from "@/types/user";
 
 export async function addUser(
   _: any,
@@ -40,6 +47,35 @@ export async function addUser(
     errorObject.errors.phoneNumber?.trim() ||
     errorObject.errors.role?.trim()
   ) {
+    return errorObject;
+  }
+  const payload: AddUserPayload = {
+    name: name?.toString()!,
+    phoneNumber: Number(phoneNumber?.toString()),
+    role: role?.toString() as UserRole,
+  };
+
+  if (email) {
+    payload.email = email.toString();
+  }
+
+  try {
+    await callApi(
+      apiRoutes.addUser,
+      ApiMethod.POST,
+      authUser?.accessToken,
+      payload
+    );
+    revalidatePath(paths.manageUsers);
+    errorObject.success = true;
+    return errorObject;
+  } catch (error) {
+    const apiError = error as AxiosError<ApiResponse>;
+    console.log(apiError, "@@@@@@@@@@@@@");
+    await checkErrorResponse(apiError);
+    console.log(apiError, "##################");
+    errorObject.errors.apiError =
+      apiError.response?.data.message ?? "Something went wrong";
     return errorObject;
   }
 }

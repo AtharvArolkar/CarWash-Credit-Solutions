@@ -10,7 +10,5 @@ export async function checkErrorResponse(
 ): Promise<void> {
   if (res.response?.status === STATUS_CODES.LOGIN_REQUIRED) {
     await logOut();
-  } else {
-    throw res;
   }
 }
