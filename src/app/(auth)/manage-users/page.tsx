@@ -1,8 +1,10 @@
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { ReactElement, Suspense } from "react";
 
+import { deleteUser } from "@/actions/deleteUser";
 import { auth } from "@/auth";
 import AddEditUser from "@/components/add-user-form";
+import ComfirmationPopup from "@/components/confirmation-pop";
 import NoRecord from "@/components/no-records";
 import SuspenseLoading from "@/components/suspense-loading";
 import TableDataCell from "@/components/table-body";
@@ -20,6 +22,10 @@ function UserCard({
   user: UserResponse;
   loggedUserId: string;
 }): ReactElement {
+  const deleteOnClick = async (): Promise<void> => {
+    "use server";
+    await deleteUser(user?._id);
+  };
   return (
     <div
       className={`p-4 border-[0.5px] my-1 border-y-gray-200 rounded-sm flex justify-between gap-4`}
@@ -39,7 +45,19 @@ function UserCard({
           <span
             className={`${user._id === loggedUserId ? "text-gray-500" : ""}`}
           >
-            <Trash2 className="w-5 h-5" />
+            <ComfirmationPopup
+              popUpTitle="Delete User"
+              submitButtonText="Delete"
+              popUpDescription="Are you sure you want to delete this user?"
+              submitButtonHandler={deleteOnClick.bind(user)}
+            >
+              <Button
+                type="submit"
+                className="bg-white hover:bg-white text-black py-0 flex items-start"
+              >
+                <Trash2 className="w-5 h-5 text-black" />
+              </Button>
+            </ComfirmationPopup>
           </span>
         </div>
         {user.isVerified ? "Verified" : "Not Verified"}
@@ -99,6 +117,10 @@ async function UsersList(): Promise<ReactElement> {
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 sm:overflow-y-scroll  overflow-x-scroll no-scrollbar">
                 {usersList.data.users.map((user: UserResponse, key: number) => {
+                  const deleteOnClick = async (): Promise<void> => {
+                    "use server";
+                    await deleteUser(user?._id);
+                  };
                   return (
                     <tr key={key} className="group">
                       <TableDataCell>{user.name ?? "-"}</TableDataCell>
@@ -120,12 +142,20 @@ async function UsersList(): Promise<ReactElement> {
                             <Button className="bg-white border-[#3458D6] text-[#3458D6] border-[1px] hover:bg-white">
                               Edit
                             </Button>
-                            <Button
-                              className="bg-white border-[#3458D6] text-[#3458D6] border-[1px] hover:bg-white"
-                              disabled={user._id === authToken?.user._id}
+                            <ComfirmationPopup
+                              popUpTitle="Delete User"
+                              submitButtonText="Delete"
+                              popUpDescription="Are you sure you want to delete this user?"
+                              submitButtonHandler={deleteOnClick}
                             >
-                              Delete
-                            </Button>
+                              <Button
+                                type="submit"
+                                className="bg-white border-[#3458D6] text-[#3458D6] border-[1px] hover:bg-white"
+                                disabled={user._id === authToken?.user._id}
+                              >
+                                Delete
+                              </Button>
+                            </ComfirmationPopup>
                           </div>
                         </div>
                       </TableDataCell>
