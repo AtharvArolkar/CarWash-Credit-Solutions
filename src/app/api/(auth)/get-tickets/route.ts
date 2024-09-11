@@ -149,7 +149,7 @@ export async function POST(req: Request): Promise<Response> {
             },
             {
               $project: {
-                _id: 0,
+                _id: 1,
                 carNumber: 1,
                 createdAt: 1,
                 carModel: 1,

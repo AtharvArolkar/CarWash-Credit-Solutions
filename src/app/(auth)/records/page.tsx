@@ -3,6 +3,7 @@ import gpay from "/public/gpay.png";
 import dayjs from "dayjs";
 import { Plus } from "lucide-react";
 import Image, { StaticImageData } from "next/image";
+import Link from "next/link";
 import { ReactElement, Suspense } from "react";
 
 import { auth } from "@/auth";
@@ -15,7 +16,7 @@ import TableHeader from "@/components/table-header";
 import { Button } from "@/components/ui/button";
 import { callApi } from "@/helpers/api-service";
 import { RECORDS_QUERY, TABLE_DATE_FORMAT } from "@/lib/constants";
-import { apiRoutes } from "@/lib/routes";
+import { apiRoutes, paths } from "@/lib/routes";
 import { getWashTypeLabel, isStringFiniteNumber } from "@/lib/utils";
 import { ApiMethod } from "@/types/common";
 import { GetTicketsPayload, TicketReponse, WashType } from "@/types/ticket";
@@ -183,17 +184,25 @@ async function RecordsList({
                   (ticket: TicketReponse, key: number) => {
                     return (
                       <tr key={key}>
-                        <TableDataCell>
+                        <TableDataCell path={`${paths.records}/${ticket._id}`}>
                           {ticket.client?.name ?? "Client"}
                         </TableDataCell>
-                        <TableDataCell>{ticket.carNumber}</TableDataCell>
-                        <TableDataCell>{ticket.carModel}</TableDataCell>
-                        <TableDataCell>
+                        <TableDataCell path={`${paths.records}/${ticket._id}`}>
+                          {ticket.carNumber}
+                        </TableDataCell>
+                        <TableDataCell path={`${paths.records}/${ticket._id}`}>
+                          {ticket.carModel}
+                        </TableDataCell>
+                        <TableDataCell path={`${paths.records}/${ticket._id}`}>
                           {getWashTypeLabel(ticket.washType as WashType)}
                         </TableDataCell>
-                        <TableDataCell>{ticket.price}</TableDataCell>
-                        <TableDataCell>{ticket.pricePaid}</TableDataCell>
-                        <TableDataCell>
+                        <TableDataCell path={`${paths.records}/${ticket._id}`}>
+                          {ticket.price}
+                        </TableDataCell>
+                        <TableDataCell path={`${paths.records}/${ticket._id}`}>
+                          {ticket.pricePaid}
+                        </TableDataCell>
+                        <TableDataCell path={`${paths.records}/${ticket._id}`}>
                           <>
                             {ticket.paymentMethod ? (
                               <Image
@@ -211,10 +220,10 @@ async function RecordsList({
                             )}
                           </>
                         </TableDataCell>
-                        <TableDataCell>
+                        <TableDataCell path={`${paths.records}/${ticket._id}`}>
                           {ticket.isCredit ? "Yes" : "No"}
                         </TableDataCell>
-                        <TableDataCell>
+                        <TableDataCell path={`${paths.records}/${ticket._id}`}>
                           {dayjs(ticket.createdAt).format(TABLE_DATE_FORMAT)}
                         </TableDataCell>
                       </tr>

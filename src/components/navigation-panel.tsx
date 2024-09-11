@@ -37,7 +37,7 @@ function ListItem({
 }: ListItemProps): ReactElement {
   const pathName = usePathname();
   const checkPathName = (): boolean => {
-    return path === pathName;
+    return pathName.split("/")[1] === path?.substring(1);
   };
 
   return (
