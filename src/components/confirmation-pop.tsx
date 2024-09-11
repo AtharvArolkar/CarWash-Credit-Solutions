@@ -1,5 +1,8 @@
 "use client";
-import { MouseEventHandler, ReactElement, ReactNode, useRef } from "react";
+import { ReactElement, ReactNode, useRef, useState } from "react";
+import { toast } from "sonner";
+
+import Loading from "@/app/loading";
 
 import { AppModal } from "./app-modal";
 
@@ -20,19 +23,28 @@ export default function ComfirmationPopup({
   children,
 }: ComfirmationPopupProps): ReactElement {
   const dialogRef = useRef(null);
+  const [loading, setLoading] = useState<boolean>(false);
   return (
-    <AppModal
-      modalTitle={popUpTitle}
-      modalContent={popUpContent}
-      modalDescription={popUpDescription}
-      showSubmitButton={true}
-      submitButtonHandler={async () => {
-        await submitButtonHandler();
-      }}
-      submitButtonText={submitButtonText}
-      dialogRef={dialogRef}
-    >
-      {children}
-    </AppModal>
+    <>
+      {loading && <Loading />}
+      <AppModal
+        modalTitle={popUpTitle}
+        modalContent={popUpContent}
+        modalDescription={popUpDescription}
+        showSubmitButton={true}
+        submitButtonHandler={async () => {
+          setLoading(true);
+          await submitButtonHandler();
+          setLoading(false);
+          toast.success("User deleted successfully.");
+          // @ts-ignore: Object is possibly 'null'.
+          dialogRef.current.click();
+        }}
+        submitButtonText={submitButtonText}
+        dialogRef={dialogRef}
+      >
+        {children}
+      </AppModal>
+    </>
   );
 }

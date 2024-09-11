@@ -1,8 +1,10 @@
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { ReactElement, Suspense } from "react";
 
+import { deleteUser } from "@/actions/deleteUser";
 import { auth } from "@/auth";
 import AddEditUser from "@/components/add-user-form";
+import ComfirmationPopup from "@/components/confirmation-pop";
 import NoRecord from "@/components/no-records";
 import SuspenseLoading from "@/components/suspense-loading";
 import TableDataCell from "@/components/table-body";
@@ -12,8 +14,6 @@ import { callApi } from "@/helpers/api-service";
 import { apiRoutes } from "@/lib/routes";
 import { ApiMethod } from "@/types/common";
 import { UserListPayload, UserResponse } from "@/types/user";
-import ComfirmationPopup from "@/components/confirmation-pop";
-import { deleteUser } from "@/actions/deleteUser";
 
 function UserCard({
   user,
@@ -22,6 +22,10 @@ function UserCard({
   user: UserResponse;
   loggedUserId: string;
 }): ReactElement {
+  const deleteOnClick = async (): Promise<void> => {
+    "use server";
+    await deleteUser(user?._id);
+  };
   return (
     <div
       className={`p-4 border-[0.5px] my-1 border-y-gray-200 rounded-sm flex justify-between gap-4`}
@@ -41,7 +45,19 @@ function UserCard({
           <span
             className={`${user._id === loggedUserId ? "text-gray-500" : ""}`}
           >
-            <Trash2 className="w-5 h-5" />
+            <ComfirmationPopup
+              popUpTitle="Delete User"
+              submitButtonText="Delete"
+              popUpDescription="Are you sure you want to delete this user?"
+              submitButtonHandler={deleteOnClick.bind(user)}
+            >
+              <Button
+                type="submit"
+                className="bg-white hover:bg-white text-black py-0 flex items-start"
+              >
+                <Trash2 className="w-5 h-5 text-black" />
+              </Button>
+            </ComfirmationPopup>
           </span>
         </div>
         {user.isVerified ? "Verified" : "Not Verified"}
@@ -103,7 +119,7 @@ async function UsersList(): Promise<ReactElement> {
                 {usersList.data.users.map((user: UserResponse, key: number) => {
                   const deleteOnClick = async (): Promise<void> => {
                     "use server";
-                    await deleteUser(user._id);
+                    await deleteUser(user?._id);
                   };
                   return (
                     <tr key={key} className="group">
