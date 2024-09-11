@@ -49,42 +49,44 @@ function RecordCard({
   getWashTypeLabel: (washTypeValue: WashType) => string;
 }): ReactElement {
   return (
-    <div
-      className={`p-4 border-[0.5px] my-1 border-y-gray-200 rounded-sm flex justify-between gap-4`}
-    >
-      <div className="flex flex-col gap-2 w-full">
-        <div className="font-bold text-lg">
-          {ticket.client?.name ?? "Client"}
+    <Link href={`${paths.records}/${ticket._id}`}>
+      <div
+        className={`p-4 border-[0.5px] my-1 border-y-gray-200 rounded-sm flex justify-between gap-4`}
+      >
+        <div className="flex flex-col gap-2 w-full">
+          <div className="font-bold text-lg">
+            {ticket.client?.name ?? "Client"}
+          </div>
+          <div className="text-sm">{` ${ticket.carModel} | ${ticket.carNumber}`}</div>
+          <div className="text-sm">{`${getWashTypeLabel(
+            ticket.washType as WashType
+          )} Wash`}</div>
         </div>
-        <div className="text-sm">{` ${ticket.carModel} | ${ticket.carNumber}`}</div>
-        <div className="text-sm">{`${getWashTypeLabel(
-          ticket.washType as WashType
-        )} Wash`}</div>
-      </div>
-      <div className="col-span-1 flex justify-center items-center w-20">
-        {ticket.paymentMethod && (
-          <Image
-            src={getPaymentImagePath(ticket?.paymentMethod) as string}
-            alt="payment"
-            width={30}
-            height={30}
-          />
-        )}
-      </div>
-      <div className="flex justify-center items-center w-full p-1">
-        <div
-          className={`p-3 rounded-3xl flex items-center justify-center font-bold text-sm ${
-            ticket.pricePaid === ticket.price
-              ? "bg-green-100 text-green-500 border-green-500 border-[0.5px]"
-              : ticket.isCredit
-              ? "bg-yellow-200 text-yellow-800 border-yellow-800 border-[0.5px]"
-              : "bg-red-200 text-red-500 border-red-500 border-[0.5px]"
-          }`}
-        >
-          {`Price: ${ticket.price}`}
+        <div className="col-span-1 flex justify-center items-center w-20">
+          {ticket.paymentMethod && (
+            <Image
+              src={getPaymentImagePath(ticket?.paymentMethod) as string}
+              alt="payment"
+              width={30}
+              height={30}
+            />
+          )}
+        </div>
+        <div className="flex justify-center items-center w-full p-1">
+          <div
+            className={`p-3 rounded-3xl flex items-center justify-center font-bold text-sm ${
+              ticket.pricePaid === ticket.price
+                ? "bg-green-100 text-green-500 border-green-500 border-[0.5px]"
+                : ticket.isCredit
+                ? "bg-yellow-200 text-yellow-800 border-yellow-800 border-[0.5px]"
+                : "bg-red-200 text-red-500 border-red-500 border-[0.5px]"
+            }`}
+          >
+            {`Price: ${ticket.price}`}
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
