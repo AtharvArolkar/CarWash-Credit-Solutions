@@ -1,5 +1,7 @@
 import { Document, Types } from "mongoose";
-import { PaymentMethod } from "./transaction";
+
+import { PaymentMethod, Transaction } from "./transaction";
+import { User } from "./user";
 
 export interface Ticket extends Document {
   carNumber: string;
@@ -26,6 +28,7 @@ export interface GetTicketsPayload {
 }
 
 export interface TicketReponse {
+  _id: string;
   carNumber: string;
   carModel: string;
   washType: string;
@@ -55,4 +58,23 @@ export interface AddTicketPayload {
   createdBy: string;
   clientId?: string;
   isCredit?: boolean;
+}
+
+export interface TicketDetails {
+  _id: string;
+  carNumber: string;
+  carModel: string;
+  washType: WashType;
+  price: number;
+  pricePaid: number;
+  isCredit: boolean;
+  createdAt: string;
+  updatedAt: string;
+  transations: Transaction[];
+  client: User;
+  createdByName: string;
+}
+
+export interface TicketDetailsResponse {
+  ticket: TicketDetails;
 }
