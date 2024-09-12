@@ -18,6 +18,7 @@ export const apiRoutes = {
   changePassword: `${BASE_URL}/api/change-password `,
   checkUser: `${BASE_URL}/api/check-user`,
   getUsers: `${BASE_URL}/api/get-users`,
+  getProfileDetails: `${BASE_URL}/api/get-profile-details`,
   addUser: `${BASE_URL}/api/add-user`,
   deleteUser: `${BASE_URL}/api/delete-user`,
   getClientUsers: `${BASE_URL}/api/get-client-users`,
