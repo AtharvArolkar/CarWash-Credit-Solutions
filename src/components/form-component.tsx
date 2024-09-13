@@ -28,7 +28,12 @@ export default function FormComponent({
   formTitle,
 }: FormComponentProps): ReactElement {
   const [state, modifiedAction] = useFormState(formAction, null);
-
+  console.info(
+    "jhjkhjkhjkh",
+    process.env.NEXT_PUBLIC_HOSTED_URL,
+    " kk-",
+    process.env.NEXT_PUBLIC_VERCEL_URL
+  );
   const getRedirectPath = (error?: string): string => {
     switch (error) {
       case "Generate a new password for your account":
