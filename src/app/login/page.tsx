@@ -7,7 +7,7 @@ import FormComponent from "@/components/form-component";
 import { login } from "../../actions/login";
 
 export default function Login(): ReactElement {
-  console.log(
+  console.info(
     "jhjkhjkhjkh",
     process.env.NEXT_PUBLIC_HOSTED_URL,
     " kk-",
