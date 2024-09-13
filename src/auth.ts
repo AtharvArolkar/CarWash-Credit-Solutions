@@ -120,7 +120,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           return user;
         } catch (error) {
-          return null;
+          throw error;
         }
       },
     }),
