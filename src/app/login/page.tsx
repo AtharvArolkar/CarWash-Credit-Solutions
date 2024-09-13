@@ -7,7 +7,12 @@ import FormComponent from "@/components/form-component";
 import { login } from "../../actions/login";
 
 export default function Login(): ReactElement {
-  console.log("jhjkhjkhjkh", process.env.NEXT_PUBLIC_HOSTED_URL);
+  console.log(
+    "jhjkhjkhjkh",
+    process.env.NEXT_PUBLIC_HOSTED_URL,
+    " kk-",
+    process.env.NEXT_PUBLIC_VERCEL_URL
+  );
   return (
     <div className="w-full h-screen relative flex flex-col sm:justify-center sm:items-center">
       <Image src={loginBg} alt="bg" className="-z-5 h-[300px] sm:hidden" />
