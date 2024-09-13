@@ -120,7 +120,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           return user;
         } catch (error) {
-          throw error;
+          return null;
         }
       },
     }),
@@ -136,6 +136,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.refreshToken = refreshToken;
         return token;
       }
+
       try {
         await verifyJWT(
           token.accessToken ?? "",
