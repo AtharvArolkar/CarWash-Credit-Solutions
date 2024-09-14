@@ -4,7 +4,7 @@ import NextAuth, { CredentialsSignin } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import { callApi } from "./helpers/api-service";
+import { callApi, callApi1 } from "./helpers/api-service";
 import { verifyJWT } from "./helpers/jwt-verify";
 import { STATUS_CODES } from "./lib/constants";
 import { apiRoutes, paths } from "./lib/routes";
@@ -22,7 +22,7 @@ async function getRefreshAndAccessToken(
     const payload: GetAccessRefreshPayload = {
       identifier,
     };
-    const response = await callApi<ApiResponse>(
+    const response = await callApi1<ApiResponse>(
       apiRoutes.generateAccessRefreshTokens,
       ApiMethod.POST,
       undefined,
@@ -45,7 +45,7 @@ async function refreshAccessToken(
       identifier,
     };
 
-    const response = await callApi<ApiResponse>(
+    const response = await callApi1<ApiResponse>(
       apiRoutes.refreshAccessToken,
       ApiMethod.POST,
       token.refreshToken,
@@ -85,7 +85,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         try {
           const payload: GetUserPayload = { identifier };
-          const response = await callApi<ApiResponse>(
+          const response = await callApi1<ApiResponse>(
             apiRoutes.checkUser,
             ApiMethod.POST,
             undefined,
