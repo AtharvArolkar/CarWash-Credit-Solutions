@@ -56,7 +56,7 @@ export const callApi1 = async <Type>(
     | UserListPayload
     | AddUserPayload
     | string
-): Promise<Type> => {
+): Promise<any> => {
   console.log(
     payload,
     payload && method !== ApiMethod.GET ? JSON.stringify(payload) : undefined,
@@ -89,9 +89,13 @@ export const callApi1 = async <Type>(
     //   // );
     // }
 
-    const data = await response.json();
-    console.log(data);
-    return data;
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      return data;
+    }
+    const erro = await response.text();
+    return erro;
   } catch (error) {
     console.error("Fetch error:", error);
     throw error;
