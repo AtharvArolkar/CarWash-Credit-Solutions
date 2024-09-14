@@ -91,13 +91,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             undefined,
             payload
           );
-          const { user } = await response.body;
+          const data = await response.body;
+          console.log(data);
 
-          if (!user) {
+          if (!data) {
             throw new CredentialsSignin("User not found", {
               status: STATUS_CODES.NOT_FOUND,
             });
           }
+          const { user } = data;
 
           if (!user.isVerified) {
             throw new CredentialsSignin(

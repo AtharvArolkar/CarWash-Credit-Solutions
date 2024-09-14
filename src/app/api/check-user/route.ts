@@ -6,6 +6,7 @@ import UserModel from "@/models/user.model";
 
 export async function POST(req: Request): Promise<Response> {
   try {
+    console.log("CHECKKKKKKKKKKKKKK");
     const { identifier } = await req.json();
     await dbConnect();
 
