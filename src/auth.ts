@@ -94,12 +94,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const data = response;
           console.log(data, response);
 
-          if (!data) {
+          if (!data.body) {
             throw new CredentialsSignin("User not found", {
               status: STATUS_CODES.NOT_FOUND,
             });
           }
-          const { user } = data;
+          const { user } = data.body;
 
           if (!user.isVerified) {
             throw new CredentialsSignin(
