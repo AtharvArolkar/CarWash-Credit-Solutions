@@ -91,8 +91,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             undefined,
             payload
           );
-          const data = await response.body;
-          console.log(data);
+          const data = response;
+          console.log(data, response);
 
           if (!data) {
             throw new CredentialsSignin("User not found", {
