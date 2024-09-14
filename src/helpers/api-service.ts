@@ -90,12 +90,15 @@ export const callApi1 = async <Type>(
     // }
 
     if (response.ok) {
-      const data = await response.json();
-      console.log(data);
-      return data;
+      try {
+        const data = await response.json();
+        console.log(data);
+        return data;
+      } catch (error) {
+        const erro = await response.text();
+        return erro;
+      }
     }
-    const erro = await response.text();
-    return erro;
   } catch (error) {
     console.error("Fetch error:", error);
     throw error;
