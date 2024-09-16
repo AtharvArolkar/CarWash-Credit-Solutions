@@ -95,12 +95,10 @@ export const callApi1 = async <Type>(
         console.log(data);
         return data;
       } catch (error) {
-        const erro = await response.text();
-        return erro;
+        throw error;
       }
     }
   } catch (error) {
     console.error("Fetch error:", error);
-    throw error;
   }
 };
