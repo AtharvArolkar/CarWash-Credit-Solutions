@@ -92,9 +92,11 @@ export const callApi1 = async <Type>(
     if (response.ok) {
       try {
         const data = await response.json();
-        console.log(data);
+        console.log(data, "DATAAAAAAAAAAA");
         return data;
       } catch (error) {
+        const err = await response.text();
+        console.log(err, error, "ERRORRRRRRRRRRRRR");
         throw error;
       }
     }
