@@ -90,6 +90,7 @@ export const callApi1 = async <Type>(
     // }
 
     if (response.ok) {
+      console.log("RESPONSE.OK");
       try {
         const data = await response.json();
         console.log(data, "DATAAAAAAAAAAA");
@@ -100,6 +101,7 @@ export const callApi1 = async <Type>(
         throw error;
       }
     }
+    console.log("RESPONSE>NOT OK", response);
   } catch (error) {
     console.error("Fetch error:", error);
   }
