@@ -86,7 +86,6 @@ async function UsersList(): Promise<ReactElement> {
   );
 
   const usersList = await response.body;
-  console.log(usersList);
 
   return (
     <>
