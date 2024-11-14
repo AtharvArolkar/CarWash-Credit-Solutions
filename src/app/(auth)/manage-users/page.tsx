@@ -78,12 +78,15 @@ async function UsersList(): Promise<ReactElement> {
   const authToken = await auth();
   // TODO: Add search functionality.
   const payload: UserListPayload = {};
-  const usersList = await callApi(
+  const response = await callApi(
     apiRoutes.getUsers,
     ApiMethod.POST,
     authToken?.accessToken,
     payload
   );
+
+  const usersList = await response.body;
+  console.log(usersList);
 
   return (
     <>
@@ -116,7 +119,7 @@ async function UsersList(): Promise<ReactElement> {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 sm:overflow-y-scroll  overflow-x-scroll no-scrollbar">
-                {usersList.data.users.map((user: UserResponse, key: number) => {
+                {usersList.users.map((user: UserResponse, key: number) => {
                   const deleteOnClick = async (): Promise<void> => {
                     "use server";
                     await deleteUser(user?._id);
@@ -164,11 +167,11 @@ async function UsersList(): Promise<ReactElement> {
                 })}
               </tbody>
             </table>
-            {usersList.data.users.length === 0 && <NoRecord />}
+            {usersList.users.length === 0 && <NoRecord />}
           </div>
         </div>
         <div className="sm:hidden -z-20">
-          {usersList.data.users.map((user: UserResponse, key: number) => {
+          {usersList.users.map((user: UserResponse, key: number) => {
             return (
               <UserCard
                 user={user}

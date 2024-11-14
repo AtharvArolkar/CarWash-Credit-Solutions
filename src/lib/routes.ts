@@ -1,4 +1,7 @@
-const BASE_URL = process.env.NEXT_PUBLIC_HOSTED_URL;
+const BASE_URL =
+  process.env.NODE_ENV == "production"
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : process.env.NEXT_PUBLIC_HOSTED_URL;
 
 export const paths = {
   home: "/",

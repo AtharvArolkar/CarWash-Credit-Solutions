@@ -28,7 +28,7 @@ async function getRefreshAndAccessToken(
       undefined,
       payload
     );
-    const { accessToken, refreshToken } = response.data;
+    const { accessToken, refreshToken } = response.body;
     return { accessToken, refreshToken };
   } catch (error) {
     return {
@@ -51,7 +51,7 @@ async function refreshAccessToken(
       token.refreshToken,
       payload
     );
-    const { accessToken } = response.data;
+    const { accessToken } = response.body;
     return { accessToken };
   } catch (error) {
     const axiosError = error as AxiosError;
@@ -91,13 +91,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             undefined,
             payload
           );
-          const { user } = await response.data;
 
-          if (!user) {
+          if (!response?.body) {
             throw new CredentialsSignin("User not found", {
               status: STATUS_CODES.NOT_FOUND,
             });
           }
+
+          const { user } = await response?.body;
 
           if (!user.isVerified) {
             throw new CredentialsSignin(

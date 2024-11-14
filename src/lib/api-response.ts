@@ -6,5 +6,5 @@ export const createApiResponse = ({
   message,
   body,
 }: ApiResponse): Response => {
-  return Response.json({ success, message, ...body }, { status: statusCode });
+  return Response.json({ success, message, body }, { status: statusCode });
 };

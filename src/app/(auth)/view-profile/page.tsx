@@ -9,11 +9,13 @@ import { ApiMethod } from "@/types/common";
 
 export default async function ViewProfile(): Promise<ReactElement> {
   const authUser = await auth();
-  const profileDetails = await callApi(
+  const response = await callApi(
     apiRoutes.getProfileDetails,
     ApiMethod.GET,
     authUser?.accessToken
   );
+
+  const profileDetails = await response.body;
   return (
     <form action={logOut}>
       <Button type="submit">Logout</Button>
