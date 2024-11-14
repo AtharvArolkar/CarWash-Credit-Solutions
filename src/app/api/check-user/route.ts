@@ -8,6 +8,11 @@ export async function POST(req: Request): Promise<Response> {
   try {
     console.log("CHECKKKKKKKKKKKKKK");
     const { identifier } = await req.json();
+    return createApiResponse({
+      success: false,
+      statusCode: STATUS_CODES.OK,
+      message: "Connection check",
+    });
     await dbConnect();
 
     const user = await UserModel.findOne({

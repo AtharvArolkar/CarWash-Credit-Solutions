@@ -77,7 +77,7 @@ export const callApi1 = async <Type>(
   try {
     console.log(url);
     const response = await fetch(url, options);
-    console.log("AFGTERR");
+    console.log("AFGTERR", response);
     // if (!response.ok) {
     //   console.log(response);
     //   throw response;
