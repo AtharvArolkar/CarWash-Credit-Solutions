@@ -11,7 +11,7 @@ export default async function MainLayout({
 }: MainLayoutProps): Promise<ReactElement> {
   const authUser = await auth();
   return (
-    <div className="grid max-sm:grid-rows-12 gap-2 h-screen sm:grid-cols-12">
+    <div className="grid max-sm:grid-rows-12 gap-2 h-full sm:grid-cols-12">
       <aside className=" order-2 sm:order-1 max-sm:row-span-1 sm:col-span-2">
         <NavigationPanel authUser={authUser} />
       </aside>
