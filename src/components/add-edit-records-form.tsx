@@ -84,13 +84,15 @@ export function AddEditRecordForm({
   useEffect(() => {
     (async function () {
       try {
-        const clientUserList = await callApi<ApiResponse>(
+        const response = await callApi<ApiResponse>(
           apiRoutes.getClientUsers,
           ApiMethod.GET,
           authUser.data?.accessToken
         );
+
+        const clientUserList = await response.body;
         setClientUsers(
-          clientUserList.data.users?.map((user: User) => {
+          clientUserList.users?.map((user: User) => {
             return { _id: user._id, name: user.name };
           }) ?? []
         );

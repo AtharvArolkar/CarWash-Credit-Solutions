@@ -24,20 +24,28 @@ export const callApi = async <Type>(
     | UserListPayload
     | AddUserPayload
     | string
-): Promise<AxiosResponse> => {
-  const callOption = {
-    headers: { Authorization: `Bearer ${token}` },
+): Promise<any> => {
+  const options: RequestInit = {
+    method: ApiMethod[method],
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token || ""}`,
+    },
+    body:
+      payload && method !== ApiMethod.GET ? JSON.stringify(payload) : undefined,
   };
-  switch (method) {
-    case ApiMethod.GET:
-      return await axios.get(url, callOption);
-    case ApiMethod.POST:
-      return await axios.post(url, payload, callOption);
-    case ApiMethod.DELETE:
-      return await axios.delete(url, callOption);
-    case ApiMethod.PATCH:
-      return await axios.patch(url, payload, callOption);
-    case ApiMethod.PUT:
-      return await axios.put(url, payload, callOption);
+  try {
+    const response = await fetch(url, options);
+    if (response.ok) {
+      try {
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        const err = await response.text();
+        throw error;
+      }
+    }
+  } catch (error) {
+    console.error("Fetch error:", error);
   }
 };

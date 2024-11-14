@@ -133,12 +133,14 @@ async function RecordsList({
       searchParams?.[RECORDS_QUERY.HIDE_CREDITS] === "true" || false;
   }
 
-  const recordsList = await callApi(
+  const response = await callApi(
     apiRoutes.getTickets,
     ApiMethod.POST,
     authToken?.accessToken,
     payload
   );
+
+  const recordsList = await response.body;
 
   return (
     <>
@@ -161,9 +163,7 @@ async function RecordsList({
           <div className="h-20 max-sm:h-auto items-center sm:px-6 grid grid-cols-12 sticky sm:top-20 sm:border-y-[1px] bg-white">
             <div className="col-span-2 text-xl text-gray-600 font-bold max-sm:hidden"></div>
             <div className="lg:col-span-10 col-span-12 bg-white">
-              <FilterRecords
-                totalRecords={recordsList.data.totalTickets ?? 0}
-              />
+              <FilterRecords totalRecords={recordsList.totalTickets ?? 0} />
             </div>
           </div>
           <div className="overflow-x-scroll sticky top-80  sm:-z-10 w-full no-scrollbar">
@@ -182,7 +182,7 @@ async function RecordsList({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 sm:overflow-y-scroll  overflow-x-scroll no-scrollbar">
-                {recordsList.data.tickets.map(
+                {recordsList.tickets.map(
                   (ticket: TicketReponse, key: number) => {
                     return (
                       <tr key={key}>
@@ -234,21 +234,19 @@ async function RecordsList({
                 )}
               </tbody>
             </table>
-            {recordsList.data.tickets.length === 0 && <NoRecord />}
+            {recordsList.tickets.length === 0 && <NoRecord />}
           </div>
         </div>
         <div className="sm:hidden -z-20">
-          {recordsList.data.tickets.map(
-            (ticket: TicketReponse, key: number) => {
-              return (
-                <RecordCard
-                  ticket={ticket}
-                  getWashTypeLabel={getWashTypeLabel}
-                  key={key}
-                />
-              );
-            }
-          )}
+          {recordsList.tickets.map((ticket: TicketReponse, key: number) => {
+            return (
+              <RecordCard
+                ticket={ticket}
+                getWashTypeLabel={getWashTypeLabel}
+                key={key}
+              />
+            );
+          })}
         </div>
       </div>
       <AddEditRecord>
