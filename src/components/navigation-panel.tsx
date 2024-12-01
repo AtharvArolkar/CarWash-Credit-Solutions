@@ -1,23 +1,13 @@
 "use client";
 import carLogo from "/public/carLogo.png";
-import {
-  BadgeCent,
-  Contact,
-  LayoutDashboard,
-  LogOut,
-  SquareKanban,
-  User,
-} from "lucide-react";
+import { LayoutDashboard, LogOut, User } from "lucide-react";
 import { Session } from "next-auth";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MouseEventHandler, ReactElement, useEffect, useState } from "react";
+import { MouseEventHandler, ReactElement } from "react";
 
-import { isUserAdmin, isUserEmployee } from "@/helpers/auth";
 import { logOut } from "@/helpers/sign-out";
-import { RECORDS_QUERY } from "@/lib/constants";
 import { paths } from "@/lib/routes";
 
 interface ListItemProps {
@@ -122,44 +112,6 @@ export default function NavigationPanel({
             />
             <p className="sm:ml-2">Dashboard</p>
           </ListItem>
-          {isUserEmployee(authUser) && (
-            <ListItem
-              path={paths.records}
-              query={{ [RECORDS_QUERY.HIDE_CREDITS]: "true" }}
-              className="sm:pl-5 fill-transparent group max-sm:order-3"
-            >
-              <SquareKanban
-                className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
-                strokeWidth={1}
-              />
-              <p className="sm:ml-2">Records</p>
-            </ListItem>
-          )}
-          {isUserEmployee(authUser) && (
-            <ListItem
-              path={paths.credits}
-              className="sm:pl-5 fill-transparent  group max-sm:order-4"
-            >
-              <BadgeCent
-                className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
-                strokeWidth={1}
-              />
-              <p className="sm:ml-2">Credits</p>
-            </ListItem>
-          )}
-          {isUserAdmin(authUser) && (
-            <ListItem
-              path={paths.manageUsers}
-              className="sm:pl-5 fill-transparent group max-sm:order-1"
-            >
-              <Contact
-                className="max-sm:h-5 max-sm:w-5 sm:h-8 sm:w-8"
-                strokeWidth={1}
-              />
-              <p className="sm:ml-2 max-sm:hidden">Manage Users</p>
-              <p className="sm:ml-2 sm:hidden">Manage</p>
-            </ListItem>
-          )}
           <ListItem
             className="sm:pl-5 fill-transparent group max-sm:hidden cursor-pointer"
             onClick={handleLogout}
